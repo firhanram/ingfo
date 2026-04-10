@@ -6,7 +6,23 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": true,
+		"includes": [
+			"**",
+			"!**/node_modules",
+			"!**/.git",
+			"!**/.turbo",
+			"!**/.wxt",
+			"!**/.output",
+			"!**/dist",
+			"!**/build",
+			"!**/out",
+			"!**/coverage",
+			"!**/*.log",
+			"!**/pnpm-lock.yaml",
+			"!**/stats.html",
+			"!**/stats-*.json"
+		]
 	},
 	"formatter": {
 		"enabled": true,
