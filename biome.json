@@ -10,7 +10,8 @@
 	},
 	"formatter": {
 		"enabled": true,
-		"indentStyle": "tab"
+		"indentStyle": "tab",
+		"useEditorconfig": true
 	},
 	"linter": {
 		"enabled": true,
@@ -29,6 +30,15 @@
 			"source": {
 				"organizeImports": "on"
 			}
+		}
+	},
+	"json": {
+		"formatter": {
+			"enabled": true,
+			"trailingCommas": "none"
+		},
+		"parser": {
+			"allowTrailingCommas": true
 		}
 	}
 }
