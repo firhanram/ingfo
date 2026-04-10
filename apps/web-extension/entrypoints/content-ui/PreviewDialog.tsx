@@ -1,5 +1,6 @@
 import { Download, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useMountEffect } from "@/hooks/use-mount-effect";
 
 interface PreviewDialogProps {
 	imageDataUrl: string;
@@ -14,15 +15,13 @@ export function PreviewDialog({
 }: PreviewDialogProps) {
 	const [includeFullscreen, setIncludeFullscreen] = useState(false);
 
-	useEffect(() => {
+	useMountEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
-			if (e.key === "Escape") {
-				onClose();
-			}
+			if (e.key === "Escape") onClose();
 		}
 		document.addEventListener("keydown", handleKeyDown);
 		return () => document.removeEventListener("keydown", handleKeyDown);
-	}, [onClose]);
+	});
 
 	function handleDownload() {
 		const link = document.createElement("a");

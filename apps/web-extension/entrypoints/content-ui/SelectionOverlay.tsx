@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { useMountEffect } from "@/hooks/use-mount-effect";
 
 interface SelectionOverlayProps {
 	mode: "countdown" | "selection";
@@ -14,6 +15,52 @@ interface SelectionOverlayProps {
 	onCancel: () => void;
 }
 
+function CountdownOverlay({
+	seconds,
+	onDone,
+	onCancel,
+}: {
+	seconds: number;
+	onDone: () => void;
+	onCancel: () => void;
+}) {
+	const [count, setCount] = useState(seconds);
+
+	useMountEffect(() => {
+		function handleKeyDown(e: KeyboardEvent) {
+			if (e.key === "Escape") onCancel();
+		}
+		document.addEventListener("keydown", handleKeyDown);
+
+		const interval = setInterval(() => {
+			setCount((c) => {
+				if (c <= 1) {
+					clearInterval(interval);
+					onDone();
+					return 0;
+				}
+				return c - 1;
+			});
+		}, 1000);
+
+		return () => {
+			clearInterval(interval);
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	});
+
+	return (
+		<div className="fixed inset-0 flex items-center justify-center bg-black/40">
+			<div
+				className="animate-countdown-pulse font-sans text-[120px] font-bold text-white"
+				style={{ textShadow: "0 4px 24px rgba(0, 0, 0, 0.3)" }}
+			>
+				{count}
+			</div>
+		</div>
+	);
+}
+
 export function SelectionOverlay({
 	mode: initialMode,
 	countdownSeconds,
@@ -21,7 +68,6 @@ export function SelectionOverlay({
 	onCancel,
 }: SelectionOverlayProps) {
 	const [mode, setMode] = useState(initialMode);
-	const [countdown, setCountdown] = useState(countdownSeconds);
 	const [isDragging, setIsDragging] = useState(false);
 	const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 	const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
@@ -29,32 +75,13 @@ export function SelectionOverlay({
 	const [hasMoved, setHasMoved] = useState(false);
 	const overlayRef = useRef<HTMLDivElement>(null);
 
-	// Cancel on Escape key
-	useEffect(() => {
+	useMountEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
-			if (e.key === "Escape") {
-				onCancel();
-			}
+			if (e.key === "Escape") onCancel();
 		}
 		document.addEventListener("keydown", handleKeyDown);
 		return () => document.removeEventListener("keydown", handleKeyDown);
-	}, [onCancel]);
-
-	// Countdown timer
-	useEffect(() => {
-		if (mode !== "countdown") return;
-
-		if (countdown <= 0) {
-			setMode("selection");
-			return;
-		}
-
-		const timer = setTimeout(() => {
-			setCountdown((c) => c - 1);
-		}, 1000);
-
-		return () => clearTimeout(timer);
-	}, [mode, countdown]);
+	});
 
 	const selectionRect = isDragging
 		? {
@@ -100,10 +127,8 @@ export function SelectionOverlay({
 			const dy = Math.abs(e.clientY - startPos.y);
 
 			if (dx < 5 && dy < 5) {
-				// Click — capture full viewport
 				onSelectionComplete(null);
 			} else {
-				// Drag — capture selected region
 				const x = Math.min(startPos.x, e.clientX);
 				const y = Math.min(startPos.y, e.clientY);
 				onSelectionComplete({
@@ -119,14 +144,11 @@ export function SelectionOverlay({
 
 	if (mode === "countdown") {
 		return (
-			<div className="fixed inset-0 flex items-center justify-center bg-black/40">
-				<div
-					className="animate-countdown-pulse font-sans text-[120px] font-bold text-white"
-					style={{ textShadow: "0 4px 24px rgba(0, 0, 0, 0.3)" }}
-				>
-					{countdown}
-				</div>
-			</div>
+			<CountdownOverlay
+				seconds={countdownSeconds}
+				onDone={() => setMode("selection")}
+				onCancel={onCancel}
+			/>
 		);
 	}
 
