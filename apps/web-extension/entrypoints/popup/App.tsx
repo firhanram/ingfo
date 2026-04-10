@@ -1,7 +1,8 @@
-import { Camera, Ellipsis, House, MicOff, Monitor } from "lucide-react";
+import { Camera, Ellipsis, Globe, House, MicOff, Monitor } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useMountEffect } from "@/hooks/use-mount-effect";
 import type { Message } from "@/lib/messages";
 
 const toggleActiveClass =
@@ -19,6 +20,24 @@ function Header() {
 				</Button>
 			</div>
 		</header>
+	);
+}
+
+function NavigatePrompt() {
+	return (
+		<div className="flex flex-col items-center gap-4 px-6 py-8">
+			<div className="flex size-16 items-center justify-center rounded-full bg-surface-sunken">
+				<Globe className="size-7 text-neutral-400" />
+			</div>
+			<div className="text-center">
+				<p className="text-sm font-medium text-neutral-900">
+					Navigate to any website
+				</p>
+				<p className="mt-1 text-xs text-neutral-500">
+					Open a webpage to start capturing
+				</p>
+			</div>
+		</div>
 	);
 }
 
@@ -104,14 +123,34 @@ function RecordSection() {
 	);
 }
 
+function isRestrictedUrl(url: string | undefined): boolean {
+	if (!url) return true;
+	return /^(chrome|chrome-extension|edge|about|brave):\/\//i.test(url);
+}
+
 function App() {
+	const [restricted, setRestricted] = useState<boolean | null>(null);
+
+	useMountEffect(() => {
+		browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
+			setRestricted(isRestrictedUrl(tab?.url));
+		});
+		return undefined;
+	});
+
+	if (restricted === null) return <div className="w-[380px]" />;
+
 	return (
 		<div className="w-[380px]">
 			<Header />
-			<div className="flex flex-col gap-5 px-4 pt-3 pb-5">
-				<ScreenshotSection />
-				<RecordSection />
-			</div>
+			{restricted ? (
+				<NavigatePrompt />
+			) : (
+				<div className="flex flex-col gap-5 px-4 pt-3 pb-5">
+					<ScreenshotSection />
+					<RecordSection />
+				</div>
+			)}
 		</div>
 	);
 }
