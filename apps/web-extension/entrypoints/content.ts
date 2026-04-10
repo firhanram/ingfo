@@ -72,10 +72,7 @@ export default defineContentScript({
 			selectionUi.mount();
 		}
 
-		async function mountPreviewDialog(
-			imageDataUrl: string,
-			fullImageDataUrl: string,
-		) {
+		async function mountPreviewDialog(imageDataUrl: string) {
 			previewUi?.remove();
 
 			previewUi = await createShadowRootUi(ctx, {
@@ -88,7 +85,6 @@ export default defineContentScript({
 					root.render(
 						createElement(PreviewDialog, {
 							imageDataUrl,
-							fullImageDataUrl,
 							onClose() {
 								previewUi?.remove();
 								previewUi = null;
@@ -114,7 +110,7 @@ export default defineContentScript({
 					mountSelectionOverlay("selection", 0);
 					sendResponse({ ok: true });
 				} else if (message.type === "CAPTURE_COMPLETE") {
-					mountPreviewDialog(message.imageDataUrl, message.fullImageDataUrl);
+					mountPreviewDialog(message.imageDataUrl);
 					sendResponse({ ok: true });
 				}
 			},

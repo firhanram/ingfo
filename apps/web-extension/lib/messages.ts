@@ -17,6 +17,5 @@ export type Message =
 	| {
 			type: "CAPTURE_COMPLETE";
 			imageDataUrl: string;
-			fullImageDataUrl: string;
 	  }
 	| { type: "CANCEL_CAPTURE" };

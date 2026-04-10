@@ -79,7 +79,6 @@ async function handleSelectionResult(
 	await sendToContentScript(tabId, {
 		type: "CAPTURE_COMPLETE",
 		imageDataUrl: croppedDataUrl,
-		fullImageDataUrl: fullDataUrl,
 	});
 }
 

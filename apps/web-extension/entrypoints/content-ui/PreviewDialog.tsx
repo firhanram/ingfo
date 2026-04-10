@@ -1,20 +1,12 @@
 import { Download, X } from "lucide-react";
-import { useState } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
 
 interface PreviewDialogProps {
 	imageDataUrl: string;
-	fullImageDataUrl: string;
 	onClose: () => void;
 }
 
-export function PreviewDialog({
-	imageDataUrl,
-	fullImageDataUrl,
-	onClose,
-}: PreviewDialogProps) {
-	const [includeFullscreen, setIncludeFullscreen] = useState(false);
-
+export function PreviewDialog({ imageDataUrl, onClose }: PreviewDialogProps) {
 	useMountEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
 			if (e.key === "Escape") onClose();
@@ -28,13 +20,6 @@ export function PreviewDialog({
 		link.href = imageDataUrl;
 		link.download = `screenshot-${Date.now()}.png`;
 		link.click();
-
-		if (includeFullscreen && fullImageDataUrl !== imageDataUrl) {
-			const fullLink = document.createElement("a");
-			fullLink.href = fullImageDataUrl;
-			fullLink.download = `screenshot-full-${Date.now()}.png`;
-			fullLink.click();
-		}
 	}
 
 	return (
@@ -51,7 +36,7 @@ export function PreviewDialog({
 				</button>
 
 				{/* Screenshot image */}
-				<div className="max-h-[calc(90vh-120px)] overflow-auto p-6 pt-15">
+				<div className="max-h-[calc(90vh-72px)] overflow-auto p-6 pt-15">
 					<img
 						src={imageDataUrl}
 						alt="Captured screenshot"
@@ -60,36 +45,15 @@ export function PreviewDialog({
 				</div>
 
 				{/* Bottom bar */}
-				<div className="flex items-center justify-between border-t border-neutral-200 bg-surface px-6 py-3">
-					{/* Fullscreen checkbox */}
-					<label className="flex cursor-pointer items-center gap-2 text-[13px] text-neutral-900">
-						<input
-							type="checkbox"
-							checked={includeFullscreen}
-							onChange={(e) => setIncludeFullscreen(e.target.checked)}
-							className="size-4 accent-primary-400"
-						/>
-						{fullImageDataUrl !== imageDataUrl && (
-							<img
-								src={fullImageDataUrl}
-								alt="Full screenshot thumbnail"
-								className="h-7 w-10 rounded-sm border border-neutral-200 object-cover"
-							/>
-						)}
-						Also include fullscreen screenshot
-					</label>
-
-					{/* Actions */}
-					<div className="flex gap-2">
-						<button
-							type="button"
-							onClick={handleDownload}
-							className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500"
-						>
-							<Download size={16} />
-							Download
-						</button>
-					</div>
+				<div className="flex items-center justify-end border-t border-neutral-200 bg-surface px-6 py-3">
+					<button
+						type="button"
+						onClick={handleDownload}
+						className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500"
+					>
+						<Download size={16} />
+						Download
+					</button>
 				</div>
 			</div>
 		</div>
