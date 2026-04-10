@@ -1,0 +1,47 @@
+@import "@repo/tailwind-config/theme.css";
+
+:root {
+	--background: #fffbf7;
+	--foreground: #352f29;
+	--card: #fff6ee;
+	--card-foreground: #352f29;
+	--primary: #d4a27f;
+	--primary-foreground: #ffffff;
+	--secondary: #f3f0ec;
+	--secondary-foreground: #352f29;
+	--muted: #f5ede4;
+	--muted-foreground: #968a7e;
+	--accent: #f5ede4;
+	--accent-foreground: #352f29;
+	--destructive: #c0392b;
+	--border: #e5e0da;
+	--input: #e5e0da;
+	--ring: #e8bc96;
+	--radius: 0.5rem;
+}
+
+.animate-marching-ants {
+	animation: marching-ants 0.5s linear infinite;
+}
+
+.animate-countdown-pulse {
+	animation: countdown-pulse 1s ease-in-out infinite;
+}
+
+@keyframes marching-ants {
+	to {
+		stroke-dashoffset: -16;
+	}
+}
+
+@keyframes countdown-pulse {
+	0%,
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+	50% {
+		transform: scale(1.1);
+		opacity: 0.8;
+	}
+}
