@@ -25,16 +25,26 @@ function Header() {
 
 function NavigatePrompt() {
 	return (
-		<div className="flex flex-col items-center gap-4 px-6 py-8">
-			<div className="flex size-16 items-center justify-center rounded-full bg-surface-sunken">
-				<Globe className="size-7 text-neutral-400" />
+		<div className="flex flex-col items-center gap-5 px-6 py-10">
+			<div className="relative size-24">
+				{/* Warm glow backdrop */}
+				<div className="absolute inset-0 rounded-full bg-primary-100/50" />
+				{/* Dashed page outline — "something goes here" */}
+				<div className="absolute top-2.5 left-3.5 h-14 w-[60px] rounded-lg border-2 border-dashed border-accent-200 bg-accent-50/40" />
+				{/* Globe badge */}
+				<div className="absolute right-1.5 bottom-1.5 flex size-10 items-center justify-center rounded-full bg-accent-400 shadow-md">
+					<Globe className="size-[18px] text-white" />
+				</div>
 			</div>
+
 			<div className="text-center">
-				<p className="text-sm font-medium text-neutral-900">
-					Navigate to any website
+				<p className="text-[15px] font-semibold text-neutral-800">
+					Navigate to a website
 				</p>
-				<p className="mt-1 text-xs text-neutral-500">
-					Open a webpage to start capturing
+				<p className="mt-1.5 text-[13px] leading-relaxed text-neutral-400">
+					Open any webpage to start
+					<br />
+					capturing and recording
 				</p>
 			</div>
 		</div>
