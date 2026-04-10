@@ -75,7 +75,7 @@ export function PreviewDialog({
 						<button
 							type="button"
 							onClick={handleDownload}
-							className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-primary-400 px-4 py-2 text-sm font-medium text-white"
+							className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500"
 						>
 							<Download size={16} />
 							Download
