@@ -256,54 +256,107 @@ Dark mode is not an inversion. Warm undertones carry through: dark backgrounds r
 
 ---
 
-## 8. Component Patterns (Reference)
+## 8. Component Library (shadcn/ui)
 
-These are not strict rules but starting-point recipes.
+UI components are sourced from **shadcn/ui** and live in `apps/web-extension/components/ui/`. They are added as source code (not a dependency) and styled via CSS variables mapped to the ingfo palette.
 
-### Button (Primary)
+### 8.1 Semantic CSS Variables
 
-```html
-<button class="bg-primary-400 hover:bg-primary-500 active:bg-primary-600
-               text-white font-medium text-sm
-               px-4 py-2 rounded-md shadow-sm
-               transition-colors duration-150
-               dark:bg-primary-500 dark:hover:bg-primary-400">
-  Label
-</button>
+shadcn components use semantic tokens (`bg-background`, `text-foreground`, `bg-card`, etc.) defined in `apps/web-extension/entrypoints/popup/style.css`. These are mapped to ingfo palette values:
+
+| Token | Light Value | Maps To |
+|---|---|---|
+| `--background` | `#FFFBF7` | surface |
+| `--foreground` | `#352F29` | neutral-900 |
+| `--card` | `#FFF6EE` | surface-raised |
+| `--primary` | `#D4A27F` | primary-400 |
+| `--secondary` | `#F3F0EC` | neutral-100 |
+| `--muted` | `#F5EDE4` | surface-sunken |
+| `--muted-foreground` | `#968A7E` | neutral-500 |
+| `--accent` | `#F5EDE4` | surface-sunken |
+| `--destructive` | `#C0392B` | error-500 |
+| `--border` | `#E5E0DA` | neutral-200 |
+| `--ring` | `#E8BC96` | primary-300 |
+
+### 8.2 Adding Components
+
+```sh
+cd apps/web-extension
+npx shadcn@latest add <component-name>
 ```
 
-### Button (Accent / CTA)
+After adding, run `pnpm --filter=web-extension lint:fix && pnpm --filter=web-extension format` to align with Biome formatting (tabs, semicolons, import type).
 
-```html
-<button class="bg-accent-400 hover:bg-accent-500 active:bg-accent-600
-               text-white font-medium text-sm
-               px-4 py-2 rounded-md shadow-sm
-               transition-colors duration-150
-               dark:bg-accent-500 dark:hover:bg-accent-400">
-  Label
-</button>
+### 8.3 Component Patterns
+
+**Button:**
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+<Button variant="default">Primary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost" size="icon-sm">
+  <House data-icon="inline-start" />
+</Button>
 ```
 
-### Card
+**Card:**
 
-```html
-<div class="bg-surface-raised dark:bg-surface-raised-dark
-            border border-neutral-200 dark:border-neutral-700
-            rounded-lg shadow-sm p-4">
-  <!-- content -->
-</div>
+```tsx
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+<Card>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+  </CardHeader>
+  <CardContent>Content</CardContent>
+</Card>
 ```
 
-### Input
+**Collapsible:**
 
-```html
-<input class="w-full bg-white dark:bg-surface-dark
-              border border-neutral-300 dark:border-neutral-600
-              rounded-md px-3 py-2 text-sm
-              text-neutral-900 dark:text-neutral-100
-              placeholder:text-neutral-400
-              focus:outline-none focus:ring-2 focus:ring-primary-300
-              dark:focus:ring-primary-600" />
+```tsx
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+
+<Collapsible>
+  <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+  <CollapsibleContent>Hidden content</CollapsibleContent>
+</Collapsible>
+```
+
+**ToggleGroup (use for 2-7 options):**
+
+```tsx
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
+<ToggleGroup type="single" defaultValue="off" variant="outline">
+  <ToggleGroupItem value="off" size="sm">Off</ToggleGroupItem>
+  <ToggleGroupItem value="3s" size="sm">3s</ToggleGroupItem>
+  <ToggleGroupItem value="6s" size="sm">6s</ToggleGroupItem>
+</ToggleGroup>
+```
+
+### 8.4 Icons
+
+Use **lucide-react** for all icons. No sizing classes needed inside shadcn components — use the `data-icon` attribute on icons in buttons:
+
+```tsx
+import { House } from "lucide-react";
+
+<Button variant="ghost" size="icon-sm">
+  <House data-icon="inline-start" />
+</Button>
+```
+
+### 8.5 Utility Function
+
+Use `cn()` from `@/lib/utils` for conditional class merging:
+
+```tsx
+import { cn } from "@/lib/utils";
+
+<div className={cn("base-classes", isActive && "active-classes")} />
 ```
 
 ---
@@ -314,23 +367,27 @@ These are not strict rules but starting-point recipes.
 ingfo/
 ├── apps/
 │   └── web-extension/
-│       └── entrypoints/popup/
-│           └── style.css          <- @import "tailwindcss" + @theme block
+│       ├── components/
+│       │   └── ui/                <- shadcn/ui components (source code)
+│       ├── lib/
+│       │   └── utils.ts           <- cn() utility
+│       ├── hooks/                  <- custom React hooks
+│       ├── entrypoints/popup/
+│       │   ├── style.css          <- imports theme + shadcn CSS variables
+│       │   └── App.tsx            <- popup root component
+│       └── components.json        <- shadcn configuration
 ├── packages/
-│   └── ui/                        <- (future) shared component library
-│       └── src/styles/
-│           └── theme.css          <- shared @theme tokens
+│   └── tailwind-config/
+│       └── theme.css              <- shared @theme tokens (palette, radius, shadows)
 └── DESIGN_GUIDELINES.md           <- this file
 ```
-
-When a shared `packages/ui` is introduced, extract the `@theme` block into `packages/ui/src/styles/theme.css` and `@import` it from each app's entry CSS.
 
 ---
 
 ## 10. Accessibility Checklist
 
 - All text meets **WCAG AA** contrast (4.5:1 for normal text, 3:1 for large text). The palette has been chosen with this in mind — verify with tooling when combining non-standard pairings.
-- Interactive elements have visible `:focus-visible` outlines (`ring-2 ring-primary-300`).
+- Interactive elements have visible `:focus-visible` outlines (`ring-[3px] ring-ring/50`).
 - Color is never the sole indicator of state — pair with icons or text labels.
 - Respect `prefers-reduced-motion` — wrap animations with `motion-safe:`.
 - Respect `prefers-color-scheme` for dark mode.
