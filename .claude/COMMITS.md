@@ -50,29 +50,36 @@ Every commit message is machine-readable and human-scannable.
 
 ## Scopes
 
-Scopes map directly to the folder structure in `file-structure.md`.
+Scopes map directly to the workspace path where the change lives.
 
 | Scope | Maps to |
 |---|---|
-| `models` | `Models/` — any data model file |
-| `storage` | `Services/StorageService.swift` |
-| `http` | `Services/HTTPClient.swift` |
-| `resolver` | `Services/VariableResolver.swift` |
-| `importer` | `Services/PostmanImporter.swift` |
-| `shell` | `Views/Shell/` |
-| `sidebar` | `Views/Sidebar/` |
-| `request` | `Views/Request/` |
-| `response` | `Views/Response/` |
-| `env` | `Views/Environment/` |
-| `history` | `Views/History/` |
-| `tokens` | `Resources/AppColors`, `AppFonts`, `AppSpacing` |
-| `app` | `App/DoksliApp.swift` |
-| `tests` | `DoksliTests/` |
-| `docs` | `docs/` and `CLAUDE.md` |
-| `checklists` | `docs/checklists/` |
-| `config` | Xcode project settings, entitlements, `Info.plist` |
+| `apps/web-extension` | `apps/web-extension/` — any file inside the web extension app |
+| `packages/typescript-config` | `packages/typescript-config/` — shared TS config package |
+| `root` | Any file at the repo root: `package.json`, `biome.json`, `turbo.json`, `pnpm-workspace.yaml`, `.vscode/`, etc. |
 
-Scope is required for all types except `docs` and `chore`.
+**Rules:**
+- Scope is **always required** — no exceptions
+- Use the full workspace path as the scope: `apps/web-extension`, not just `web-extension`
+- Root-level files (config, tooling, docs at the repo root) use `root` as the scope
+- If a commit touches files in a package **and** root-level files, **split into two separate commits** — one scoped to the package, one scoped to `root`
+
+```
+// ✅ correct — package-scoped
+feat(apps/web-extension): Add popup entry with React root
+
+// ✅ correct — root-scoped
+chore(root): Add biome.json with formatter and linter config
+
+// ❌ wrong — no scope
+feat: Add popup entry with React root
+
+// ❌ wrong — short scope that omits the workspace path
+feat(web-extension): Add popup entry
+
+// ❌ wrong — mixing root and package changes in one commit
+chore(root): Add biome.json and update web-extension tsconfig
+```
 
 ---
 
@@ -85,19 +92,22 @@ Scope is required for all types except `docs` and `chore`.
 
 ```
 // ✅ correct
-feat(resolver): Add {{var}} substitution with disabled-var skip
+feat(apps/web-extension): Add background service worker entry
 
 // ❌ wrong — past tense
-feat(resolver): Added variable substitution
+feat(apps/web-extension): Added background service worker
 
 // ❌ wrong — period at end
-feat(resolver): Add variable substitution.
+feat(apps/web-extension): Add background service worker entry.
 
 // ❌ wrong — vague
-feat(resolver): Update resolver
+feat(apps/web-extension): Update background
 
-// ❌ wrong — all caps scope
-feat(Resolver): Add variable substitution
+// ❌ wrong — scope not full workspace path
+feat(web-extension): Add background service worker entry
+
+// ❌ wrong — uppercase in scope
+feat(Apps/Web-Extension): Add background service worker entry
 ```
 
 ---
@@ -110,14 +120,11 @@ Optional but required when:
 - A technical decision was made that future readers need to understand
 
 ```
-feat(storage): Use atomic write to prevent data corruption
+feat(apps/web-extension): Use persistent background service worker
 
-Direct file writes leave a window where the app can crash
-mid-write and produce a corrupt or zero-byte JSON file.
-
-Writing to a temp file in the same directory then calling
-rename() is atomic on APFS — the file either fully exists
-or does not, with no partial state.
+MV3 requires declaring the background as a service worker.
+Event-based registration ensures the worker is not killed
+during long-running message exchanges with the content script.
 ```
 
 ---
@@ -127,16 +134,16 @@ or does not, with no partial state.
 ### Breaking changes
 
 ```
-feat(models): Replace body: String with body: RequestBody enum
+feat(apps/web-extension): Replace fetch with chrome.runtime messaging
 
-BREAKING CHANGE: Request.body is now RequestBody enum, not String.
-Migrate: .body = "raw string" → .body = .raw("raw string")
+BREAKING CHANGE: Direct fetch calls from content scripts are removed.
+All network requests must now go through the background service worker.
 ```
 
 ### Issue references
 
 ```
-fix(http): Handle URLSession cancellation without crashing
+fix(apps/web-extension): Handle missing runtime id without crashing
 
 Fixes #42
 ```
@@ -146,129 +153,71 @@ Fixes #42
 After a task is `APPROVED` in the agent workflow, the footer records it:
 
 ```
-feat(resolver): Add {{var}} substitution with disabled-var skip
+feat(apps/web-extension): Add popup with tab info display
 
 Reviewed-by: Agent-2
-Checklist: docs/checklists/03-variable-resolver.md
 ```
 
 ---
 
 ## Scoping multiple files
 
-If a commit touches files across scopes, use the primary scope.
-If truly cross-cutting, omit the scope entirely.
+If a commit touches multiple files **within the same workspace**, use that workspace's scope.
 
 ```
-// touches models + storage together
-feat(storage): Add HistoryEntry persistence with ring buffer
+// ✅ correct — multiple files inside apps/web-extension, one commit
+feat(apps/web-extension): Add content script with message passing
+```
 
-// cross-cutting — no scope
-refactor: Extract KVPair into shared type used by Request and Response
+If a commit touches files across **different workspaces or root**, split into separate commits — one per scope.
+
+```
+// ✅ correct — split into two commits
+chore(root): Add lint:fix to turbo.json and root package.json
+chore(apps/web-extension): Add lint and lint:fix scripts
+
+// ❌ wrong — two scopes in one commit
+chore(root): Add lint:fix pipeline and web-extension scripts
 ```
 
 ---
 
-## Examples by phase
+## Examples
 
-### Phase 0 — Setup
-
-```
-chore(config): Add outgoing network entitlement to sandbox
-chore(config): Set minimum deployment target to macOS 13
-chore(tokens): Create AppColors with full design system palette
-chore(tokens): Create AppFonts with SF Pro and SF Mono roles
-chore(tokens): Create AppSpacing with scale and radius tokens
-```
-
-### Phase 1 — Models
+### Root-level tooling and config
 
 ```
-feat(models): Add Workspace and Collection with recursive Item enum
-feat(models): Add Request with HTTPMethod, RequestBody, and Auth enums
-feat(models): Add KVPair as shared key-value type
-feat(models): Add Response with Codable conformance for history
-feat(models): Add Environment and EnvVar with enabled toggle
-feat(models): Add HistoryEntry as snapshot of Request and Response
+chore(root): Init monorepo with pnpm workspaces and Turbo
+chore(root): Add biome.json with formatter, linter, and ignore rules
+chore(root): Add .vscode/settings.json with Biome as default formatter
+chore(root): Add lint:fix to turbo.json pipeline and root scripts
+chore(root): Fix useEditorconfig casing in biome.json
 ```
 
-### Phase 2 — Storage
+### Shared packages
 
 ```
-feat(storage): Add atomic write pattern for workspaces.json
-feat(storage): Add environments persistence separate from workspaces
-feat(storage): Add history ring buffer capped at 100 entries
-test(storage): Add round-trip encode/decode tests for all models
+chore(packages/typescript-config): Add base tsconfig with strict mode
+chore(packages/typescript-config): Add react-library tsconfig preset
 ```
 
-### Phase 3 — HTTP + Resolver
+### Web extension app
 
 ```
-feat(resolver): Add {{var}} substitution with disabled-var skip
-feat(resolver): Leave unknown variables as-is without crashing
-feat(http): Add URLRequest builder for all 7 HTTP methods
-feat(http): Add URLSession send with ContinuousClock timing
-feat(http): Add HTTPURLResponse mapping to Response model
-test(http): Add integration tests against httpbin.org
+chore(apps/web-extension): Scaffold WXT app with React and TypeScript
+feat(apps/web-extension): Add background service worker entry
+feat(apps/web-extension): Add popup entry with React root
+feat(apps/web-extension): Add content script with DOM injection
+fix(apps/web-extension): Fix popup crash on missing runtime id
+chore(apps/web-extension): Add lint and lint:fix scripts
 ```
 
-### Phase 4 — Shell
+### Split root + package example
 
 ```
-feat(shell): Add NavigationSplitView with 3-column layout
-feat(shell): Add AppState as MainActor observable source of truth
-feat(shell): Add environment selector Menu to toolbar
-chore(app): Enforce light mode with preferredColorScheme at WindowGroup
-```
-
-### Phase 5 — Sidebar
-
-```
-feat(sidebar): Add workspace selector with dropdown and create button
-feat(sidebar): Add OutlineGroup tree for recursive Item enum
-feat(sidebar): Add MethodBadge with colors from AppColors tokens
-feat(sidebar): Add context menu for rename, duplicate, delete, move
-```
-
-### Phase 6 — Request editor
-
-```
-feat(request): Add URL bar with method picker and Send button
-feat(request): Add custom TabBarView segment control
-feat(request): Add KVEditor shared by Params and Headers tabs
-feat(request): Add BodyEditor with none, raw, form-data, urlEncoded modes
-feat(request): Add AuthEditor with bearer token auto-injection
-feat(request): Add {{var}} syntax highlighting in URL field
-```
-
-### Phase 7 — Response viewer
-
-```
-feat(response): Add stats bar with status, duration, and size chips
-feat(response): Add JSONTreeView with recursive expand and collapse
-feat(response): Add syntax colors for keys, strings, numbers, booleans
-feat(response): Add response headers read-only list with copy on click
-feat(response): Add raw body view with monospaced font and copy-all
-```
-
-### Phase 8 — Environments
-
-```
-feat(env): Add EnvEditorSheet with KVEditor and enabled toggles
-feat(env): Add EnvSelectorMenu to toolbar with no-environment option
-feat(env): Add Postman environment JSON import via NSOpenPanel
-feat(env): Add resolved variable tooltip on {{var}} tokens in URL bar
-```
-
-### Phase 9 — Polish
-
-```
-feat(history): Add history panel grouped by date with request reload
-feat(shell): Wire all keyboard shortcuts across the app
-feat(sidebar): Add drag-and-drop reorder within and across folders
-feat(shell): Add empty states for no collection, no request, no response
-fix(http): Handle network error and SSL failure without crashing
-feat(app): Add app icon with brand color to Assets.xcassets
+// Two separate commits when both root and a package are touched:
+chore(root): Add lint:fix to turbo.json and root package.json
+chore(apps/web-extension): Add lint:fix script to package.json
 ```
 
 ---
@@ -290,11 +239,11 @@ One logical change per commit.
 
 ```
 // ✅ correct — two separate commits
-feat(models): Add Request model with all associated enums
-test(models): Add encode/decode round-trip for Request
+feat(apps/web-extension): Add popup with tab info display
+test(apps/web-extension): Add unit tests for popup message handler
 
 // ❌ wrong — two concerns in one commit
-feat(models): Add Request model and tests
+feat(apps/web-extension): Add popup and tests
 ```
 
 If you cannot describe a commit in one subject line without using "and",
