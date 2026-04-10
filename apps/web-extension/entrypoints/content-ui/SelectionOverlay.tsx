@@ -1,4 +1,3 @@
-import { X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface SelectionOverlayProps {
@@ -27,6 +26,7 @@ export function SelectionOverlay({
 	const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 	const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
 	const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+	const [hasMoved, setHasMoved] = useState(false);
 	const overlayRef = useRef<HTMLDivElement>(null);
 
 	// Cancel on Escape key
@@ -84,10 +84,11 @@ export function SelectionOverlay({
 	const handleMouseMove = useCallback(
 		(e: React.MouseEvent) => {
 			setMousePos({ x: e.clientX, y: e.clientY });
+			if (!hasMoved) setHasMoved(true);
 			if (!isDragging) return;
 			setCurrentPos({ x: e.clientX, y: e.clientY });
 		},
-		[isDragging],
+		[isDragging, hasMoved],
 	);
 
 	const handleMouseUp = useCallback(
@@ -162,7 +163,7 @@ export function SelectionOverlay({
 			)}
 
 			{/* Cursor tooltip */}
-			{!isDragging && (
+			{!isDragging && hasMoved && (
 				<div
 					className="pointer-events-none fixed whitespace-nowrap rounded-md bg-neutral-900/85 px-3 py-1.5 font-sans text-[13px] font-medium text-white"
 					style={{ left: mousePos.x + 16, top: mousePos.y + 16 }}
@@ -170,20 +171,6 @@ export function SelectionOverlay({
 					click or drag to screenshot
 				</div>
 			)}
-
-			{/* Cancel button */}
-			<button
-				type="button"
-				onClick={(e) => {
-					e.stopPropagation();
-					onCancel();
-				}}
-				onMouseDown={(e) => e.stopPropagation()}
-				className="fixed top-4 right-4 flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-neutral-900/85 px-4 py-2 font-sans text-sm font-medium text-white"
-			>
-				<X size={16} />
-				Cancel
-			</button>
 		</div>
 	);
 }
