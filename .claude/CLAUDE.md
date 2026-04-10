@@ -11,4 +11,4 @@ Always follow the design guidelines in `DESIGN_GUIDELINES.md` when writing UI co
 
 # Commit Rules
 
-Always follow the commit conventions in `COMMITS.md` before creating any commit. This includes commit message format, scope, and type prefixes.
+Always follow the commit conventions in `.claude/COMMITS.md` before creating any commit. This includes commit message format, scope, and type prefixes. Use the `/commit` command to commit changes.
