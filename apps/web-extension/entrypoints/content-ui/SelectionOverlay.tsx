@@ -2,8 +2,6 @@ import { useCallback, useRef, useState } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
 
 interface SelectionOverlayProps {
-	mode: "countdown" | "selection";
-	countdownSeconds: number;
 	onSelectionComplete: (
 		region: {
 			x: number;
@@ -15,59 +13,10 @@ interface SelectionOverlayProps {
 	onCancel: () => void;
 }
 
-function CountdownOverlay({
-	seconds,
-	onDone,
-	onCancel,
-}: {
-	seconds: number;
-	onDone: () => void;
-	onCancel: () => void;
-}) {
-	const [count, setCount] = useState(seconds);
-
-	useMountEffect(() => {
-		function handleKeyDown(e: KeyboardEvent) {
-			if (e.key === "Escape") onCancel();
-		}
-		document.addEventListener("keydown", handleKeyDown);
-
-		const interval = setInterval(() => {
-			setCount((c) => {
-				if (c <= 1) {
-					clearInterval(interval);
-					onDone();
-					return 0;
-				}
-				return c - 1;
-			});
-		}, 1000);
-
-		return () => {
-			clearInterval(interval);
-			document.removeEventListener("keydown", handleKeyDown);
-		};
-	});
-
-	return (
-		<div className="fixed inset-0 flex items-center justify-center bg-black/40">
-			<div
-				className="animate-countdown-pulse font-sans text-[120px] font-bold text-white"
-				style={{ textShadow: "0 4px 24px rgba(0, 0, 0, 0.3)" }}
-			>
-				{count}
-			</div>
-		</div>
-	);
-}
-
 export function SelectionOverlay({
-	mode: initialMode,
-	countdownSeconds,
 	onSelectionComplete,
 	onCancel,
 }: SelectionOverlayProps) {
-	const [mode, setMode] = useState(initialMode);
 	const [isDragging, setIsDragging] = useState(false);
 	const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 	const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
@@ -97,16 +46,12 @@ export function SelectionOverlay({
 			? `polygon(evenodd, 0 0, 100% 0, 100% 100%, 0 100%, 0 0, ${selectionRect.x}px ${selectionRect.y}px, ${selectionRect.x}px ${selectionRect.y + selectionRect.height}px, ${selectionRect.x + selectionRect.width}px ${selectionRect.y + selectionRect.height}px, ${selectionRect.x + selectionRect.width}px ${selectionRect.y}px, ${selectionRect.x}px ${selectionRect.y}px)`
 			: undefined;
 
-	const handleMouseDown = useCallback(
-		(e: React.MouseEvent) => {
-			if (mode !== "selection") return;
-			e.preventDefault();
-			setIsDragging(true);
-			setStartPos({ x: e.clientX, y: e.clientY });
-			setCurrentPos({ x: e.clientX, y: e.clientY });
-		},
-		[mode],
-	);
+	const handleMouseDown = useCallback((e: React.MouseEvent) => {
+		e.preventDefault();
+		setIsDragging(true);
+		setStartPos({ x: e.clientX, y: e.clientY });
+		setCurrentPos({ x: e.clientX, y: e.clientY });
+	}, []);
 
 	const handleMouseMove = useCallback(
 		(e: React.MouseEvent) => {
@@ -120,7 +65,7 @@ export function SelectionOverlay({
 
 	const handleMouseUp = useCallback(
 		(e: React.MouseEvent) => {
-			if (mode !== "selection" || !isDragging) return;
+			if (!isDragging) return;
 			setIsDragging(false);
 
 			const dx = Math.abs(e.clientX - startPos.x);
@@ -139,18 +84,8 @@ export function SelectionOverlay({
 				});
 			}
 		},
-		[mode, isDragging, startPos, onSelectionComplete],
+		[isDragging, startPos, onSelectionComplete],
 	);
-
-	if (mode === "countdown") {
-		return (
-			<CountdownOverlay
-				seconds={countdownSeconds}
-				onDone={() => setMode("selection")}
-				onCancel={onCancel}
-			/>
-		);
-	}
 
 	return (
 		<div

@@ -25,10 +25,7 @@ export default defineContentScript({
 			null;
 		let previewUi: Awaited<ReturnType<typeof createShadowRootUi>> | null = null;
 
-		async function mountSelectionOverlay(
-			mode: "countdown" | "selection",
-			seconds: number,
-		) {
+		async function mountSelectionOverlay() {
 			selectionUi?.remove();
 
 			selectionUi = await createShadowRootUi(ctx, {
@@ -40,8 +37,6 @@ export default defineContentScript({
 					const root = ReactDOM.createRoot(container);
 					root.render(
 						createElement(SelectionOverlay, {
-							mode,
-							countdownSeconds: seconds,
 							onSelectionComplete(region) {
 								selectionUi?.remove();
 								selectionUi = null;
@@ -103,11 +98,8 @@ export default defineContentScript({
 
 		browser.runtime.onMessage.addListener(
 			(message: Message, _sender, sendResponse) => {
-				if (message.type === "START_COUNTDOWN") {
-					mountSelectionOverlay("countdown", message.seconds);
-					sendResponse({ ok: true });
-				} else if (message.type === "BEGIN_SELECTION") {
-					mountSelectionOverlay("selection", 0);
+				if (message.type === "BEGIN_SELECTION") {
+					mountSelectionOverlay();
 					sendResponse({ ok: true });
 				} else if (message.type === "CAPTURE_COMPLETE") {
 					mountPreviewDialog(message.imageDataUrl);

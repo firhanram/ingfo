@@ -1,4 +1,4 @@
-import { Camera, Ellipsis, House, MicOff, Monitor, Timer } from "lucide-react";
+import { Camera, Ellipsis, House, MicOff, Monitor } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -23,14 +23,9 @@ function Header() {
 }
 
 function ScreenshotSection() {
-	const [delay, setDelay] = useState("off");
-
 	async function handleCapture() {
-		const delayMs = delay === "3s" ? 3000 : delay === "6s" ? 6000 : 0;
-
 		await browser.runtime.sendMessage({
 			type: "START_CAPTURE",
-			delay: delayMs,
 		} satisfies Message);
 
 		window.close();
@@ -41,53 +36,14 @@ function ScreenshotSection() {
 			<h2 className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
 				Screenshot
 			</h2>
-			<div className="flex flex-col gap-2">
-				<button
-					type="button"
-					onClick={handleCapture}
-					className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-neutral-200 bg-surface-raised px-3.5 py-3 text-left transition-colors hover:bg-surface-sunken"
-				>
-					<Camera className="size-[18px] text-accent-500" />
-					<span className="text-sm font-medium text-neutral-900">Capture</span>
-				</button>
-
-				<div className="flex items-center gap-2 rounded-lg border border-neutral-200 px-3.5 py-2.5">
-					<Timer className="size-4 text-neutral-400" />
-					<span className="text-sm text-neutral-500">Delay</span>
-					<div className="ml-auto">
-						<ToggleGroup
-							type="single"
-							value={delay}
-							onValueChange={(v) => {
-								if (v) setDelay(v);
-							}}
-							variant="outline"
-						>
-							<ToggleGroupItem
-								value="off"
-								size="sm"
-								className={toggleActiveClass}
-							>
-								Off
-							</ToggleGroupItem>
-							<ToggleGroupItem
-								value="3s"
-								size="sm"
-								className={toggleActiveClass}
-							>
-								3s
-							</ToggleGroupItem>
-							<ToggleGroupItem
-								value="6s"
-								size="sm"
-								className={toggleActiveClass}
-							>
-								6s
-							</ToggleGroupItem>
-						</ToggleGroup>
-					</div>
-				</div>
-			</div>
+			<button
+				type="button"
+				onClick={handleCapture}
+				className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-neutral-200 bg-surface-raised px-3.5 py-3 text-left transition-colors hover:bg-surface-sunken"
+			>
+				<Camera className="size-[18px] text-accent-500" />
+				<span className="text-sm font-medium text-neutral-900">Capture</span>
+			</button>
 		</section>
 	);
 }

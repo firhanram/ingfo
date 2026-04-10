@@ -4,7 +4,7 @@ export default defineBackground(() => {
 	browser.runtime.onMessage.addListener(
 		(message: Message, _sender, sendResponse) => {
 			if (message.type === "START_CAPTURE") {
-				handleStartCapture(message.delay);
+				handleStartCapture();
 				sendResponse({ ok: true });
 			} else if (message.type === "SELECTION_RESULT") {
 				handleSelectionResult(message.region, message.devicePixelRatio);
@@ -43,18 +43,9 @@ async function sendToContentScript(
 	}
 }
 
-async function handleStartCapture(delay: number): Promise<void> {
+async function handleStartCapture(): Promise<void> {
 	const tabId = await getActiveTab();
-	const seconds = Math.round(delay / 1000);
-
-	if (seconds > 0) {
-		await sendToContentScript(tabId, {
-			type: "START_COUNTDOWN",
-			seconds,
-		});
-	} else {
-		await sendToContentScript(tabId, { type: "BEGIN_SELECTION" });
-	}
+	await sendToContentScript(tabId, { type: "BEGIN_SELECTION" });
 }
 
 async function handleSelectionResult(

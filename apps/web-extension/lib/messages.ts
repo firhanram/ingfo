@@ -6,8 +6,7 @@ export type Region = {
 };
 
 export type Message =
-	| { type: "START_CAPTURE"; delay: number }
-	| { type: "START_COUNTDOWN"; seconds: number }
+	| { type: "START_CAPTURE" }
 	| { type: "BEGIN_SELECTION" }
 	| {
 			type: "SELECTION_RESULT";

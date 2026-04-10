@@ -24,24 +24,8 @@
 	animation: marching-ants 0.5s linear infinite;
 }
 
-.animate-countdown-pulse {
-	animation: countdown-pulse 1s ease-in-out infinite;
-}
-
 @keyframes marching-ants {
 	to {
 		stroke-dashoffset: -16;
-	}
-}
-
-@keyframes countdown-pulse {
-	0%,
-	100% {
-		transform: scale(1);
-		opacity: 1;
-	}
-	50% {
-		transform: scale(1.1);
-		opacity: 0.8;
 	}
 }
