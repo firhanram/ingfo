@@ -1,5 +1,5 @@
 import { Download, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface PreviewDialogProps {
 	imageDataUrl: string;
@@ -13,6 +13,16 @@ export function PreviewDialog({
 	onClose,
 }: PreviewDialogProps) {
 	const [includeFullscreen, setIncludeFullscreen] = useState(false);
+
+	useEffect(() => {
+		function handleKeyDown(e: KeyboardEvent) {
+			if (e.key === "Escape") {
+				onClose();
+			}
+		}
+		document.addEventListener("keydown", handleKeyDown);
+		return () => document.removeEventListener("keydown", handleKeyDown);
+	}, [onClose]);
 
 	function handleDownload() {
 		const link = document.createElement("a");
