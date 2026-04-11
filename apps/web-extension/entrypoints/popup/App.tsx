@@ -219,7 +219,7 @@ function RecordingInProgress({ recordingTabId }: { recordingTabId: number }) {
 
 function isRestrictedUrl(url: string | undefined): boolean {
 	if (!url) return true;
-	return /^(chrome|chrome-extension|edge|about|brave):\/\//i.test(url);
+	return /^(chrome|chrome-extension|edge|about|brave):/i.test(url);
 }
 
 interface PopupState {
