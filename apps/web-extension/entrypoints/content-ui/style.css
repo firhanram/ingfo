@@ -45,16 +45,33 @@
 }
 
 .animate-slide-up {
-	animation: slide-up 0.25s ease-out;
+	animation: slide-up 0.25s ease-out both;
 }
 
 @keyframes slide-up {
 	from {
 		opacity: 0;
-		transform: translateX(-50%) translateY(16px);
+		translate: -50% 16px;
 	}
 	to {
 		opacity: 1;
-		transform: translateX(-50%) translateY(0);
+		translate: -50% 0;
+	}
+}
+
+.animate-pop-in {
+	animation: pop-in 0.2s ease-out both;
+}
+
+@keyframes pop-in {
+	from {
+		opacity: 0;
+		translate: -50% 8px;
+		scale: 0.95;
+	}
+	to {
+		opacity: 1;
+		translate: -50% 0;
+		scale: 1;
 	}
 }
