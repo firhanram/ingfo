@@ -35,12 +35,10 @@ export type Message =
 			videoDataUrl: string;
 			durationMs: number;
 	  }
-	| {
-			type: "TAB_RECORDING_ACTIVE";
-			recordingTabId: number;
-			tabTitle: string;
-	  }
-	| { type: "TAB_RECORDING_CLEARED" }
+	| { type: "RECORDING_CANCELLED" }
+
+	// Recording: Popup → Background (query)
+	| { type: "GET_RECORDING_STATE" }
 
 	// Recording: Content → Background
 	| { type: "COUNTDOWN_DONE" }

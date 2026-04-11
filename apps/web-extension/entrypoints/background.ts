@@ -3,7 +3,6 @@ import type { Message, OffscreenMessage, Region } from "@/lib/messages";
 // --- Recording state ---
 let recordingTabId: number | null = null;
 let recordingTabTitle = "";
-let indicatorTabId: number | null = null;
 
 export default defineBackground(() => {
 	browser.runtime.onMessage.addListener(
@@ -19,6 +18,15 @@ export default defineBackground(() => {
 				sendResponse({ ok: true });
 			}
 
+			// --- Recording state query ---
+			else if (message.type === "GET_RECORDING_STATE") {
+				sendResponse({
+					isRecording: recordingTabId !== null,
+					recordingTabId,
+					recordingTabTitle,
+				});
+			}
+
 			// --- Recording flow ---
 			else if (message.type === "START_RECORDING") {
 				handleStartRecording(message.micEnabled);
@@ -27,7 +35,7 @@ export default defineBackground(() => {
 				handleCountdownDone();
 				sendResponse({ ok: true });
 			} else if (message.type === "COUNTDOWN_CANCELLED") {
-				handleRecordingCleanup();
+				handleRecordingCancelled();
 				sendResponse({ ok: true });
 			} else if (message.type === "PAUSE_RECORDING") {
 				sendToOffscreen({ type: "OFFSCREEN_PAUSE" });
@@ -43,7 +51,7 @@ export default defineBackground(() => {
 				sendResponse({ ok: true });
 			} else if (message.type === "CANCEL_RECORDING") {
 				sendToOffscreen({ type: "OFFSCREEN_CANCEL" });
-				handleRecordingCleanup();
+				handleRecordingCancelled();
 				sendResponse({ ok: true });
 			}
 
@@ -63,27 +71,6 @@ export default defineBackground(() => {
 			}
 		},
 	);
-
-	// Tab-lock: detect when user switches away from the recorded tab
-	browser.tabs.onActivated.addListener(async (activeInfo) => {
-		if (recordingTabId === null) return;
-
-		if (activeInfo.tabId !== recordingTabId) {
-			// Switched away — show indicator on the new tab
-			indicatorTabId = activeInfo.tabId;
-			await sendToContentScript(activeInfo.tabId, {
-				type: "TAB_RECORDING_ACTIVE",
-				recordingTabId,
-				tabTitle: recordingTabTitle,
-			});
-		} else if (indicatorTabId !== null) {
-			// Returned to recorded tab — clear indicator on the other tab
-			await sendToContentScript(indicatorTabId, {
-				type: "TAB_RECORDING_CLEARED",
-			});
-			indicatorTabId = null;
-		}
-	});
 });
 
 // --- Helpers ---
@@ -254,15 +241,6 @@ async function handleRecordingComplete(
 	durationMs: number,
 ): Promise<void> {
 	const tabId = recordingTabId;
-
-	// Clear indicator on other tabs
-	if (indicatorTabId !== null) {
-		await sendToContentScript(indicatorTabId, {
-			type: "TAB_RECORDING_CLEARED",
-		});
-		indicatorTabId = null;
-	}
-
 	recordingTabId = null;
 	recordingTabTitle = "";
 	await closeOffscreenDocument();
@@ -276,15 +254,14 @@ async function handleRecordingComplete(
 	}
 }
 
-async function handleRecordingCleanup(): Promise<void> {
-	if (indicatorTabId !== null) {
-		await sendToContentScript(indicatorTabId, {
-			type: "TAB_RECORDING_CLEARED",
-		});
-		indicatorTabId = null;
-	}
-
+async function handleRecordingCancelled(): Promise<void> {
+	const tabId = recordingTabId;
 	recordingTabId = null;
 	recordingTabTitle = "";
 	await closeOffscreenDocument();
+
+	// Tell content script to remove control bar / countdown
+	if (tabId !== null) {
+		await sendToContentScript(tabId, { type: "RECORDING_CANCELLED" });
+	}
 }

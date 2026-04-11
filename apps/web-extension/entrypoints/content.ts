@@ -5,7 +5,6 @@ import { recordingStore } from "@/lib/recording-store";
 import { CountdownOverlay } from "./content-ui/CountdownOverlay";
 import { PreviewDialog } from "./content-ui/PreviewDialog";
 import { RecordingControlBar } from "./content-ui/RecordingControlBar";
-import { RecordingIndicatorBadge } from "./content-ui/RecordingIndicatorBadge";
 import { SelectionOverlay } from "./content-ui/SelectionOverlay";
 import styles from "./content-ui/style.css?inline";
 import { VideoPreviewDialog } from "./content-ui/VideoPreviewDialog";
@@ -22,7 +21,7 @@ const hostOverrideCss = `:host {
 
 const fullCss = `${hostOverrideCss}\n${styles}`;
 
-// Non-modal overlay for floating elements (control bar, indicator badge)
+// Non-modal overlay for floating elements (control bar)
 const floatingHostCss = `:host {
 	position: fixed !important;
 	inset: 0 !important;
@@ -54,8 +53,6 @@ export default defineContentScript({
 		let controlBarUi: Awaited<ReturnType<typeof createShadowRootUi>> | null =
 			null;
 		let videoPreviewUi: Awaited<ReturnType<typeof createShadowRootUi>> | null =
-			null;
-		let indicatorUi: Awaited<ReturnType<typeof createShadowRootUi>> | null =
 			null;
 
 		// Track mic state for control bar re-renders
@@ -184,7 +181,7 @@ export default defineContentScript({
 
 			controlBarUi = await createShadowRootUi(ctx, {
 				name: "ingfo-recording-control-bar",
-				position: "modal",
+				position: "overlay",
 				zIndex: 2147483647,
 				css: floatingCss,
 				onMount(container) {
@@ -234,35 +231,6 @@ export default defineContentScript({
 			videoPreviewUi.mount();
 		}
 
-		async function mountRecordingIndicator(
-			recordingTabId: number,
-			tabTitle: string,
-		) {
-			indicatorUi?.remove();
-
-			indicatorUi = await createShadowRootUi(ctx, {
-				name: "ingfo-recording-indicator",
-				position: "modal",
-				zIndex: 2147483647,
-				css: floatingCss,
-				onMount(container) {
-					const root = ReactDOM.createRoot(container);
-					root.render(
-						createElement(RecordingIndicatorBadge, {
-							tabTitle,
-							recordingTabId,
-						}),
-					);
-					return root;
-				},
-				onRemove(root) {
-					root?.unmount();
-				},
-			});
-
-			indicatorUi.mount();
-		}
-
 		// --- Message listener ---
 
 		browser.runtime.onMessage.addListener(
@@ -294,15 +262,11 @@ export default defineContentScript({
 					controlBarUi = null;
 					mountVideoPreview(message.videoDataUrl, message.durationMs);
 					sendResponse({ ok: true });
-				}
-
-				// Tab-lock indicator
-				else if (message.type === "TAB_RECORDING_ACTIVE") {
-					mountRecordingIndicator(message.recordingTabId, message.tabTitle);
-					sendResponse({ ok: true });
-				} else if (message.type === "TAB_RECORDING_CLEARED") {
-					indicatorUi?.remove();
-					indicatorUi = null;
+				} else if (message.type === "RECORDING_CANCELLED") {
+					countdownUi?.remove();
+					countdownUi = null;
+					controlBarUi?.remove();
+					controlBarUi = null;
 					sendResponse({ ok: true });
 				}
 			},

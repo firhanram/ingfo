@@ -1,4 +1,5 @@
 import {
+	ArrowUpRight,
 	Camera,
 	Ellipsis,
 	Globe,
@@ -179,27 +180,80 @@ function RecordSection() {
 	);
 }
 
+function RecordingInProgress({ recordingTabId }: { recordingTabId: number }) {
+	function handleJumpToTab() {
+		browser.tabs.update(recordingTabId, { active: true });
+		window.close();
+	}
+
+	return (
+		<div className="flex flex-col items-center gap-5 px-6 py-10">
+			<div className="relative size-24">
+				<div className="absolute inset-0 rounded-full bg-red-50" />
+				<div className="absolute top-2.5 left-3.5 h-14 w-[60px] rounded-lg border-2 border-dashed border-red-200 bg-red-50/60" />
+				<div className="absolute right-1.5 bottom-1.5 flex size-10 items-center justify-center rounded-full bg-red-500 shadow-md">
+					<Monitor className="size-[18px] text-white" />
+				</div>
+			</div>
+
+			<div className="text-center">
+				<p className="text-[15px] font-semibold text-neutral-800">
+					Recording in progress
+				</p>
+				<p className="mt-1.5 text-[13px] leading-relaxed text-neutral-400">
+					You're recording in another tab
+				</p>
+			</div>
+
+			<button
+				type="button"
+				onClick={handleJumpToTab}
+				className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500"
+			>
+				Jump to tab
+				<ArrowUpRight className="size-3.5" />
+			</button>
+		</div>
+	);
+}
+
 function isRestrictedUrl(url: string | undefined): boolean {
 	if (!url) return true;
 	return /^(chrome|chrome-extension|edge|about|brave):\/\//i.test(url);
 }
 
+interface PopupState {
+	restricted: boolean;
+	recordingTabId: number | null;
+}
+
 function App() {
-	const [restricted, setRestricted] = useState<boolean | null>(null);
+	const [state, setState] = useState<PopupState | null>(null);
 
 	useMountEffect(() => {
-		browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-			setRestricted(isRestrictedUrl(tab?.url));
+		Promise.all([
+			browser.tabs.query({ active: true, currentWindow: true }),
+			browser.runtime.sendMessage({
+				type: "GET_RECORDING_STATE",
+			} satisfies Message),
+		]).then(([tabs, recordingState]) => {
+			const [tab] = tabs;
+			setState({
+				restricted: isRestrictedUrl(tab?.url),
+				recordingTabId: recordingState?.recordingTabId ?? null,
+			});
 		});
 		return undefined;
 	});
 
-	if (restricted === null) return <div className="w-[380px]" />;
+	if (state === null) return <div className="w-[380px]" />;
 
 	return (
 		<div className="w-[380px]">
 			<Header />
-			{restricted ? (
+			{state.recordingTabId !== null ? (
+				<RecordingInProgress recordingTabId={state.recordingTabId} />
+			) : state.restricted ? (
 				<NavigatePrompt />
 			) : (
 				<div className="flex flex-col gap-5 px-4 pt-3 pb-5">
