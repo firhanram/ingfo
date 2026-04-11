@@ -188,7 +188,7 @@ export function VideoPreviewDialog({
 	const currentPercent = (currentTime / videoDuration) * 100;
 
 	return (
-		<div className="fixed inset-0 flex items-center justify-center bg-black/60 font-sans">
+		<div className="fixed inset-0 flex items-center justify-center bg-neutral-900/40 font-sans backdrop-blur-sm">
 			<div className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-lg bg-surface-raised shadow-xl">
 				{/* Close button */}
 				<button
@@ -200,7 +200,7 @@ export function VideoPreviewDialog({
 				</button>
 
 				{/* Video player */}
-				<div className="flex-1 overflow-auto bg-surface-sunken px-6 pt-15 pb-6">
+				<div className="flex-1 overflow-auto px-6 pt-15 pb-6">
 					{/* biome-ignore lint/a11y/useMediaCaption: screen recording does not need captions */}
 					<video
 						ref={videoRef}
@@ -208,7 +208,7 @@ export function VideoPreviewDialog({
 						onLoadedMetadata={handleLoadedMetadata}
 						onTimeUpdate={handleTimeUpdate}
 						onEnded={() => setIsPlaying(false)}
-						className="mx-auto max-h-[60vh] max-w-full rounded-md"
+						className="mx-auto max-h-[60vh] max-w-full rounded-md bg-transparent"
 					/>
 				</div>
 
