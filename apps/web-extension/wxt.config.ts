@@ -12,6 +12,7 @@ export default defineConfig({
 			"tabCapture",
 			"offscreen",
 			"storage",
+			"audioCapture",
 		],
 	},
 	vite: () => ({

@@ -253,7 +253,10 @@ export default defineContentScript({
 				}
 
 				// Recording
-				else if (message.type === "BEGIN_COUNTDOWN") {
+				else if (message.type === "MIC_UNAVAILABLE") {
+					micEnabled = false;
+					sendResponse({ ok: true });
+				} else if (message.type === "BEGIN_COUNTDOWN") {
 					mountCountdownOverlay(message.micEnabled);
 					sendResponse({ ok: true });
 				} else if (message.type === "RECORDING_STARTED") {

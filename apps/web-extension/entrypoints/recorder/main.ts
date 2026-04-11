@@ -1,3 +1,8 @@
+// Recorder page — used when mic is enabled.
+// Extension pages (unlike offscreen documents) CAN access the microphone
+// via getUserMedia. This page listens for the same OFFSCREEN_* message
+// protocol so the background script needs minimal routing changes.
+
 import { browser } from "wxt/browser";
 import type { OffscreenMessage } from "@/lib/messages";
 
@@ -59,9 +64,6 @@ async function handleStart(
 ): Promise<void> {
 	cleanupStreams();
 
-	// Get tab media stream using the stream ID from tabCapture.
-	// Constrain to the tab's actual viewport size to avoid aspect-ratio
-	// mismatch that causes black letterboxing in the recorded video.
 	mediaStream = await navigator.mediaDevices.getUserMedia({
 		audio: {
 			mandatory: {
@@ -79,7 +81,6 @@ async function handleStart(
 		} as MediaTrackConstraints,
 	});
 
-	// If mic enabled, get mic stream and mix audio
 	if (micEnabled) {
 		try {
 			const stored = await browser.storage.local.get("selectedMicDeviceId");
@@ -90,7 +91,6 @@ async function handleStart(
 						audio: { deviceId: { exact: deviceId } },
 					});
 				} catch {
-					// Specific device unavailable — fall back to default mic
 					console.warn(
 						"[ingfo] Selected mic unavailable, falling back to default",
 					);
@@ -114,7 +114,6 @@ async function buildRecordingStream(): Promise<MediaStream> {
 
 	const videoTracks = mediaStream.getVideoTracks();
 
-	// If we have a mic stream, mix tab audio + mic audio
 	if (micStream) {
 		audioContext = new AudioContext();
 		await audioContext.resume();
@@ -172,7 +171,7 @@ async function handleRecord(): Promise<void> {
 	isPaused = false;
 	pausedElapsed = 0;
 	startTime = Date.now();
-	recorder.start(1000); // Collect data every second
+	recorder.start(1000);
 	startTimeUpdates();
 }
 
@@ -215,7 +214,12 @@ function handleCancel(): void {
 	cleanupStreams();
 }
 
-// Listen for messages from the background script
+// Signal that the recorder page is ready to receive messages
+browser.runtime.sendMessage({
+	type: "RECORDER_READY",
+} satisfies OffscreenMessage);
+
+// Listen for messages from the background script (same protocol as offscreen)
 browser.runtime.onMessage.addListener(
 	(message: OffscreenMessage, _sender: unknown, sendResponse: unknown) => {
 		const respond = sendResponse as (response: { ok: boolean }) => void;
@@ -233,7 +237,7 @@ browser.runtime.onMessage.addListener(
 						console.error("[ingfo] handleStart failed:", err);
 						respond({ ok: false });
 					});
-				return true; // async response
+				return true;
 
 			case "OFFSCREEN_RECORD":
 				handleRecord()
@@ -242,7 +246,7 @@ browser.runtime.onMessage.addListener(
 						console.error("[ingfo] handleRecord failed:", err);
 						respond({ ok: false });
 					});
-				return true; // async response
+				return true;
 
 			case "OFFSCREEN_PAUSE":
 				handlePause();

@@ -36,6 +36,7 @@ export type Message =
 			durationMs: number;
 	  }
 	| { type: "RECORDING_CANCELLED" }
+	| { type: "MIC_UNAVAILABLE" }
 
 	// Recording: Popup → Background (query)
 	| { type: "GET_RECORDING_STATE" }
@@ -70,4 +71,5 @@ export type OffscreenMessage =
 			videoDataUrl: string;
 			durationMs: number;
 	  }
-	| { type: "OFFSCREEN_TIME_UPDATE"; elapsedMs: number; isPaused: boolean };
+	| { type: "OFFSCREEN_TIME_UPDATE"; elapsedMs: number; isPaused: boolean }
+	| { type: "RECORDER_READY" };

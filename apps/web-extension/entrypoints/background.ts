@@ -3,6 +3,8 @@ import type { Message, OffscreenMessage, Region } from "@/lib/messages";
 // --- Recording state ---
 let recordingTabId: number | null = null;
 let recordingTabTitle = "";
+let recorderWindowId: number | null = null;
+let usingRecorderWindow = false;
 
 export default defineBackground(() => {
 	browser.runtime.onMessage.addListener(
@@ -67,6 +69,12 @@ export default defineBackground(() => {
 				sendResponse({ ok: true });
 			} else if (message.type === "OFFSCREEN_DATA_READY") {
 				handleRecordingComplete(message.videoDataUrl, message.durationMs);
+				sendResponse({ ok: true });
+			} else if (message.type === "RECORDER_READY") {
+				if (recorderReadyResolve) {
+					recorderReadyResolve();
+					recorderReadyResolve = null;
+				}
 				sendResponse({ ok: true });
 			}
 		},
@@ -209,6 +217,47 @@ async function closeOffscreenDocument(): Promise<void> {
 	}
 }
 
+let recorderReadyResolve: (() => void) | null = null;
+
+function waitForRecorderReady(): Promise<void> {
+	return new Promise((resolve) => {
+		recorderReadyResolve = resolve;
+	});
+}
+
+async function openRecorderWindow(): Promise<void> {
+	if (recorderWindowId !== null) {
+		try {
+			await browser.windows.remove(recorderWindowId);
+		} catch {
+			// Already closed
+		}
+	}
+
+	const getUrl = browser.runtime.getURL as (path: string) => string;
+	const win = await browser.windows.create({
+		url: getUrl("/recorder.html"),
+		type: "popup",
+		width: 1,
+		height: 1,
+		left: 0,
+		top: 0,
+		focused: false,
+	});
+	recorderWindowId = win?.id ?? null;
+}
+
+async function closeRecorderWindow(): Promise<void> {
+	if (recorderWindowId !== null) {
+		try {
+			await browser.windows.remove(recorderWindowId);
+		} catch {
+			// Already closed
+		}
+		recorderWindowId = null;
+	}
+}
+
 async function handleStartRecording(micEnabled: boolean): Promise<void> {
 	const { id: tabId, title, width, height } = await getActiveTab();
 	recordingTabId = tabId;
@@ -221,8 +270,18 @@ async function handleStartRecording(micEnabled: boolean): Promise<void> {
 		);
 	});
 
-	// Create offscreen document and initialize stream
-	await ensureOffscreenDocument();
+	// Use recorder window for mic-enabled recordings (offscreen documents
+	// cannot access real microphone devices via getUserMedia).
+	// For mic-disabled recordings, use the lighter offscreen document.
+	usingRecorderWindow = micEnabled;
+	if (micEnabled) {
+		await openRecorderWindow();
+		// Wait for the recorder page to signal it's ready
+		await waitForRecorderReady();
+	} else {
+		await ensureOffscreenDocument();
+	}
+
 	await sendToOffscreen({
 		type: "OFFSCREEN_START",
 		streamId,
@@ -248,6 +307,15 @@ async function handleCountdownDone(): Promise<void> {
 	}
 }
 
+async function closeRecordingContext(): Promise<void> {
+	if (usingRecorderWindow) {
+		await closeRecorderWindow();
+	} else {
+		await closeOffscreenDocument();
+	}
+	usingRecorderWindow = false;
+}
+
 async function handleRecordingComplete(
 	videoDataUrl: string,
 	durationMs: number,
@@ -255,7 +323,7 @@ async function handleRecordingComplete(
 	const tabId = recordingTabId;
 	recordingTabId = null;
 	recordingTabTitle = "";
-	await closeOffscreenDocument();
+	await closeRecordingContext();
 
 	if (tabId !== null) {
 		await sendToContentScript(tabId, {
@@ -270,7 +338,7 @@ async function handleRecordingCancelled(): Promise<void> {
 	const tabId = recordingTabId;
 	recordingTabId = null;
 	recordingTabTitle = "";
-	await closeOffscreenDocument();
+	await closeRecordingContext();
 
 	// Tell content script to remove control bar / countdown
 	if (tabId !== null) {
