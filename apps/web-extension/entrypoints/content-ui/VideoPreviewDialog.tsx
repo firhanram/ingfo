@@ -219,6 +219,17 @@ export function VideoPreviewDialog({
 
 				{/* Timeline & controls */}
 				<div className="border-t border-neutral-200 bg-surface px-6 py-4">
+					{/* Current timestamp */}
+					<div className="mb-3 flex items-center justify-center">
+						<span className="tabular-nums text-sm tracking-wide text-neutral-500">
+							<span className="font-semibold text-neutral-900">
+								{formatTime(currentTime * 1000)}
+							</span>
+							<span className="mx-1">/</span>
+							{formatTime(videoDuration * 1000)}
+						</span>
+					</div>
+
 					{/* Play button + timeline */}
 					<div className="flex items-center gap-3">
 						<button
@@ -279,12 +290,12 @@ export function VideoPreviewDialog({
 						</div>
 					</div>
 
-					{/* Duration info + download */}
+					{/* Trim info + download */}
 					<div className="mt-3 flex items-center justify-between">
-						<span className="text-xs text-neutral-500">
+						<span className="text-xs tabular-nums text-neutral-500">
 							{isTrimmed
-								? `Trimmed: ${formatTime(trimmedDuration * 1000)} / ${formatTime(videoDuration * 1000)}`
-								: formatTime(videoDuration * 1000)}
+								? `Trimmed to ${formatTime(trimmedDuration * 1000)}`
+								: ""}
 						</span>
 
 						<button
