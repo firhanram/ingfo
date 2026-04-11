@@ -89,6 +89,15 @@ function RecordSection() {
 	const [recordArea, setRecordArea] = useState("tab");
 	const [micEnabled, setMicEnabled] = useState(false);
 
+	async function handleRecord() {
+		await browser.runtime.sendMessage({
+			type: "START_RECORDING",
+			micEnabled,
+		} satisfies Message);
+
+		window.close();
+	}
+
 	return (
 		<section>
 			<h2 className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
@@ -97,6 +106,7 @@ function RecordSection() {
 			<div className="flex flex-col gap-2">
 				<button
 					type="button"
+					onClick={handleRecord}
 					className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-neutral-200 bg-surface-raised px-3.5 py-3 text-left transition-colors hover:bg-surface-sunken"
 				>
 					<Monitor className="size-[18px] text-accent-500" />

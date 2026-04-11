@@ -1,8 +1,14 @@
-import type { Message, Region } from "@/lib/messages";
+import type { Message, OffscreenMessage, Region } from "@/lib/messages";
+
+// --- Recording state ---
+let recordingTabId: number | null = null;
+let recordingTabTitle = "";
+let indicatorTabId: number | null = null;
 
 export default defineBackground(() => {
 	browser.runtime.onMessage.addListener(
-		(message: Message, _sender, sendResponse) => {
+		(message: Message | OffscreenMessage, _sender, sendResponse) => {
+			// --- Screenshot flow ---
 			if (message.type === "START_CAPTURE") {
 				handleStartCapture();
 				sendResponse({ ok: true });
@@ -12,17 +18,83 @@ export default defineBackground(() => {
 			} else if (message.type === "CANCEL_CAPTURE") {
 				sendResponse({ ok: true });
 			}
+
+			// --- Recording flow ---
+			else if (message.type === "START_RECORDING") {
+				handleStartRecording(message.micEnabled);
+				sendResponse({ ok: true });
+			} else if (message.type === "COUNTDOWN_DONE") {
+				handleCountdownDone();
+				sendResponse({ ok: true });
+			} else if (message.type === "COUNTDOWN_CANCELLED") {
+				handleRecordingCleanup();
+				sendResponse({ ok: true });
+			} else if (message.type === "PAUSE_RECORDING") {
+				sendToOffscreen({ type: "OFFSCREEN_PAUSE" });
+				sendResponse({ ok: true });
+			} else if (message.type === "RESUME_RECORDING") {
+				sendToOffscreen({ type: "OFFSCREEN_RESUME" });
+				sendResponse({ ok: true });
+			} else if (message.type === "TOGGLE_MIC") {
+				sendToOffscreen({ type: "OFFSCREEN_TOGGLE_MIC" });
+				sendResponse({ ok: true });
+			} else if (message.type === "STOP_RECORDING") {
+				sendToOffscreen({ type: "OFFSCREEN_STOP" });
+				sendResponse({ ok: true });
+			} else if (message.type === "CANCEL_RECORDING") {
+				sendToOffscreen({ type: "OFFSCREEN_CANCEL" });
+				handleRecordingCleanup();
+				sendResponse({ ok: true });
+			}
+
+			// --- Offscreen responses ---
+			else if (message.type === "OFFSCREEN_TIME_UPDATE") {
+				if (recordingTabId !== null) {
+					sendToContentScript(recordingTabId, {
+						type: "RECORDING_TIME_UPDATE",
+						elapsedMs: message.elapsedMs,
+						isPaused: message.isPaused,
+					});
+				}
+				sendResponse({ ok: true });
+			} else if (message.type === "OFFSCREEN_DATA_READY") {
+				handleRecordingComplete(message.videoDataUrl, message.durationMs);
+				sendResponse({ ok: true });
+			}
 		},
 	);
+
+	// Tab-lock: detect when user switches away from the recorded tab
+	browser.tabs.onActivated.addListener(async (activeInfo) => {
+		if (recordingTabId === null) return;
+
+		if (activeInfo.tabId !== recordingTabId) {
+			// Switched away — show indicator on the new tab
+			indicatorTabId = activeInfo.tabId;
+			await sendToContentScript(activeInfo.tabId, {
+				type: "TAB_RECORDING_ACTIVE",
+				recordingTabId,
+				tabTitle: recordingTabTitle,
+			});
+		} else if (indicatorTabId !== null) {
+			// Returned to recorded tab — clear indicator on the other tab
+			await sendToContentScript(indicatorTabId, {
+				type: "TAB_RECORDING_CLEARED",
+			});
+			indicatorTabId = null;
+		}
+	});
 });
 
-async function getActiveTab(): Promise<number> {
+// --- Helpers ---
+
+async function getActiveTab(): Promise<{ id: number; title: string }> {
 	const [tab] = await browser.tabs.query({
 		active: true,
 		currentWindow: true,
 	});
 	if (!tab?.id) throw new Error("No active tab found");
-	return tab.id;
+	return { id: tab.id, title: tab.title ?? "Tab" };
 }
 
 async function sendToContentScript(
@@ -37,14 +109,23 @@ async function sendToContentScript(
 			target: { tabId },
 			files: ["/content-scripts/content.js"],
 		});
-		// Small delay to let the content script initialize
 		await new Promise((resolve) => setTimeout(resolve, 100));
 		await browser.tabs.sendMessage(tabId, message);
 	}
 }
 
+async function sendToOffscreen(message: OffscreenMessage): Promise<void> {
+	try {
+		await browser.runtime.sendMessage(message);
+	} catch {
+		// Offscreen document may be closed
+	}
+}
+
+// --- Screenshot ---
+
 async function handleStartCapture(): Promise<void> {
-	const tabId = await getActiveTab();
+	const { id: tabId } = await getActiveTab();
 	await sendToContentScript(tabId, { type: "BEGIN_SELECTION" });
 }
 
@@ -52,7 +133,7 @@ async function handleSelectionResult(
 	region: Region | null,
 	devicePixelRatio: number,
 ): Promise<void> {
-	const tabId = await getActiveTab();
+	const { id: tabId } = await getActiveTab();
 
 	// Wait for overlay to be removed from the DOM before capturing
 	await new Promise((resolve) => setTimeout(resolve, 100));
@@ -62,7 +143,6 @@ async function handleSelectionResult(
 	});
 
 	let croppedDataUrl = fullDataUrl;
-
 	if (region) {
 		croppedDataUrl = await cropImage(fullDataUrl, region, devicePixelRatio);
 	}
@@ -81,7 +161,6 @@ async function cropImage(
 	const response = await fetch(dataUrl);
 	const blob = await response.blob();
 
-	// Scale coordinates by devicePixelRatio
 	const sx = Math.round(region.x * dpr);
 	const sy = Math.round(region.y * dpr);
 	const sw = Math.round(region.width * dpr);
@@ -107,4 +186,105 @@ function blobToDataUrl(blob: Blob): Promise<string> {
 		reader.onerror = reject;
 		reader.readAsDataURL(blob);
 	});
+}
+
+// --- Recording ---
+
+async function ensureOffscreenDocument(): Promise<void> {
+	const existingContexts = await chrome.runtime.getContexts({
+		contextTypes: ["OFFSCREEN_DOCUMENT"],
+	});
+
+	if (existingContexts.length > 0) return;
+
+	await chrome.offscreen.createDocument({
+		url: "/offscreen.html",
+		reasons: [chrome.offscreen.Reason.USER_MEDIA],
+		justification: "Tab recording with MediaRecorder",
+	});
+}
+
+async function closeOffscreenDocument(): Promise<void> {
+	try {
+		await chrome.offscreen.closeDocument();
+	} catch {
+		// Already closed
+	}
+}
+
+async function handleStartRecording(micEnabled: boolean): Promise<void> {
+	const { id: tabId, title } = await getActiveTab();
+	recordingTabId = tabId;
+	recordingTabTitle = title;
+
+	// Get stream ID for the tab
+	const streamId = await new Promise<string>((resolve) => {
+		chrome.tabCapture.getMediaStreamId({ targetTabId: tabId }, (id) =>
+			resolve(id),
+		);
+	});
+
+	// Create offscreen document and initialize stream
+	await ensureOffscreenDocument();
+	await sendToOffscreen({
+		type: "OFFSCREEN_START",
+		streamId,
+		micEnabled,
+	});
+
+	// Show countdown on the tab
+	await sendToContentScript(tabId, {
+		type: "BEGIN_COUNTDOWN",
+		micEnabled,
+	});
+}
+
+async function handleCountdownDone(): Promise<void> {
+	// Tell offscreen to start recording
+	await sendToOffscreen({ type: "OFFSCREEN_RECORD" });
+
+	// Tell content script to show control bar
+	if (recordingTabId !== null) {
+		await sendToContentScript(recordingTabId, { type: "RECORDING_STARTED" });
+	}
+}
+
+async function handleRecordingComplete(
+	videoDataUrl: string,
+	durationMs: number,
+): Promise<void> {
+	const tabId = recordingTabId;
+
+	// Clear indicator on other tabs
+	if (indicatorTabId !== null) {
+		await sendToContentScript(indicatorTabId, {
+			type: "TAB_RECORDING_CLEARED",
+		});
+		indicatorTabId = null;
+	}
+
+	recordingTabId = null;
+	recordingTabTitle = "";
+	await closeOffscreenDocument();
+
+	if (tabId !== null) {
+		await sendToContentScript(tabId, {
+			type: "RECORDING_COMPLETE",
+			videoDataUrl,
+			durationMs,
+		});
+	}
+}
+
+async function handleRecordingCleanup(): Promise<void> {
+	if (indicatorTabId !== null) {
+		await sendToContentScript(indicatorTabId, {
+			type: "TAB_RECORDING_CLEARED",
+		});
+		indicatorTabId = null;
+	}
+
+	recordingTabId = null;
+	recordingTabTitle = "";
+	await closeOffscreenDocument();
 }
