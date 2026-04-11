@@ -47,6 +47,11 @@ export function VideoPreviewDialog({
 	function handleLoadedMetadata() {
 		const video = videoRef.current;
 		if (!video) return;
+		// Lock aspect-ratio so the element box matches the content exactly,
+		// preventing the browser's intrinsic black video surface from showing.
+		if (video.videoWidth && video.videoHeight) {
+			video.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+		}
 		if (Number.isFinite(video.duration)) {
 			setVideoDuration(video.duration);
 			setTrimEnd(video.duration);
@@ -200,7 +205,7 @@ export function VideoPreviewDialog({
 				</button>
 
 				{/* Video player */}
-				<div className="flex-1 overflow-auto px-6 pt-15 pb-6">
+				<div className="min-h-0 overflow-auto px-6 pt-15 pb-6">
 					{/* biome-ignore lint/a11y/useMediaCaption: screen recording does not need captions */}
 					<video
 						ref={videoRef}
@@ -208,7 +213,7 @@ export function VideoPreviewDialog({
 						onLoadedMetadata={handleLoadedMetadata}
 						onTimeUpdate={handleTimeUpdate}
 						onEnded={() => setIsPlaying(false)}
-						className="mx-auto max-h-[60vh] max-w-full rounded-md bg-transparent"
+						className="mx-auto block max-h-[60vh] w-full rounded-md"
 					/>
 				</div>
 
