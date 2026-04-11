@@ -12,9 +12,14 @@ function formatTime(ms: number): string {
 
 interface RecordingControlBarProps {
 	micEnabled: boolean;
+	micPermission: PermissionState;
 }
 
-export function RecordingControlBar({ micEnabled }: RecordingControlBarProps) {
+export function RecordingControlBar({
+	micEnabled,
+	micPermission,
+}: RecordingControlBarProps) {
+	const micGranted = micPermission === "granted";
 	const { elapsedMs, isPaused } = useRecordingStore();
 
 	useMountEffect(() => {
@@ -73,11 +78,21 @@ export function RecordingControlBar({ micEnabled }: RecordingControlBarProps) {
 			{/* Mic toggle */}
 			<button
 				type="button"
-				onClick={handleToggleMic}
-				className="flex size-8 cursor-pointer items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white"
-				title={micEnabled ? "Mute microphone" : "Unmute microphone"}
+				onClick={micGranted ? handleToggleMic : undefined}
+				className={
+					micGranted
+						? "flex size-8 cursor-pointer items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white"
+						: "flex size-8 items-center justify-center rounded-full text-white/30 cursor-not-allowed"
+				}
+				title={
+					micGranted
+						? micEnabled
+							? "Mute microphone"
+							: "Unmute microphone"
+						: "Microphone permission not granted"
+				}
 			>
-				{micEnabled ? (
+				{micEnabled && micGranted ? (
 					<Mic className="size-4" />
 				) : (
 					<MicOff className="size-4" />

@@ -179,6 +179,17 @@ export default defineContentScript({
 			controlBarUi?.remove();
 			recordingStore.reset();
 
+			// Check mic permission for the control bar
+			let micPermission: PermissionState = "prompt";
+			try {
+				const status = await navigator.permissions.query({
+					name: "microphone" as PermissionName,
+				});
+				micPermission = status.state;
+			} catch {
+				// Permissions API unavailable — assume no permission
+			}
+
 			controlBarUi = await createShadowRootUi(ctx, {
 				name: "ingfo-recording-control-bar",
 				position: "overlay",
@@ -189,6 +200,7 @@ export default defineContentScript({
 					root.render(
 						createElement(RecordingControlBar, {
 							micEnabled,
+							micPermission,
 						}),
 					);
 					return root;

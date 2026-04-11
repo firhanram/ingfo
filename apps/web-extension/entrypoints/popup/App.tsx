@@ -8,7 +8,7 @@ import {
 	MicOff,
 	Monitor,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useMountEffect } from "@/hooks/use-mount-effect";
@@ -89,11 +89,34 @@ function ScreenshotSection() {
 function RecordSection() {
 	const [recordArea, setRecordArea] = useState("tab");
 	const [micEnabled, setMicEnabled] = useState(false);
+	const [micPermission, setMicPermission] = useState<PermissionState>("prompt");
+
+	useEffect(() => {
+		navigator.permissions
+			.query({ name: "microphone" as PermissionName })
+			.then((status) => {
+				setMicPermission(status.state);
+				status.onchange = () => setMicPermission(status.state);
+			});
+	}, []);
+
+	// Force mic off when permission not granted
+	const micGranted = micPermission === "granted";
+	const effectiveMicEnabled = micGranted && micEnabled;
+
+	function handleRequestMicPermission() {
+		// Extension popups can't trigger getUserMedia permission prompts,
+		// so open a dedicated extension page in a new tab where the
+		// browser will show the native permission dialog.
+		const getUrl = browser.runtime.getURL as (path: string) => string;
+		browser.tabs.create({ url: getUrl("/mic-permission.html") });
+		window.close();
+	}
 
 	async function handleRecord() {
 		await browser.runtime.sendMessage({
 			type: "START_RECORDING",
-			micEnabled,
+			micEnabled: effectiveMicEnabled,
 		} satisfies Message);
 
 		window.close();
@@ -145,35 +168,55 @@ function RecordSection() {
 					</div>
 				</div>
 
-				<div className="flex items-center gap-2 px-3.5 py-2.5">
-					<span className="text-sm text-neutral-500">Microphone</span>
-					<div className="ml-auto">
-						<ToggleGroup
-							type="single"
-							value={micEnabled ? "on" : "off"}
-							onValueChange={(v) => {
-								if (v) setMicEnabled(v === "on");
-							}}
-							variant="outline"
-						>
-							<ToggleGroupItem
-								value="off"
-								size="sm"
-								className={toggleActiveClass}
-							>
-								<MicOff className="size-3.5" />
-								Off
-							</ToggleGroupItem>
-							<ToggleGroupItem
-								value="on"
-								size="sm"
-								className={toggleActiveClass}
-							>
-								<Mic className="size-3.5" />
-								On
-							</ToggleGroupItem>
-						</ToggleGroup>
+				<div className="flex flex-col gap-1.5 px-3.5 py-2.5">
+					<div className="flex items-center gap-2">
+						<span className="text-sm text-neutral-500">Microphone</span>
+						<div className="ml-auto">
+							{micGranted ? (
+								<ToggleGroup
+									type="single"
+									value={micEnabled ? "on" : "off"}
+									onValueChange={(v) => {
+										if (v) setMicEnabled(v === "on");
+									}}
+									variant="outline"
+								>
+									<ToggleGroupItem
+										value="off"
+										size="sm"
+										className={toggleActiveClass}
+									>
+										<MicOff className="size-3.5" />
+										Off
+									</ToggleGroupItem>
+									<ToggleGroupItem
+										value="on"
+										size="sm"
+										className={toggleActiveClass}
+									>
+										<Mic className="size-3.5" />
+										On
+									</ToggleGroupItem>
+								</ToggleGroup>
+							) : (
+								<button
+									type="button"
+									onClick={handleRequestMicPermission}
+									className="flex cursor-pointer items-center gap-1.5 rounded-md border border-accent-200 bg-accent-50 px-3 py-1.5 text-xs font-medium text-accent-600 transition-colors hover:bg-accent-100"
+								>
+									<Mic className="size-3" />
+									Allow Mic
+								</button>
+							)}
+						</div>
 					</div>
+					{!micGranted && (
+						<p className="text-[11px] text-neutral-400">
+							{micPermission === "denied"
+								? "Microphone access was denied. Check browser settings."
+								: "Microphone permission required to record audio"}
+						</p>
+					)}
 				</div>
 			</div>
 		</section>
