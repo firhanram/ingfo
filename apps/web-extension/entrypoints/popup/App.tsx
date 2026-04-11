@@ -104,6 +104,15 @@ function RecordSection() {
 			setSelectedMicLabel(match.label || `Mic ${deviceId.slice(0, 6)}`);
 	}, []);
 
+	// Restore persisted mic toggle state
+	useEffect(() => {
+		browser.storage.local.get("micEnabled").then((stored) => {
+			if (typeof stored.micEnabled === "boolean") {
+				setMicEnabled(stored.micEnabled);
+			}
+		});
+	}, []);
+
 	useEffect(() => {
 		navigator.permissions
 			.query({ name: "microphone" as PermissionName })
@@ -194,7 +203,11 @@ function RecordSection() {
 									type="single"
 									value={micEnabled ? "on" : "off"}
 									onValueChange={(v) => {
-										if (v) setMicEnabled(v === "on");
+										if (v) {
+											const enabled = v === "on";
+											setMicEnabled(enabled);
+											browser.storage.local.set({ micEnabled: enabled });
+										}
 									}}
 									variant="outline"
 								>
