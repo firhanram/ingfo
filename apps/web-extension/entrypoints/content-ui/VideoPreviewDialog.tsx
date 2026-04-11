@@ -244,27 +244,39 @@ export function VideoPreviewDialog({
 							)}
 						</button>
 
-						{/* Track */}
-						{/* biome-ignore lint/a11y/noStaticElementInteractions: timeline scrub area requires mousedown for drag-to-seek */}
-						<div
-							ref={trackRef}
-							onMouseDown={handleScrubStart}
-							className="relative h-8 flex-1 cursor-pointer rounded-md bg-neutral-100"
-						>
-							{/* Trimmed region highlight */}
+						{/* Trim track wrapper — handles sit outside the waveform area */}
+						<div className="relative h-10 flex-1">
+							{/* Waveform / scrub area */}
+							{/* biome-ignore lint/a11y/noStaticElementInteractions: timeline scrub area requires mousedown for drag-to-seek */}
 							<div
-								className="absolute inset-y-0 rounded-md bg-accent-200/50"
-								style={{
-									left: `${startPercent}%`,
-									width: `${endPercent - startPercent}%`,
-								}}
-							/>
+								ref={trackRef}
+								onMouseDown={handleScrubStart}
+								className="absolute inset-y-0 right-4 left-4 cursor-pointer rounded-md bg-neutral-100"
+							>
+								{/* Trimmed region highlight */}
+								<div
+									className="absolute inset-y-0 bg-accent-100/60"
+									style={{
+										left: `${startPercent}%`,
+										width: `${endPercent - startPercent}%`,
+									}}
+								/>
 
-							{/* Playback position */}
-							<div
-								className="absolute inset-y-0 w-0.5 bg-neutral-800"
-								style={{ left: `${currentPercent}%` }}
-							/>
+								{/* Trimmed region top/bottom border */}
+								<div
+									className="pointer-events-none absolute inset-y-0 border-y-2 border-accent-400"
+									style={{
+										left: `${startPercent}%`,
+										width: `${endPercent - startPercent}%`,
+									}}
+								/>
+
+								{/* Playback position */}
+								<div
+									className="absolute inset-y-0 w-0.5 bg-neutral-800"
+									style={{ left: `${currentPercent}%` }}
+								/>
+							</div>
 
 							{/* Trim start handle */}
 							<div
@@ -273,9 +285,16 @@ export function VideoPreviewDialog({
 								aria-valuenow={trimStart}
 								tabIndex={0}
 								onMouseDown={(e) => handleTrimHandleMouseDown(e, "start")}
-								className="absolute inset-y-0 w-2 cursor-col-resize rounded-l-md bg-accent-500 transition-colors hover:bg-accent-600"
-								style={{ left: `calc(${startPercent}% - 4px)` }}
-							/>
+								className="absolute inset-y-0 flex w-4 cursor-col-resize items-center justify-center rounded-l-lg bg-accent-400 transition-colors hover:bg-accent-500"
+								style={{
+									left: `calc(${startPercent}% * (100% - 32px) / 100%)`,
+								}}
+							>
+								<div className="flex gap-0.5">
+									<div className="h-4 w-px rounded-full bg-white/70" />
+									<div className="h-4 w-px rounded-full bg-white/70" />
+								</div>
+							</div>
 
 							{/* Trim end handle */}
 							<div
@@ -284,9 +303,16 @@ export function VideoPreviewDialog({
 								aria-valuenow={trimEnd}
 								tabIndex={0}
 								onMouseDown={(e) => handleTrimHandleMouseDown(e, "end")}
-								className="absolute inset-y-0 w-2 cursor-col-resize rounded-r-md bg-accent-500 transition-colors hover:bg-accent-600"
-								style={{ left: `${endPercent}%` }}
-							/>
+								className="absolute inset-y-0 flex w-4 cursor-col-resize items-center justify-center rounded-r-lg bg-accent-400 transition-colors hover:bg-accent-500"
+								style={{
+									left: `calc(16px + ${endPercent}% * (100% - 32px) / 100%)`,
+								}}
+							>
+								<div className="flex gap-0.5">
+									<div className="h-4 w-px rounded-full bg-white/70" />
+									<div className="h-4 w-px rounded-full bg-white/70" />
+								</div>
+							</div>
 						</div>
 					</div>
 
