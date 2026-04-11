@@ -1,5 +1,5 @@
 import { Download, Pause, Play, X } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
 
 interface VideoPreviewDialogProps {
@@ -22,13 +22,19 @@ export function VideoPreviewDialog({
 }: VideoPreviewDialogProps) {
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const trackRef = useRef<HTMLDivElement>(null);
+	const isScrubbing = useRef(false);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [videoDuration, setVideoDuration] = useState(durationMs / 1000);
 	const [trimStart, setTrimStart] = useState(0);
 	const [trimEnd, setTrimEnd] = useState(durationMs / 1000);
-	const [, setDragging] = useState<"start" | "end" | null>(null);
 	const [isExporting, setIsExporting] = useState(false);
+
+	// Refs to avoid stale closures in event handlers
+	const trimStartRef = useRef(trimStart);
+	trimStartRef.current = trimStart;
+	const trimEndRef = useRef(trimEnd);
+	trimEndRef.current = trimEnd;
 
 	useMountEffect(() => {
 		function handleKeyDown(e: KeyboardEvent) {
@@ -38,28 +44,28 @@ export function VideoPreviewDialog({
 		return () => document.removeEventListener("keydown", handleKeyDown);
 	});
 
-	const handleLoadedMetadata = useCallback(() => {
+	function handleLoadedMetadata() {
 		const video = videoRef.current;
 		if (!video) return;
-		// Use actual video duration if available (more accurate than durationMs)
 		if (Number.isFinite(video.duration)) {
 			setVideoDuration(video.duration);
 			setTrimEnd(video.duration);
 		}
-	}, []);
+	}
 
-	const handleTimeUpdate = useCallback(() => {
+	function handleTimeUpdate() {
 		const video = videoRef.current;
-		if (!video) return;
+		if (!video || isScrubbing.current) return;
 		setCurrentTime(video.currentTime);
 
 		// Stop at trim end
-		if (video.currentTime >= trimEnd) {
+		if (video.currentTime >= trimEndRef.current) {
 			video.pause();
 			setIsPlaying(false);
-			video.currentTime = trimStart;
+			video.currentTime = trimStartRef.current;
+			setCurrentTime(trimStartRef.current);
 		}
-	}, [trimEnd, trimStart]);
+	}
 
 	function handlePlayPause() {
 		const video = videoRef.current;
@@ -69,7 +75,6 @@ export function VideoPreviewDialog({
 			video.pause();
 			setIsPlaying(false);
 		} else {
-			// Start from trim start if at the end
 			if (video.currentTime >= trimEnd || video.currentTime < trimStart) {
 				video.currentTime = trimStart;
 			}
@@ -86,22 +91,62 @@ export function VideoPreviewDialog({
 		return (x / rect.width) * videoDuration;
 	}
 
-	function handleTrackMouseDown(e: React.MouseEvent, handle: "start" | "end") {
+	// Scrub playback position by dragging on the track
+	function handleScrubStart(e: React.MouseEvent) {
+		e.preventDefault();
+		const video = videoRef.current;
+		if (!video) return;
+
+		const wasPlaying = !video.paused;
+		if (wasPlaying) video.pause();
+		isScrubbing.current = true;
+
+		function seekTo(mouseEvent: React.MouseEvent | MouseEvent) {
+			const time = getTimeFromMouseEvent(mouseEvent);
+			const clamped = Math.max(
+				trimStartRef.current,
+				Math.min(time, trimEndRef.current),
+			);
+			// biome-ignore lint/style/noNonNullAssertion: video is checked above
+			videoRef.current!.currentTime = clamped;
+			setCurrentTime(clamped);
+		}
+
+		seekTo(e);
+
+		function onMouseMove(moveEvent: MouseEvent) {
+			seekTo(moveEvent);
+		}
+
+		function onMouseUp() {
+			isScrubbing.current = false;
+			document.removeEventListener("mousemove", onMouseMove);
+			document.removeEventListener("mouseup", onMouseUp);
+			if (wasPlaying) videoRef.current?.play();
+		}
+
+		document.addEventListener("mousemove", onMouseMove);
+		document.addEventListener("mouseup", onMouseUp);
+	}
+
+	// Drag trim handles
+	function handleTrimHandleMouseDown(
+		e: React.MouseEvent,
+		handle: "start" | "end",
+	) {
 		e.preventDefault();
 		e.stopPropagation();
-		setDragging(handle);
 
 		function onMouseMove(moveEvent: MouseEvent) {
 			const time = getTimeFromMouseEvent(moveEvent);
 			if (handle === "start") {
-				setTrimStart(Math.min(time, trimEnd - 0.5));
+				setTrimStart(Math.min(time, trimEndRef.current - 0.5));
 			} else {
-				setTrimEnd(Math.max(time, trimStart + 0.5));
+				setTrimEnd(Math.max(time, trimStartRef.current + 0.5));
 			}
 		}
 
 		function onMouseUp() {
-			setDragging(null);
 			document.removeEventListener("mousemove", onMouseMove);
 			document.removeEventListener("mouseup", onMouseUp);
 		}
@@ -184,8 +229,10 @@ export function VideoPreviewDialog({
 						</button>
 
 						{/* Track */}
+						{/* biome-ignore lint/a11y/noStaticElementInteractions: timeline scrub area requires mousedown for drag-to-seek */}
 						<div
 							ref={trackRef}
+							onMouseDown={handleScrubStart}
 							className="relative h-8 flex-1 cursor-pointer rounded-md bg-neutral-100"
 						>
 							{/* Trimmed region highlight */}
@@ -209,7 +256,7 @@ export function VideoPreviewDialog({
 								aria-label="Trim start"
 								aria-valuenow={trimStart}
 								tabIndex={0}
-								onMouseDown={(e) => handleTrackMouseDown(e, "start")}
+								onMouseDown={(e) => handleTrimHandleMouseDown(e, "start")}
 								className="absolute inset-y-0 w-2 cursor-col-resize rounded-l-md bg-accent-500 transition-colors hover:bg-accent-600"
 								style={{ left: `calc(${startPercent}% - 4px)` }}
 							/>
@@ -220,7 +267,7 @@ export function VideoPreviewDialog({
 								aria-label="Trim end"
 								aria-valuenow={trimEnd}
 								tabIndex={0}
-								onMouseDown={(e) => handleTrackMouseDown(e, "end")}
+								onMouseDown={(e) => handleTrimHandleMouseDown(e, "end")}
 								className="absolute inset-y-0 w-2 cursor-col-resize rounded-r-md bg-accent-500 transition-colors hover:bg-accent-600"
 								style={{ left: `${endPercent}%` }}
 							/>
