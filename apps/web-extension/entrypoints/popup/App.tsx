@@ -1,4 +1,12 @@
-import { Camera, Ellipsis, Globe, House, MicOff, Monitor } from "lucide-react";
+import {
+	Camera,
+	Ellipsis,
+	Globe,
+	House,
+	Mic,
+	MicOff,
+	Monitor,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -79,6 +87,7 @@ function ScreenshotSection() {
 
 function RecordSection() {
 	const [recordArea, setRecordArea] = useState("tab");
+	const [micEnabled, setMicEnabled] = useState(false);
 
 	return (
 		<section>
@@ -90,17 +99,13 @@ function RecordSection() {
 					type="button"
 					className="flex w-full cursor-pointer items-center gap-3 rounded-lg border border-neutral-200 bg-surface-raised px-3.5 py-3 text-left transition-colors hover:bg-surface-sunken"
 				>
-					<Monitor className="size-[18px] text-neutral-400" />
-					<span className="flex-1 text-sm font-medium text-neutral-900">
+					<Monitor className="size-[18px] text-accent-500" />
+					<span className="text-sm font-medium text-neutral-900">
 						Record Tab
-					</span>
-					<span className="flex items-center gap-1 text-xs text-neutral-400">
-						<MicOff className="size-3.5" />
-						Off
 					</span>
 				</button>
 
-				<div className="flex items-center gap-2 rounded-lg border border-neutral-200 px-3.5 py-2.5">
+				<div className="flex items-center gap-2 px-3.5 py-2.5">
 					<span className="text-sm text-neutral-500">Area</span>
 					<div className="ml-auto">
 						<ToggleGroup
@@ -124,6 +129,37 @@ function RecordSection() {
 								className={toggleActiveClass}
 							>
 								Desktop
+							</ToggleGroupItem>
+						</ToggleGroup>
+					</div>
+				</div>
+
+				<div className="flex items-center gap-2 px-3.5 py-2.5">
+					<span className="text-sm text-neutral-500">Microphone</span>
+					<div className="ml-auto">
+						<ToggleGroup
+							type="single"
+							value={micEnabled ? "on" : "off"}
+							onValueChange={(v) => {
+								if (v) setMicEnabled(v === "on");
+							}}
+							variant="outline"
+						>
+							<ToggleGroupItem
+								value="off"
+								size="sm"
+								className={toggleActiveClass}
+							>
+								<MicOff className="size-3.5" />
+								Off
+							</ToggleGroupItem>
+							<ToggleGroupItem
+								value="on"
+								size="sm"
+								className={toggleActiveClass}
+							>
+								<Mic className="size-3.5" />
+								On
 							</ToggleGroupItem>
 						</ToggleGroup>
 					</div>
