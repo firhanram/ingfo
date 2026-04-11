@@ -54,10 +54,14 @@ function cleanupStreams() {
 async function handleStart(
 	streamId: string,
 	micEnabled: boolean,
+	tabWidth: number,
+	tabHeight: number,
 ): Promise<void> {
 	cleanupStreams();
 
-	// Get tab media stream using the stream ID from tabCapture
+	// Get tab media stream using the stream ID from tabCapture.
+	// Constrain to the tab's actual viewport size to avoid aspect-ratio
+	// mismatch that causes black letterboxing in the recorded video.
 	mediaStream = await navigator.mediaDevices.getUserMedia({
 		audio: {
 			mandatory: {
@@ -69,6 +73,8 @@ async function handleStart(
 			mandatory: {
 				chromeMediaSource: "tab",
 				chromeMediaSourceId: streamId,
+				maxWidth: tabWidth,
+				maxHeight: tabHeight,
 			},
 		} as MediaTrackConstraints,
 	});
@@ -197,7 +203,12 @@ browser.runtime.onMessage.addListener(
 
 		switch (message.type) {
 			case "OFFSCREEN_START":
-				handleStart(message.streamId, message.micEnabled).then(() => {
+				handleStart(
+					message.streamId,
+					message.micEnabled,
+					message.tabWidth,
+					message.tabHeight,
+				).then(() => {
 					respond({ ok: true });
 				});
 				return true; // async response

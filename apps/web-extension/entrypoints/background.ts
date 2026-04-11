@@ -75,13 +75,23 @@ export default defineBackground(() => {
 
 // --- Helpers ---
 
-async function getActiveTab(): Promise<{ id: number; title: string }> {
+async function getActiveTab(): Promise<{
+	id: number;
+	title: string;
+	width: number;
+	height: number;
+}> {
 	const [tab] = await browser.tabs.query({
 		active: true,
 		currentWindow: true,
 	});
 	if (!tab?.id) throw new Error("No active tab found");
-	return { id: tab.id, title: tab.title ?? "Tab" };
+	return {
+		id: tab.id,
+		title: tab.title ?? "Tab",
+		width: tab.width ?? 1920,
+		height: tab.height ?? 1080,
+	};
 }
 
 async function sendToContentScript(
@@ -200,7 +210,7 @@ async function closeOffscreenDocument(): Promise<void> {
 }
 
 async function handleStartRecording(micEnabled: boolean): Promise<void> {
-	const { id: tabId, title } = await getActiveTab();
+	const { id: tabId, title, width, height } = await getActiveTab();
 	recordingTabId = tabId;
 	recordingTabTitle = title;
 
@@ -217,6 +227,8 @@ async function handleStartRecording(micEnabled: boolean): Promise<void> {
 		type: "OFFSCREEN_START",
 		streamId,
 		micEnabled,
+		tabWidth: width,
+		tabHeight: height,
 	});
 
 	// Show countdown on the tab

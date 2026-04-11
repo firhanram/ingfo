@@ -52,7 +52,13 @@ export type Message =
 // --- Offscreen messages (background ↔ offscreen document) ---
 
 export type OffscreenMessage =
-	| { type: "OFFSCREEN_START"; streamId: string; micEnabled: boolean }
+	| {
+			type: "OFFSCREEN_START";
+			streamId: string;
+			micEnabled: boolean;
+			tabWidth: number;
+			tabHeight: number;
+	  }
 	| { type: "OFFSCREEN_RECORD" }
 	| { type: "OFFSCREEN_PAUSE" }
 	| { type: "OFFSCREEN_RESUME" }
