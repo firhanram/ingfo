@@ -1,4 +1,5 @@
 import { Mic, MicOff, Pause, Play, Square } from "lucide-react";
+import { useState } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
 import { useRecordingStore } from "@/hooks/use-recording-store";
 import type { Message } from "@/lib/messages";
@@ -16,10 +17,11 @@ interface RecordingControlBarProps {
 }
 
 export function RecordingControlBar({
-	micEnabled,
+	micEnabled: initialMicEnabled,
 	micPermission,
 }: RecordingControlBarProps) {
 	const micGranted = micPermission === "granted";
+	const [micEnabled, setMicEnabled] = useState(initialMicEnabled);
 	const { elapsedMs, isPaused } = useRecordingStore();
 
 	useMountEffect(() => {
@@ -41,6 +43,7 @@ export function RecordingControlBar({
 	}
 
 	function handleToggleMic() {
+		setMicEnabled((prev) => !prev);
 		browser.runtime.sendMessage({
 			type: "TOGGLE_MIC",
 		} satisfies Message);
