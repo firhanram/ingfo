@@ -5,7 +5,14 @@ import { defineConfig } from "wxt";
 export default defineConfig({
 	modules: ["@wxt-dev/module-react"],
 	manifest: {
-		permissions: ["activeTab", "tabs", "scripting", "tabCapture", "offscreen"],
+		permissions: [
+			"activeTab",
+			"tabs",
+			"scripting",
+			"tabCapture",
+			"offscreen",
+			"storage",
+		],
 	},
 	vite: () => ({
 		plugins: [tailwindcss()],

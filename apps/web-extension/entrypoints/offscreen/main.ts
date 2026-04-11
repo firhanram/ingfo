@@ -82,8 +82,10 @@ async function handleStart(
 	// If mic enabled, get mic stream and mix audio
 	if (micEnabled) {
 		try {
+			const stored = await browser.storage.local.get("selectedMicDeviceId");
+			const deviceId = stored.selectedMicDeviceId as string | undefined;
 			micStream = await navigator.mediaDevices.getUserMedia({
-				audio: true,
+				audio: deviceId ? { deviceId: { exact: deviceId } } : true,
 			});
 		} catch {
 			// Mic unavailable — continue without it

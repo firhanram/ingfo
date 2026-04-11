@@ -8,7 +8,7 @@ import {
 	MicOff,
 	Monitor,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useMountEffect } from "@/hooks/use-mount-effect";
@@ -90,15 +90,32 @@ function RecordSection() {
 	const [recordArea, setRecordArea] = useState("tab");
 	const [micEnabled, setMicEnabled] = useState(false);
 	const [micPermission, setMicPermission] = useState<PermissionState>("prompt");
+	const [selectedMicLabel, setSelectedMicLabel] = useState<string | null>(null);
+
+	const loadSelectedMicLabel = useCallback(async () => {
+		const stored = await browser.storage.local.get("selectedMicDeviceId");
+		const deviceId = stored.selectedMicDeviceId as string | undefined;
+		if (!deviceId) return;
+		const allDevices = await navigator.mediaDevices.enumerateDevices();
+		const match = allDevices.find(
+			(d) => d.kind === "audioinput" && d.deviceId === deviceId,
+		);
+		if (match)
+			setSelectedMicLabel(match.label || `Mic ${deviceId.slice(0, 6)}`);
+	}, []);
 
 	useEffect(() => {
 		navigator.permissions
 			.query({ name: "microphone" as PermissionName })
 			.then((status) => {
 				setMicPermission(status.state);
-				status.onchange = () => setMicPermission(status.state);
+				if (status.state === "granted") loadSelectedMicLabel();
+				status.onchange = () => {
+					setMicPermission(status.state);
+					if (status.state === "granted") loadSelectedMicLabel();
+				};
 			});
-	}, []);
+	}, [loadSelectedMicLabel]);
 
 	// Force mic off when permission not granted
 	const micGranted = micPermission === "granted";
@@ -216,6 +233,16 @@ function RecordSection() {
 								? "Microphone access was denied. Check browser settings."
 								: "Microphone permission required to record audio"}
 						</p>
+					)}
+					{micGranted && selectedMicLabel && (
+						<button
+							type="button"
+							onClick={handleRequestMicPermission}
+							className="flex cursor-pointer items-center gap-1.5 truncate rounded-md border-none bg-transparent px-0 text-[11px] text-neutral-400 transition-colors hover:text-accent-500"
+						>
+							<Mic className="size-3 shrink-0" />
+							<span className="truncate">{selectedMicLabel}</span>
+						</button>
 					)}
 				</div>
 			</div>
