@@ -14,7 +14,7 @@ import { useMountEffect } from "@/hooks/use-mount-effect";
 import type { Message } from "@/lib/messages";
 
 const toggleActiveClass =
-	"cursor-pointer data-[state=on]:bg-accent-400 data-[state=on]:text-white data-[state=on]:border-accent-400 data-[state=on]:hover:bg-accent-500";
+	"cursor-pointer data-[state=on]:bg-accent-400 data-[state=on]:text-white data-[state=on]:hover:bg-accent-500";
 
 function Header() {
 	return (
