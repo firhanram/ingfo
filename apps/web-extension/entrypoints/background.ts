@@ -409,6 +409,22 @@ async function handleStartRecording(
 		language: navigator.language,
 	};
 
+	// Attach debugger early so the infobar is already visible when we
+	// measure the tab dimensions.  This prevents an aspect-ratio mismatch
+	// (black bars) caused by the banner shrinking the viewport after the
+	// stream constraints are set.
+	await startNetworkCapture(tabId, (entry) => {
+		metadataEvents.push(entry as MetadataEvent);
+	});
+
+	// Wait for the debugger infobar to render before re-measuring
+	await new Promise((resolve) => setTimeout(resolve, 200));
+
+	// Re-measure tab dimensions now that the debugger banner is showing
+	const postDebuggerTab = await browser.tabs.get(tabId);
+	const adjustedWidth = postDebuggerTab.width ?? width;
+	const adjustedHeight = postDebuggerTab.height ?? height;
+
 	if (recordArea === "desktop") {
 		// Desktop recording: use offscreen document with DISPLAY_MEDIA reason.
 		// getDisplayMedia() works without user gesture from offscreen documents,
@@ -420,8 +436,8 @@ async function handleStartRecording(
 			type: "OFFSCREEN_START",
 			streamId: "",
 			micEnabled,
-			tabWidth: width,
-			tabHeight: height,
+			tabWidth: adjustedWidth,
+			tabHeight: adjustedHeight,
 			recordArea,
 		});
 
@@ -449,8 +465,8 @@ async function handleStartRecording(
 			type: "OFFSCREEN_START",
 			streamId,
 			micEnabled,
-			tabWidth: width,
-			tabHeight: height,
+			tabWidth: adjustedWidth,
+			tabHeight: adjustedHeight,
 			recordArea,
 		});
 
@@ -504,9 +520,8 @@ async function handleRecordingTabReloaded(tabId: number): Promise<void> {
 }
 
 async function handleCountdownDone(): Promise<void> {
-	// Start metadata capture before recording begins
+	// Inject console interceptor (network capture already started in handleStartRecording)
 	if (recordingTabId !== null) {
-		// Inject console interceptor into the page's main world
 		try {
 			await chrome.scripting.executeScript({
 				target: { tabId: recordingTabId },
@@ -516,11 +531,6 @@ async function handleCountdownDone(): Promise<void> {
 		} catch (err) {
 			console.warn("[ingfo] Failed to inject console interceptor:", err);
 		}
-
-		// Start network capture via chrome.debugger
-		await startNetworkCapture(recordingTabId, (entry) => {
-			metadataEvents.push(entry as MetadataEvent);
-		});
 	}
 
 	// Tell offscreen to start recording
