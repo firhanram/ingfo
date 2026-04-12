@@ -176,7 +176,7 @@ const networkEvents = visibleEvents.filter(e => e.type === "network");
 const consoleEvents = visibleEvents.filter(e => e.type === "console");
 ```
 
-### Recommended UI Layout (jam.dev style)
+### Recommended UI Layout
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -210,13 +210,11 @@ For the web app, metadata and video can be:
 
 ### Event Format Compatibility
 
-The metadata format is designed to be compatible with jam.dev's approach:
-- Events are an array of timestamped entries (like jam.json)
+The metadata format uses a straightforward structure:
+- Events are an array of timestamped entries
 - Network entries include full request/response details
 - Console entries include level, args, and trace
 - `elapsedMs` enables video synchronization
-
-This makes it straightforward to adopt rrweb-player or build a custom replay UI.
 
 ## Key Files
 
