@@ -1,10 +1,12 @@
-import { Download, Pause, Play, X } from "lucide-react";
+import { Download, FileJson, Pause, Play, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
+import type { RecordingMetadata } from "@/lib/metadata-types";
 
 interface VideoPreviewDialogProps {
 	videoDataUrl: string;
 	durationMs: number;
+	metadata: RecordingMetadata;
 	onClose: () => void;
 }
 
@@ -18,6 +20,7 @@ function formatTime(ms: number): string {
 export function VideoPreviewDialog({
 	videoDataUrl,
 	durationMs,
+	metadata,
 	onClose,
 }: VideoPreviewDialogProps) {
 	const videoRef = useRef<HTMLVideoElement>(null);
@@ -324,15 +327,37 @@ export function VideoPreviewDialog({
 								: ""}
 						</span>
 
-						<button
-							type="button"
-							onClick={handleDownload}
-							disabled={isExporting}
-							className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500 disabled:cursor-not-allowed disabled:opacity-50"
-						>
-							<Download size={16} />
-							{isExporting ? "Exporting..." : "Download"}
-						</button>
+						<div className="flex items-center gap-2">
+							<button
+								type="button"
+								onClick={() => {
+									const json = JSON.stringify(metadata, null, 2);
+									const blob = new Blob([json], {
+										type: "application/json",
+									});
+									const url = URL.createObjectURL(blob);
+									const link = document.createElement("a");
+									link.href = url;
+									link.download = `recording-metadata-${Date.now()}.json`;
+									link.click();
+									URL.revokeObjectURL(url);
+								}}
+								className="flex cursor-pointer items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+							>
+								<FileJson size={16} />
+								Metadata
+							</button>
+
+							<button
+								type="button"
+								onClick={handleDownload}
+								disabled={isExporting}
+								className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500 disabled:cursor-not-allowed disabled:opacity-50"
+							>
+								<Download size={16} />
+								{isExporting ? "Exporting..." : "Download"}
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>

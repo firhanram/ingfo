@@ -1,6 +1,8 @@
 import { createElement } from "react";
 import ReactDOM from "react-dom/client";
+import { setupConsoleListener } from "@/lib/console-interceptor";
 import type { Message } from "@/lib/messages";
+import type { RecordingMetadata } from "@/lib/metadata-types";
 import { recordingStore } from "@/lib/recording-store";
 import { CountdownOverlay } from "./content-ui/CountdownOverlay";
 import { PreviewDialog } from "./content-ui/PreviewDialog";
@@ -57,6 +59,9 @@ export default defineContentScript({
 
 		// Track mic state for control bar re-renders
 		let micEnabled = false;
+
+		// Console listener cleanup
+		let removeConsoleListener: (() => void) | null = null;
 
 		// --- Screenshot mounting ---
 
@@ -209,7 +214,11 @@ export default defineContentScript({
 			controlBarUi.mount();
 		}
 
-		async function mountVideoPreview(videoDataUrl: string, durationMs: number) {
+		async function mountVideoPreview(
+			videoDataUrl: string,
+			durationMs: number,
+			metadata: RecordingMetadata,
+		) {
 			videoPreviewUi?.remove();
 
 			videoPreviewUi = await createShadowRootUi(ctx, {
@@ -223,6 +232,7 @@ export default defineContentScript({
 						createElement(VideoPreviewDialog, {
 							videoDataUrl,
 							durationMs,
+							metadata,
 							onClose() {
 								videoPreviewUi?.remove();
 								videoPreviewUi = null;
@@ -260,6 +270,10 @@ export default defineContentScript({
 					mountCountdownOverlay(message.micEnabled);
 					sendResponse({ ok: true });
 				} else if (message.type === "RECORDING_STARTED") {
+					// Start forwarding console events to background
+					removeConsoleListener = setupConsoleListener((msg) => {
+						browser.runtime.sendMessage(msg satisfies Message);
+					});
 					mountControlBar();
 					sendResponse({ ok: true });
 				} else if (message.type === "RECORDING_TIME_UPDATE") {
@@ -269,11 +283,19 @@ export default defineContentScript({
 					});
 					sendResponse({ ok: true });
 				} else if (message.type === "RECORDING_COMPLETE") {
+					removeConsoleListener?.();
+					removeConsoleListener = null;
 					controlBarUi?.remove();
 					controlBarUi = null;
-					mountVideoPreview(message.videoDataUrl, message.durationMs);
+					mountVideoPreview(
+						message.videoDataUrl,
+						message.durationMs,
+						message.metadata,
+					);
 					sendResponse({ ok: true });
 				} else if (message.type === "RECORDING_CANCELLED") {
+					removeConsoleListener?.();
+					removeConsoleListener = null;
 					countdownUi?.remove();
 					countdownUi = null;
 					controlBarUi?.remove();

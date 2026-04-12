@@ -1,10 +1,30 @@
+import {
+	consoleCleanupFunction,
+	consoleInjectorFunction,
+} from "@/lib/console-interceptor";
 import type { Message, OffscreenMessage, Region } from "@/lib/messages";
+import type {
+	BrowserInfo,
+	MetadataEvent,
+	RecordingMetadata,
+} from "@/lib/metadata-types";
+import {
+	startNetworkCapture,
+	stopNetworkCapture,
+} from "@/lib/network-interceptor";
 
 // --- Recording state ---
 let recordingTabId: number | null = null;
 let recordingTabTitle = "";
 let recorderWindowId: number | null = null;
 let usingRecorderWindow = false;
+
+// --- Metadata state ---
+let metadataEvents: MetadataEvent[] = [];
+let recordingStartTimeMs = 0;
+let browserInfo: BrowserInfo | null = null;
+let pauseIntervals: { pausedAt: number; resumedAt: number }[] = [];
+let currentPauseStart: number | null = null;
 
 export default defineBackground(() => {
 	browser.runtime.onMessage.addListener(
@@ -40,9 +60,17 @@ export default defineBackground(() => {
 				handleRecordingCancelled();
 				sendResponse({ ok: true });
 			} else if (message.type === "PAUSE_RECORDING") {
+				currentPauseStart = Date.now();
 				sendToOffscreen({ type: "OFFSCREEN_PAUSE" });
 				sendResponse({ ok: true });
 			} else if (message.type === "RESUME_RECORDING") {
+				if (currentPauseStart !== null) {
+					pauseIntervals.push({
+						pausedAt: currentPauseStart,
+						resumedAt: Date.now(),
+					});
+					currentPauseStart = null;
+				}
 				sendToOffscreen({ type: "OFFSCREEN_RESUME" });
 				sendResponse({ ok: true });
 			} else if (message.type === "TOGGLE_MIC") {
@@ -83,6 +111,24 @@ export default defineBackground(() => {
 			} else if (message.type === "DESKTOP_PICKER_CANCELLED") {
 				// User cancelled the getDisplayMedia picker in the recorder window
 				handleRecordingCancelled();
+				sendResponse({ ok: true });
+			}
+
+			// --- Metadata ---
+			else if (message.type === "OFFSCREEN_RECORD_STARTED") {
+				recordingStartTimeMs = message.recordingStartTimeMs;
+				sendResponse({ ok: true });
+			} else if (message.type === "CONSOLE_LOG_EVENT") {
+				metadataEvents.push({
+					type: "console",
+					timestamp: message.timestamp,
+					elapsedMs: 0, // computed at recording end
+					data: {
+						level: message.level,
+						args: message.args,
+						trace: message.trace,
+					},
+				});
 				sendResponse({ ok: true });
 			}
 		},
@@ -271,6 +317,57 @@ async function closeRecorderWindow(): Promise<void> {
 	}
 }
 
+function parseBrowserInfo(ua: string): {
+	name: string;
+	version: string;
+} {
+	if (ua.includes("Edg/")) {
+		const match = ua.match(/Edg\/([\d.]+)/);
+		return { name: "Edge", version: match?.[1] ?? "" };
+	}
+	if (ua.includes("OPR/")) {
+		const match = ua.match(/OPR\/([\d.]+)/);
+		return { name: "Opera", version: match?.[1] ?? "" };
+	}
+	if (ua.includes("Brave")) {
+		const match = ua.match(/Chrome\/([\d.]+)/);
+		return { name: "Brave", version: match?.[1] ?? "" };
+	}
+	if (ua.includes("Chrome/")) {
+		const match = ua.match(/Chrome\/([\d.]+)/);
+		return { name: "Chrome", version: match?.[1] ?? "" };
+	}
+	if (ua.includes("Firefox/")) {
+		const match = ua.match(/Firefox\/([\d.]+)/);
+		return { name: "Firefox", version: match?.[1] ?? "" };
+	}
+	if (ua.includes("Safari/")) {
+		const match = ua.match(/Version\/([\d.]+)/);
+		return { name: "Safari", version: match?.[1] ?? "" };
+	}
+	return { name: "Unknown", version: "" };
+}
+
+function resetMetadataState(): void {
+	metadataEvents = [];
+	recordingStartTimeMs = 0;
+	browserInfo = null;
+	pauseIntervals = [];
+	currentPauseStart = null;
+}
+
+function computeElapsedMs(timestamp: number): number {
+	let elapsed = timestamp - recordingStartTimeMs;
+	for (const interval of pauseIntervals) {
+		if (timestamp > interval.resumedAt) {
+			elapsed -= interval.resumedAt - interval.pausedAt;
+		} else if (timestamp > interval.pausedAt) {
+			elapsed -= timestamp - interval.pausedAt;
+		}
+	}
+	return Math.max(0, elapsed);
+}
+
 async function handleStartRecording(
 	micEnabled: boolean,
 	recordArea: "tab" | "desktop",
@@ -278,6 +375,26 @@ async function handleStartRecording(
 	const { id: tabId, title, width, height } = await getActiveTab();
 	recordingTabId = tabId;
 	recordingTabTitle = title;
+
+	// Reset metadata for new recording
+	resetMetadataState();
+
+	// Collect browser info
+	const ua = navigator.userAgent;
+	const { name: browserName, version: browserVersion } = parseBrowserInfo(ua);
+	const tab = await browser.tabs.get(tabId);
+	browserInfo = {
+		url: tab.url ?? "",
+		title: tab.title ?? "",
+		userAgent: ua,
+		platform: navigator.platform,
+		browserName,
+		browserVersion,
+		windowWidth: width,
+		windowHeight: height,
+		devicePixelRatio: 1, // best effort from background
+		language: navigator.language,
+	};
 
 	if (recordArea === "desktop") {
 		// Desktop recording: use offscreen document with DISPLAY_MEDIA reason.
@@ -342,6 +459,25 @@ async function handleDesktopStreamAcquired(micEnabled: boolean): Promise<void> {
 }
 
 async function handleCountdownDone(): Promise<void> {
+	// Start metadata capture before recording begins
+	if (recordingTabId !== null) {
+		// Inject console interceptor into the page's main world
+		try {
+			await chrome.scripting.executeScript({
+				target: { tabId: recordingTabId },
+				func: consoleInjectorFunction,
+				world: "MAIN",
+			});
+		} catch (err) {
+			console.warn("[ingfo] Failed to inject console interceptor:", err);
+		}
+
+		// Start network capture via chrome.debugger
+		await startNetworkCapture(recordingTabId, (entry) => {
+			metadataEvents.push(entry as MetadataEvent);
+		});
+	}
+
 	// Tell offscreen to start recording
 	await sendToOffscreen({ type: "OFFSCREEN_RECORD" });
 
@@ -360,6 +496,50 @@ async function closeRecordingContext(): Promise<void> {
 	usingRecorderWindow = false;
 }
 
+async function cleanupMetadataCapture(tabId: number | null): Promise<void> {
+	await stopNetworkCapture();
+
+	if (tabId !== null) {
+		try {
+			await chrome.scripting.executeScript({
+				target: { tabId },
+				func: consoleCleanupFunction,
+				world: "MAIN",
+			});
+		} catch {
+			// Tab may be closed
+		}
+	}
+}
+
+function buildRecordingMetadata(durationMs: number): RecordingMetadata {
+	// Compute elapsedMs for all events
+	for (const event of metadataEvents) {
+		event.elapsedMs = computeElapsedMs(event.timestamp);
+	}
+
+	// Sort by timestamp
+	metadataEvents.sort((a, b) => a.timestamp - b.timestamp);
+
+	return {
+		browserInfo: browserInfo ?? {
+			url: "",
+			title: "",
+			userAgent: "",
+			platform: "",
+			browserName: "",
+			browserVersion: "",
+			windowWidth: 0,
+			windowHeight: 0,
+			devicePixelRatio: 1,
+			language: "",
+		},
+		events: metadataEvents,
+		recordingStartTime: recordingStartTimeMs,
+		recordingDurationMs: durationMs,
+	};
+}
+
 async function handleRecordingComplete(
 	videoDataUrl: string,
 	durationMs: number,
@@ -367,6 +547,10 @@ async function handleRecordingComplete(
 	const tabId = recordingTabId;
 	recordingTabId = null;
 	recordingTabTitle = "";
+
+	await cleanupMetadataCapture(tabId);
+	const metadata = buildRecordingMetadata(durationMs);
+
 	await closeRecordingContext();
 
 	if (tabId !== null) {
@@ -374,14 +558,20 @@ async function handleRecordingComplete(
 			type: "RECORDING_COMPLETE",
 			videoDataUrl,
 			durationMs,
+			metadata,
 		});
 	}
+
+	resetMetadataState();
 }
 
 async function handleRecordingCancelled(): Promise<void> {
 	const tabId = recordingTabId;
 	recordingTabId = null;
 	recordingTabTitle = "";
+
+	await cleanupMetadataCapture(tabId);
+	resetMetadataState();
 	await closeRecordingContext();
 
 	// Tell content script to remove control bar / countdown

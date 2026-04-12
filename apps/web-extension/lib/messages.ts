@@ -1,3 +1,5 @@
+import type { RecordingMetadata } from "./metadata-types";
+
 export type Region = {
 	x: number;
 	y: number;
@@ -38,6 +40,7 @@ export type Message =
 			type: "RECORDING_COMPLETE";
 			videoDataUrl: string;
 			durationMs: number;
+			metadata: RecordingMetadata;
 	  }
 	| { type: "RECORDING_CANCELLED" }
 	| { type: "MIC_UNAVAILABLE" }
@@ -52,7 +55,16 @@ export type Message =
 	| { type: "RESUME_RECORDING" }
 	| { type: "TOGGLE_MIC" }
 	| { type: "STOP_RECORDING" }
-	| { type: "CANCEL_RECORDING" };
+	| { type: "CANCEL_RECORDING" }
+
+	// Metadata: Content → Background
+	| {
+			type: "CONSOLE_LOG_EVENT";
+			timestamp: number;
+			level: "log" | "warn" | "error" | "info" | "debug";
+			args: string[];
+			trace: string[];
+	  };
 
 // --- Offscreen messages (background ↔ offscreen document) ---
 
@@ -79,4 +91,5 @@ export type OffscreenMessage =
 	| { type: "OFFSCREEN_TIME_UPDATE"; elapsedMs: number; isPaused: boolean }
 	| { type: "RECORDER_READY" }
 	| { type: "DESKTOP_STREAM_ACQUIRED"; micEnabled: boolean }
-	| { type: "DESKTOP_PICKER_CANCELLED" };
+	| { type: "DESKTOP_PICKER_CANCELLED" }
+	| { type: "OFFSCREEN_RECORD_STARTED"; recordingStartTimeMs: number };

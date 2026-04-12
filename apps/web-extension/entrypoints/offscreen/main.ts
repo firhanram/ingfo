@@ -199,6 +199,11 @@ async function handleRecord(): Promise<void> {
 	startTime = Date.now();
 	recorder.start(1000); // Collect data every second
 	startTimeUpdates();
+
+	browser.runtime.sendMessage({
+		type: "OFFSCREEN_RECORD_STARTED",
+		recordingStartTimeMs: startTime,
+	} satisfies OffscreenMessage);
 }
 
 function handlePause(): void {

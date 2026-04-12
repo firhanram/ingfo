@@ -46,4 +46,66 @@ declare namespace chrome {
 			contextTypes: string[];
 		}): Promise<{ documentUrl?: string }[]>;
 	}
+
+	// "debugger" is a reserved word in TS, so we use a top-level interface
+	// and merge it into chrome via the var declaration below.
+
+	namespace scripting {
+		function executeScript<T>(details: {
+			target: { tabId: number };
+			func: (...args: unknown[]) => T;
+			args?: unknown[];
+			world?: "MAIN" | "ISOLATED";
+		}): Promise<{ result: T }[]>;
+	}
+}
+
+interface ChromeDebuggerDebuggee {
+	tabId?: number;
+}
+
+interface ChromeDebuggerEventHandler {
+	addListener(
+		callback: (
+			source: ChromeDebuggerDebuggee,
+			method: string,
+			params?: Record<string, unknown>,
+		) => void,
+	): void;
+	removeListener(
+		callback: (
+			source: ChromeDebuggerDebuggee,
+			method: string,
+			params?: Record<string, unknown>,
+		) => void,
+	): void;
+}
+
+interface ChromeDebuggerDetachHandler {
+	addListener(
+		callback: (source: ChromeDebuggerDebuggee, reason: string) => void,
+	): void;
+	removeListener(
+		callback: (source: ChromeDebuggerDebuggee, reason: string) => void,
+	): void;
+}
+
+interface ChromeDebuggerApi {
+	attach(
+		target: ChromeDebuggerDebuggee,
+		requiredVersion: string,
+	): Promise<void>;
+	detach(target: ChromeDebuggerDebuggee): Promise<void>;
+	sendCommand(
+		target: ChromeDebuggerDebuggee,
+		method: string,
+		commandParams?: Record<string, unknown>,
+	): Promise<Record<string, unknown>>;
+	onEvent: ChromeDebuggerEventHandler;
+	onDetach: ChromeDebuggerDetachHandler;
+}
+
+// Access chrome.debugger via: (chrome as ChromeWithDebugger).debugger
+interface ChromeWithDebugger {
+	debugger: ChromeDebuggerApi;
 }
