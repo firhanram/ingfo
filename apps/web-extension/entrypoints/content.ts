@@ -270,6 +270,7 @@ export default defineContentScript({
 					mountCountdownOverlay(message.micEnabled);
 					sendResponse({ ok: true });
 				} else if (message.type === "RECORDING_STARTED") {
+					micEnabled = message.micEnabled;
 					// Start forwarding console events to background
 					removeConsoleListener = setupConsoleListener((msg) => {
 						browser.runtime.sendMessage(msg satisfies Message);

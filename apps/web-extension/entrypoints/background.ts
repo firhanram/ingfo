@@ -16,6 +16,7 @@ import {
 // --- Recording state ---
 let recordingTabId: number | null = null;
 let recordingTabTitle = "";
+let recordingMicEnabled = false;
 let recorderWindowId: number | null = null;
 let usingRecorderWindow = false;
 
@@ -27,6 +28,17 @@ let pauseIntervals: { pausedAt: number; resumedAt: number }[] = [];
 let currentPauseStart: number | null = null;
 
 export default defineBackground(() => {
+	// Re-inject control bar and metadata capture when the recording tab reloads
+	browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
+		if (
+			tabId === recordingTabId &&
+			changeInfo.status === "complete" &&
+			recordingStartTimeMs > 0
+		) {
+			handleRecordingTabReloaded(tabId);
+		}
+	});
+
 	browser.runtime.onMessage.addListener(
 		(message: Message | OffscreenMessage, _sender, sendResponse) => {
 			// --- Screenshot flow ---
@@ -375,6 +387,7 @@ async function handleStartRecording(
 	const { id: tabId, title, width, height } = await getActiveTab();
 	recordingTabId = tabId;
 	recordingTabTitle = title;
+	recordingMicEnabled = micEnabled;
 
 	// Reset metadata for new recording
 	resetMetadataState();
@@ -458,6 +471,38 @@ async function handleDesktopStreamAcquired(micEnabled: boolean): Promise<void> {
 	}
 }
 
+async function handleRecordingTabReloaded(tabId: number): Promise<void> {
+	// Re-inject console interceptor into the reloaded page
+	try {
+		await chrome.scripting.executeScript({
+			target: { tabId },
+			func: consoleInjectorFunction,
+			world: "MAIN",
+		});
+	} catch (err) {
+		console.warn("[ingfo] Failed to re-inject console interceptor:", err);
+	}
+
+	// Re-attach debugger for network capture (debugger detaches on navigation)
+	await stopNetworkCapture();
+	await startNetworkCapture(tabId, (entry) => {
+		metadataEvents.push(entry as MetadataEvent);
+	});
+
+	// Update browser info with new URL
+	if (browserInfo) {
+		const tab = await browser.tabs.get(tabId);
+		browserInfo.url = tab.url ?? browserInfo.url;
+		browserInfo.title = tab.title ?? browserInfo.title;
+	}
+
+	// Re-mount the control bar (skip countdown — recording is already in progress)
+	await sendToContentScript(tabId, {
+		type: "RECORDING_STARTED",
+		micEnabled: recordingMicEnabled,
+	});
+}
+
 async function handleCountdownDone(): Promise<void> {
 	// Start metadata capture before recording begins
 	if (recordingTabId !== null) {
@@ -483,7 +528,10 @@ async function handleCountdownDone(): Promise<void> {
 
 	// Tell content script to show control bar
 	if (recordingTabId !== null) {
-		await sendToContentScript(recordingTabId, { type: "RECORDING_STARTED" });
+		await sendToContentScript(recordingTabId, {
+			type: "RECORDING_STARTED",
+			micEnabled: recordingMicEnabled,
+		});
 	}
 }
 

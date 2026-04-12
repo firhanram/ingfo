@@ -30,7 +30,7 @@ export type Message =
 
 	// Recording: Background → Content
 	| { type: "BEGIN_COUNTDOWN"; micEnabled: boolean }
-	| { type: "RECORDING_STARTED" }
+	| { type: "RECORDING_STARTED"; micEnabled: boolean }
 	| {
 			type: "RECORDING_TIME_UPDATE";
 			elapsedMs: number;
