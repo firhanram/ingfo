@@ -20,7 +20,11 @@ export type Message =
 	| { type: "CANCEL_CAPTURE" }
 
 	// Recording: Popup → Background
-	| { type: "START_RECORDING"; micEnabled: boolean }
+	| {
+			type: "START_RECORDING";
+			micEnabled: boolean;
+			recordArea: "tab" | "desktop";
+	  }
 
 	// Recording: Background → Content
 	| { type: "BEGIN_COUNTDOWN"; micEnabled: boolean }
@@ -59,6 +63,7 @@ export type OffscreenMessage =
 			micEnabled: boolean;
 			tabWidth: number;
 			tabHeight: number;
+			recordArea: "tab" | "desktop";
 	  }
 	| { type: "OFFSCREEN_RECORD" }
 	| { type: "OFFSCREEN_PAUSE" }
@@ -72,4 +77,6 @@ export type OffscreenMessage =
 			durationMs: number;
 	  }
 	| { type: "OFFSCREEN_TIME_UPDATE"; elapsedMs: number; isPaused: boolean }
-	| { type: "RECORDER_READY" };
+	| { type: "RECORDER_READY" }
+	| { type: "DESKTOP_STREAM_ACQUIRED"; micEnabled: boolean }
+	| { type: "DESKTOP_PICKER_CANCELLED" };

@@ -10,6 +10,7 @@ export default defineConfig({
 			"tabs",
 			"scripting",
 			"tabCapture",
+			"desktopCapture",
 			"offscreen",
 			"storage",
 			"audioCapture",

@@ -56,28 +56,53 @@ async function handleStart(
 	micEnabled: boolean,
 	tabWidth: number,
 	tabHeight: number,
+	recordArea: "tab" | "desktop",
 ): Promise<void> {
 	cleanupStreams();
 
-	// Get tab media stream using the stream ID from tabCapture.
-	// Constrain to the tab's actual viewport size to avoid aspect-ratio
-	// mismatch that causes black letterboxing in the recorded video.
-	mediaStream = await navigator.mediaDevices.getUserMedia({
-		audio: {
-			mandatory: {
-				chromeMediaSource: "tab",
-				chromeMediaSourceId: streamId,
-			},
-		} as MediaTrackConstraints,
-		video: {
-			mandatory: {
-				chromeMediaSource: "tab",
-				chromeMediaSourceId: streamId,
-				maxWidth: tabWidth,
-				maxHeight: tabHeight,
-			},
-		} as MediaTrackConstraints,
-	});
+	if (recordArea === "desktop") {
+		// Desktop capture: use getDisplayMedia() from offscreen document
+		// with DISPLAY_MEDIA reason — shows Chrome's native picker without
+		// user gesture and without needing a separate window.
+		try {
+			mediaStream = await navigator.mediaDevices.getDisplayMedia({
+				video: true,
+				audio: true,
+			});
+		} catch (err) {
+			console.warn("[ingfo] getDisplayMedia cancelled or failed:", err);
+			browser.runtime.sendMessage({
+				type: "DESKTOP_PICKER_CANCELLED",
+			} satisfies OffscreenMessage);
+			return;
+		}
+
+		// Notify background that stream is acquired — it will show countdown
+		browser.runtime.sendMessage({
+			type: "DESKTOP_STREAM_ACQUIRED",
+			micEnabled,
+		} satisfies OffscreenMessage);
+	} else {
+		// Get tab media stream using the stream ID from tabCapture.
+		// Constrain to the tab's actual viewport size to avoid aspect-ratio
+		// mismatch that causes black letterboxing in the recorded video.
+		mediaStream = await navigator.mediaDevices.getUserMedia({
+			audio: {
+				mandatory: {
+					chromeMediaSource: "tab",
+					chromeMediaSourceId: streamId,
+				},
+			} as MediaTrackConstraints,
+			video: {
+				mandatory: {
+					chromeMediaSource: "tab",
+					chromeMediaSourceId: streamId,
+					maxWidth: tabWidth,
+					maxHeight: tabHeight,
+				},
+			} as MediaTrackConstraints,
+		});
+	}
 
 	// If mic enabled, get mic stream and mix audio
 	if (micEnabled) {
@@ -227,6 +252,7 @@ browser.runtime.onMessage.addListener(
 					message.micEnabled,
 					message.tabWidth,
 					message.tabHeight,
+					message.recordArea,
 				)
 					.then(() => respond({ ok: true }))
 					.catch((err) => {

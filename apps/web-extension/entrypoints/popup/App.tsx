@@ -87,7 +87,7 @@ function ScreenshotSection() {
 }
 
 function RecordSection() {
-	const [recordArea, setRecordArea] = useState("tab");
+	const [recordArea, setRecordArea] = useState<"tab" | "desktop">("tab");
 	const [micEnabled, setMicEnabled] = useState(false);
 	const [micPermission, setMicPermission] = useState<PermissionState>("prompt");
 	const [selectedMicLabel, setSelectedMicLabel] = useState<string | null>(null);
@@ -104,11 +104,14 @@ function RecordSection() {
 			setSelectedMicLabel(match.label || `Mic ${deviceId.slice(0, 6)}`);
 	}, []);
 
-	// Restore persisted mic toggle state
+	// Restore persisted state
 	useEffect(() => {
-		browser.storage.local.get("micEnabled").then((stored) => {
+		browser.storage.local.get(["micEnabled", "recordArea"]).then((stored) => {
 			if (typeof stored.micEnabled === "boolean") {
 				setMicEnabled(stored.micEnabled);
+			}
+			if (stored.recordArea === "tab" || stored.recordArea === "desktop") {
+				setRecordArea(stored.recordArea);
 			}
 		});
 	}, []);
@@ -143,6 +146,7 @@ function RecordSection() {
 		await browser.runtime.sendMessage({
 			type: "START_RECORDING",
 			micEnabled: effectiveMicEnabled,
+			recordArea,
 		} satisfies Message);
 
 		window.close();
@@ -161,7 +165,7 @@ function RecordSection() {
 				>
 					<Monitor className="size-[18px] text-accent-500" />
 					<span className="text-sm font-medium text-neutral-900">
-						Record Tab
+						{recordArea === "desktop" ? "Record Desktop" : "Record Tab"}
 					</span>
 				</button>
 
@@ -172,7 +176,10 @@ function RecordSection() {
 							type="single"
 							value={recordArea}
 							onValueChange={(v) => {
-								if (v) setRecordArea(v);
+								if (v === "tab" || v === "desktop") {
+									setRecordArea(v);
+									browser.storage.local.set({ recordArea: v });
+								}
 							}}
 							variant="outline"
 						>

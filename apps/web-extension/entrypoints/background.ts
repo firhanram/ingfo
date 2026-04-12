@@ -31,7 +31,7 @@ export default defineBackground(() => {
 
 			// --- Recording flow ---
 			else if (message.type === "START_RECORDING") {
-				handleStartRecording(message.micEnabled);
+				handleStartRecording(message.micEnabled, message.recordArea);
 				sendResponse({ ok: true });
 			} else if (message.type === "COUNTDOWN_DONE") {
 				handleCountdownDone();
@@ -75,6 +75,14 @@ export default defineBackground(() => {
 					recorderReadyResolve();
 					recorderReadyResolve = null;
 				}
+				sendResponse({ ok: true });
+			} else if (message.type === "DESKTOP_STREAM_ACQUIRED") {
+				// Recorder got the desktop stream — minimize window, show countdown
+				handleDesktopStreamAcquired(message.micEnabled);
+				sendResponse({ ok: true });
+			} else if (message.type === "DESKTOP_PICKER_CANCELLED") {
+				// User cancelled the getDisplayMedia picker in the recorder window
+				handleRecordingCancelled();
 				sendResponse({ ok: true });
 			}
 		},
@@ -195,17 +203,22 @@ function blobToDataUrl(blob: Blob): Promise<string> {
 
 // --- Recording ---
 
-async function ensureOffscreenDocument(): Promise<void> {
+async function ensureOffscreenDocument(
+	reason: chrome.offscreen.Reason = chrome.offscreen.Reason.USER_MEDIA,
+): Promise<void> {
 	const existingContexts = await chrome.runtime.getContexts({
 		contextTypes: ["OFFSCREEN_DOCUMENT"],
 	});
 
-	if (existingContexts.length > 0) return;
+	// Close any existing offscreen document (it may have a different reason)
+	if (existingContexts.length > 0) {
+		await closeOffscreenDocument();
+	}
 
 	await chrome.offscreen.createDocument({
 		url: "/offscreen.html",
-		reasons: [chrome.offscreen.Reason.USER_MEDIA],
-		justification: "Tab recording with MediaRecorder",
+		reasons: [reason],
+		justification: "Recording with MediaRecorder",
 	});
 }
 
@@ -258,43 +271,74 @@ async function closeRecorderWindow(): Promise<void> {
 	}
 }
 
-async function handleStartRecording(micEnabled: boolean): Promise<void> {
+async function handleStartRecording(
+	micEnabled: boolean,
+	recordArea: "tab" | "desktop",
+): Promise<void> {
 	const { id: tabId, title, width, height } = await getActiveTab();
 	recordingTabId = tabId;
 	recordingTabTitle = title;
 
-	// Get stream ID for the tab
-	const streamId = await new Promise<string>((resolve) => {
-		chrome.tabCapture.getMediaStreamId({ targetTabId: tabId }, (id) =>
-			resolve(id),
-		);
-	});
+	if (recordArea === "desktop") {
+		// Desktop recording: use offscreen document with DISPLAY_MEDIA reason.
+		// getDisplayMedia() works without user gesture from offscreen documents,
+		// showing Chrome's native screen/window picker directly.
+		usingRecorderWindow = false;
+		await ensureOffscreenDocument(chrome.offscreen.Reason.DISPLAY_MEDIA);
 
-	// Use recorder window for mic-enabled recordings (offscreen documents
-	// cannot access real microphone devices via getUserMedia).
-	// For mic-disabled recordings, use the lighter offscreen document.
-	usingRecorderWindow = micEnabled;
-	if (micEnabled) {
-		await openRecorderWindow();
-		// Wait for the recorder page to signal it's ready
-		await waitForRecorderReady();
+		await sendToOffscreen({
+			type: "OFFSCREEN_START",
+			streamId: "",
+			micEnabled,
+			tabWidth: width,
+			tabHeight: height,
+			recordArea,
+		});
+
+		// Note: BEGIN_COUNTDOWN is sent after DESKTOP_STREAM_ACQUIRED
 	} else {
-		await ensureOffscreenDocument();
+		// Get stream ID for the tab
+		const streamId = await new Promise<string>((resolve) => {
+			chrome.tabCapture.getMediaStreamId({ targetTabId: tabId }, (id) =>
+				resolve(id),
+			);
+		});
+
+		// Use recorder window for mic-enabled recordings (offscreen documents
+		// cannot access real microphone devices via getUserMedia).
+		// For mic-disabled recordings, use the lighter offscreen document.
+		usingRecorderWindow = micEnabled;
+		if (micEnabled) {
+			await openRecorderWindow();
+			await waitForRecorderReady();
+		} else {
+			await ensureOffscreenDocument();
+		}
+
+		await sendToOffscreen({
+			type: "OFFSCREEN_START",
+			streamId,
+			micEnabled,
+			tabWidth: width,
+			tabHeight: height,
+			recordArea,
+		});
+
+		// Show countdown on the tab
+		await sendToContentScript(tabId, {
+			type: "BEGIN_COUNTDOWN",
+			micEnabled,
+		});
 	}
+}
 
-	await sendToOffscreen({
-		type: "OFFSCREEN_START",
-		streamId,
-		micEnabled,
-		tabWidth: width,
-		tabHeight: height,
-	});
-
-	// Show countdown on the tab
-	await sendToContentScript(tabId, {
-		type: "BEGIN_COUNTDOWN",
-		micEnabled,
-	});
+async function handleDesktopStreamAcquired(micEnabled: boolean): Promise<void> {
+	if (recordingTabId !== null) {
+		await sendToContentScript(recordingTabId, {
+			type: "BEGIN_COUNTDOWN",
+			micEnabled,
+		});
+	}
 }
 
 async function handleCountdownDone(): Promise<void> {

@@ -15,7 +15,6 @@ let pausedElapsed = 0;
 let timerInterval: ReturnType<typeof setInterval> | null = null;
 let isPaused = false;
 let audioContext: AudioContext | null = null;
-
 function getElapsedMs(): number {
 	if (isPaused) return pausedElapsed;
 	return pausedElapsed + (Date.now() - startTime);
@@ -61,9 +60,11 @@ async function handleStart(
 	micEnabled: boolean,
 	tabWidth: number,
 	tabHeight: number,
+	_recordArea: "tab" | "desktop",
 ): Promise<void> {
 	cleanupStreams();
 
+	// Tab capture: use chromeMediaSource "tab"
 	mediaStream = await navigator.mediaDevices.getUserMedia({
 		audio: {
 			mandatory: {
@@ -231,6 +232,7 @@ browser.runtime.onMessage.addListener(
 					message.micEnabled,
 					message.tabWidth,
 					message.tabHeight,
+					message.recordArea,
 				)
 					.then(() => respond({ ok: true }))
 					.catch((err) => {

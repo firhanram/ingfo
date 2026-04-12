@@ -7,6 +7,7 @@ declare namespace chrome {
 	namespace offscreen {
 		enum Reason {
 			USER_MEDIA = "USER_MEDIA",
+			DISPLAY_MEDIA = "DISPLAY_MEDIA",
 		}
 
 		function createDocument(parameters: {
@@ -23,6 +24,21 @@ declare namespace chrome {
 			options: { targetTabId: number },
 			callback: (streamId: string) => void,
 		): void;
+	}
+
+	namespace desktopCapture {
+		function chooseDesktopMedia(
+			sources: ("screen" | "window" | "tab" | "audio")[],
+			targetTab: { id: number },
+			callback: (streamId: string) => void,
+		): number;
+
+		function chooseDesktopMedia(
+			sources: ("screen" | "window" | "tab" | "audio")[],
+			callback: (streamId: string) => void,
+		): number;
+
+		function cancelChooseDesktopMedia(desktopMediaRequestId: number): void;
 	}
 
 	namespace runtime {
