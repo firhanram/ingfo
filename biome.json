@@ -21,7 +21,8 @@
 			"!**/*.log",
 			"!**/pnpm-lock.yaml",
 			"!**/stats.html",
-			"!**/stats-*.json"
+			"!**/stats-*.json",
+			"!**/routeTree.gen.ts"
 		]
 	},
 	"formatter": {
