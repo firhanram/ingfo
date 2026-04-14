@@ -1,4 +1,5 @@
-import { Download, X } from "lucide-react";
+import { Check, Copy, X } from "lucide-react";
+import { useState } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
 
 interface PreviewDialogProps {
@@ -15,11 +16,14 @@ export function PreviewDialog({ imageDataUrl, onClose }: PreviewDialogProps) {
 		return () => document.removeEventListener("keydown", handleKeyDown);
 	});
 
-	function handleDownload() {
-		const link = document.createElement("a");
-		link.href = imageDataUrl;
-		link.download = `screenshot-${Date.now()}.png`;
-		link.click();
+	const [copied, setCopied] = useState(false);
+
+	async function handleCopy() {
+		const response = await fetch(imageDataUrl);
+		const blob = await response.blob();
+		await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000);
 	}
 
 	return (
@@ -48,11 +52,11 @@ export function PreviewDialog({ imageDataUrl, onClose }: PreviewDialogProps) {
 				<div className="flex items-center justify-end border-t border-neutral-200 bg-surface px-6 py-3">
 					<button
 						type="button"
-						onClick={handleDownload}
+						onClick={handleCopy}
 						className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500"
 					>
-						<Download size={16} />
-						Download
+						{copied ? <Check size={16} /> : <Copy size={16} />}
+						{copied ? "Copied!" : "Copy"}
 					</button>
 				</div>
 			</div>
