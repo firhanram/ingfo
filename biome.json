@@ -32,7 +32,10 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"suspicious": {
+				"noShorthandPropertyOverrides": "off"
+			}
 		}
 	},
 	"javascript": {
@@ -55,6 +58,14 @@
 		},
 		"parser": {
 			"allowTrailingCommas": true
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		},
+		"formatter": {
+			"enabled": true
 		}
 	}
 }
