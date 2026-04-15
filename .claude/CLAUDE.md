@@ -1,3 +1,7 @@
+# Security
+
+Never read, display, or reference any `.env` files or their contents. Treat all `.env*` files as sensitive and off-limits.
+
 # Testing 
 
 Run related test before committing with: 
