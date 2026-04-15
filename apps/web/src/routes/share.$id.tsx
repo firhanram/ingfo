@@ -1025,9 +1025,7 @@ function NetworkDetailPanel({
 						<h4 className="mb-2 font-semibold text-xs text-neutral-700">
 							Request Payload
 						</h4>
-						<pre className="whitespace-pre-wrap break-all rounded-md bg-surface-sunken p-3 font-mono text-xs text-neutral-700">
-							{formatJsonSafe(data.requestBody)}
-						</pre>
+						<CodeBlock code={data.requestBody} mimeType={data.mimeType} />
 					</div>
 				)}
 
@@ -1036,9 +1034,7 @@ function NetworkDetailPanel({
 						<h4 className="mb-2 font-semibold text-xs text-neutral-700">
 							Response Body
 						</h4>
-						<pre className="whitespace-pre-wrap break-all rounded-md bg-surface-sunken p-3 font-mono text-xs text-neutral-700">
-							{formatJsonSafe(data.responseBody)}
-						</pre>
+						<CodeBlock code={data.responseBody} mimeType={data.mimeType} />
 					</div>
 				)}
 			</div>
@@ -1137,6 +1133,75 @@ function formatJsonSafe(str: string): string {
 	} catch {
 		return str;
 	}
+}
+
+function detectLanguage(mimeType: string, content: string): string {
+	const mime = mimeType.toLowerCase();
+	if (mime.includes("json")) return "json";
+	if (mime.includes("html")) return "html";
+	if (mime.includes("css")) return "css";
+	if (mime.includes("javascript") || mime.includes("ecmascript"))
+		return "javascript";
+	if (mime.includes("xml")) return "xml";
+
+	// Detect from content
+	const trimmed = content.trimStart();
+	if (trimmed.startsWith("{") || trimmed.startsWith("[")) return "json";
+	if (trimmed.startsWith("<!") || trimmed.startsWith("<html")) return "html";
+	if (trimmed.startsWith("<")) return "xml";
+	return "text";
+}
+
+function CodeBlock({ code, mimeType }: { code: string; mimeType: string }) {
+	const [html, setHtml] = useState<string | null>(null);
+	const formatted = formatJsonSafe(code);
+	const lang = detectLanguage(mimeType, formatted);
+
+	useLayoutEffect(() => {
+		if (lang === "text") return;
+
+		let cancelled = false;
+		import("shiki").then(({ codeToHtml }) =>
+			codeToHtml(formatted, {
+				lang,
+				theme: "github-light",
+			}).then((result) => {
+				if (!cancelled) setHtml(result);
+			}),
+		);
+		return () => {
+			cancelled = true;
+		};
+	}, [formatted, lang]);
+
+	if (lang === "text") {
+		return (
+			<pre className="whitespace-pre-wrap break-all rounded-md bg-surface-sunken p-3 font-mono text-xs text-neutral-700">
+				{formatted}
+			</pre>
+		);
+	}
+
+	if (!html) {
+		return (
+			<div className="animate-pulse rounded-md bg-surface-sunken p-3">
+				<div className="space-y-2">
+					<div className="h-3 w-3/4 rounded bg-neutral-200" />
+					<div className="h-3 w-1/2 rounded bg-neutral-200" />
+					<div className="h-3 w-5/6 rounded bg-neutral-200" />
+					<div className="h-3 w-2/3 rounded bg-neutral-200" />
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div
+			className="overflow-auto rounded-md bg-surface-sunken p-3 text-xs [&_pre]:!bg-transparent [&_code]:!text-xs"
+			// biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output is safe
+			dangerouslySetInnerHTML={{ __html: html }}
+		/>
+	);
 }
 
 // ── Status dot ───────────────────────────────────────────────────────────────
