@@ -168,6 +168,9 @@ function RecordSection() {
 						{recordArea === "desktop" ? "Record Desktop" : "Record Tab"}
 					</span>
 				</button>
+				<p className="px-3.5 text-[11px] text-neutral-400">
+					Max recording duration: 2 minutes
+				</p>
 
 				<div className="flex items-center gap-2 px-3.5 py-2.5">
 					<span className="text-sm text-neutral-500">Area</span>

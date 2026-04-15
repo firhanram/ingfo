@@ -1,8 +1,9 @@
-import { Mic, MicOff, Pause, Play, Square, X } from "lucide-react";
+import { Clock, Mic, MicOff, Pause, Play, Square, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
 import { useRecordingStore } from "@/hooks/use-recording-store";
 import type { Message } from "@/lib/messages";
+import { MAX_RECORDING_DURATION_MS } from "@/lib/recording-constants";
 
 function formatTime(ms: number): string {
 	const totalSeconds = Math.floor(ms / 1000);
@@ -23,7 +24,11 @@ export function RecordingControlBar({
 	const micGranted = micPermission === "granted";
 	const [micEnabled, setMicEnabled] = useState(initialMicEnabled);
 	const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+	const [showDurationLimit, setShowDurationLimit] = useState(false);
 	const { elapsedMs, isPaused } = useRecordingStore();
+
+	const WARNING_THRESHOLD_MS = MAX_RECORDING_DURATION_MS - 30_000;
+	const isNearLimit = elapsedMs >= WARNING_THRESHOLD_MS;
 
 	const handleConfirmCancel = useCallback(() => {
 		setShowCancelConfirm(false);
@@ -53,6 +58,24 @@ export function RecordingControlBar({
 		return () => document.removeEventListener("keydown", handleKeyDown);
 	});
 
+	// Listen for duration limit message from background
+	useMountEffect(() => {
+		function handleMessage(message: Message) {
+			if (message.type === "RECORDING_DURATION_LIMIT") {
+				setShowDurationLimit(true);
+			}
+		}
+		browser.runtime.onMessage.addListener(handleMessage);
+		return () => browser.runtime.onMessage.removeListener(handleMessage);
+	});
+
+	function handleDurationLimitStop() {
+		setShowDurationLimit(false);
+		browser.runtime.sendMessage({
+			type: "DURATION_LIMIT_STOP",
+		} satisfies Message);
+	}
+
 	// Auto-dismiss after 5 seconds
 	useEffect(() => {
 		if (!showCancelConfirm) return;
@@ -81,8 +104,28 @@ export function RecordingControlBar({
 
 	return (
 		<>
+			{/* Duration limit modal */}
+			{showDurationLimit && (
+				<div className="animate-pop-in fixed bottom-20 left-1/2 flex flex-col items-center gap-3 rounded-2xl bg-neutral-900/90 px-6 py-5 shadow-xl backdrop-blur-sm">
+					<div className="flex items-center gap-2.5 text-sm text-white/90">
+						<Clock className="size-4 text-accent-400" />
+						<span>Recording limit reached</span>
+					</div>
+					<p className="text-center text-xs text-white/60">
+						Maximum recording duration is 2 minutes.
+					</p>
+					<button
+						type="button"
+						onClick={handleDurationLimitStop}
+						className="cursor-pointer rounded-lg bg-accent-500 px-4 py-1.5 text-xs font-medium text-white transition-colors hover:bg-accent-600"
+					>
+						Stop &amp; Save
+					</button>
+				</div>
+			)}
+
 			{/* Cancel confirmation */}
-			{showCancelConfirm && (
+			{showCancelConfirm && !showDurationLimit && (
 				<div className="animate-pop-in fixed bottom-20 left-1/2 flex flex-col items-center gap-3 rounded-2xl bg-neutral-900/90 px-6 py-5 shadow-xl backdrop-blur-sm">
 					<div className="flex items-center gap-2.5 text-sm text-white/90">
 						<X className="size-4 text-accent-400" />
@@ -115,7 +158,9 @@ export function RecordingControlBar({
 				{/* Recording indicator + time */}
 				<div className="flex items-center gap-2.5 pr-1">
 					<span className="animate-pulse-red size-2.5 rounded-full bg-red-500" />
-					<span className="font-mono text-sm font-medium text-white tabular-nums">
+					<span
+						className={`font-mono text-sm font-medium tabular-nums ${isNearLimit ? "animate-pulse text-red-400" : "text-white"}`}
+					>
 						{formatTime(elapsedMs)}
 					</span>
 				</div>

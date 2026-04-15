@@ -43,6 +43,7 @@ export type Message =
 			metadata: RecordingMetadata;
 	  }
 	| { type: "RECORDING_CANCELLED" }
+	| { type: "RECORDING_DURATION_LIMIT" }
 	| { type: "MIC_UNAVAILABLE" }
 
 	// Recording: Popup → Background (query)
@@ -55,6 +56,7 @@ export type Message =
 	| { type: "RESUME_RECORDING" }
 	| { type: "TOGGLE_MIC" }
 	| { type: "STOP_RECORDING" }
+	| { type: "DURATION_LIMIT_STOP" }
 	| { type: "CANCEL_RECORDING" }
 
 	// Metadata: Content → Background

@@ -12,6 +12,7 @@ import {
 	startNetworkCapture,
 	stopNetworkCapture,
 } from "@/lib/network-interceptor";
+import { MAX_RECORDING_DURATION_MS } from "@/lib/recording-constants";
 
 // --- Recording state ---
 let recordingTabId: number | null = null;
@@ -26,6 +27,7 @@ let recordingStartTimeMs = 0;
 let browserInfo: BrowserInfo | null = null;
 let pauseIntervals: { pausedAt: number; resumedAt: number }[] = [];
 let currentPauseStart: number | null = null;
+let durationLimitSent = false;
 
 export default defineBackground(() => {
 	// Re-inject control bar and metadata capture when the recording tab reloads
@@ -97,6 +99,12 @@ export default defineBackground(() => {
 				sendResponse({ ok: true });
 			}
 
+			// --- Duration limit stop ---
+			else if (message.type === "DURATION_LIMIT_STOP") {
+				sendToOffscreen({ type: "OFFSCREEN_STOP" });
+				sendResponse({ ok: true });
+			}
+
 			// --- Offscreen responses ---
 			else if (message.type === "OFFSCREEN_TIME_UPDATE") {
 				if (recordingTabId !== null) {
@@ -105,6 +113,19 @@ export default defineBackground(() => {
 						elapsedMs: message.elapsedMs,
 						isPaused: message.isPaused,
 					});
+
+					// Enforce duration limit
+					if (
+						!durationLimitSent &&
+						!message.isPaused &&
+						message.elapsedMs >= MAX_RECORDING_DURATION_MS
+					) {
+						durationLimitSent = true;
+						sendToOffscreen({ type: "OFFSCREEN_PAUSE" });
+						sendToContentScript(recordingTabId, {
+							type: "RECORDING_DURATION_LIMIT",
+						});
+					}
 				}
 				sendResponse({ ok: true });
 			} else if (message.type === "OFFSCREEN_DATA_READY") {
@@ -366,6 +387,7 @@ function resetMetadataState(): void {
 	browserInfo = null;
 	pauseIntervals = [];
 	currentPauseStart = null;
+	durationLimitSent = false;
 }
 
 function computeElapsedMs(timestamp: number): number {
