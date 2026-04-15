@@ -117,6 +117,120 @@ const slowestEvents = [...networkEvents]
 const totalRecordingMs =
 	allEvents.length > 0 ? Math.max(...allEvents.map((e) => e.elapsedMs)) : 0;
 
+// ── Network filter categories ────────────────────────────────────────────────
+
+const FILTER_CATEGORIES = [
+	"All",
+	"Fetch/XHR",
+	"Doc",
+	"CSS",
+	"JS",
+	"Font",
+	"Img",
+	"Media",
+	"Manifest",
+	"WS",
+	"Wasm",
+	"Other",
+] as const;
+
+type FilterCategory = (typeof FILTER_CATEGORIES)[number];
+
+function getResourceType(event: NetworkEvent): string {
+	const { initiatorType, mimeType, url } = event.data;
+	const mime = mimeType.toLowerCase();
+
+	// Preflight requests
+	if (initiatorType === "preflight") return "preflight";
+	// XHR / Fetch
+	if (initiatorType === "xmlhttprequest") return "xhr";
+	if (initiatorType === "fetch") return "fetch";
+	// WebSocket
+	if (initiatorType === "websocket") return "websocket";
+
+	// Derive from mimeType
+	if (mime.includes("text/html")) return "document";
+	if (mime.includes("text/css")) return "stylesheet";
+	if (
+		mime.includes("javascript") ||
+		mime.includes("ecmascript") ||
+		mime.includes("x-javascript")
+	)
+		return "script";
+	if (mime.includes("application/json")) return "fetch";
+	if (mime.includes("font/")) return "font";
+	if (mime.includes("text/plain")) return "fetch";
+	if (mime.includes("wasm")) return "wasm";
+
+	// Images — show the specific format
+	if (mime.includes("image/png")) return "png";
+	if (mime.includes("image/jpeg")) return "jpeg";
+	if (mime.includes("image/gif")) return "gif";
+	if (mime.includes("image/svg")) return "svg";
+	if (mime.includes("image/webp")) return "webp";
+	if (mime.includes("image/x-icon")) return "ico";
+	if (mime.includes("image/avif")) return "avif";
+	if (mime.includes("image/")) return mime.split("/")[1];
+
+	if (mime.includes("video/") || mime.includes("audio/"))
+		return mime.split("/")[1];
+	if (mime.includes("manifest")) return "manifest";
+
+	// Fallback: try URL extension
+	const extMatch = url.split("?")[0].match(/\.([a-z0-9]+)$/i);
+	if (extMatch) return extMatch[1];
+
+	// Last resort
+	if (initiatorType === "script") return "fetch";
+	return initiatorType || "other";
+}
+
+function categorizeRequest(event: NetworkEvent): FilterCategory {
+	const rt = getResourceType(event);
+
+	switch (rt) {
+		case "fetch":
+		case "xhr":
+		case "preflight":
+			return "Fetch/XHR";
+		case "document":
+			return "Doc";
+		case "stylesheet":
+			return "CSS";
+		case "script":
+			return "JS";
+		case "font":
+		case "woff2":
+		case "woff":
+		case "ttf":
+		case "otf":
+		case "eot":
+			return "Font";
+		case "png":
+		case "jpeg":
+		case "gif":
+		case "svg":
+		case "webp":
+		case "ico":
+		case "avif":
+			return "Img";
+		case "mp4":
+		case "webm":
+		case "ogg":
+		case "mp3":
+		case "wav":
+			return "Media";
+		case "manifest":
+			return "Manifest";
+		case "websocket":
+			return "WS";
+		case "wasm":
+			return "Wasm";
+		default:
+			return "Other";
+	}
+}
+
 // ── Column config ────────────────────────────────────────────────────────────
 
 const COL_HEADERS = ["#", "Name", "Method", "Status", "Type", "Size", "Time"];
@@ -515,42 +629,71 @@ function NetworkPanel({
 	onColResizeStart: (colIndex: number, e: React.MouseEvent) => void;
 	activeRowRef: React.RefObject<HTMLTableRowElement | null>;
 }) {
+	const [filter, setFilter] = useState<FilterCategory>("All");
+
+	const filteredEvents =
+		filter === "All"
+			? networkEvents
+			: networkEvents.filter((e) => categorizeRequest(e) === filter);
+
 	return (
-		<div className="flex-1 overflow-auto">
-			<table className="w-full border-collapse font-mono text-xs">
-				<thead className="sticky top-0 z-10 bg-surface-raised">
-					<tr className="border-b border-neutral-200 text-left text-neutral-500">
-						{COL_HEADERS.map((header, i) => (
-							<th
-								key={header}
-								className="relative select-none whitespace-nowrap px-2.5 py-2 text-xs font-medium"
-								style={{ width: colWidths[i] }}
-							>
-								{header}
-								{i < COL_HEADERS.length - 1 && (
-									/* biome-ignore lint/a11y/noStaticElementInteractions: column resize drag handle */
-									<div
-										className="absolute top-0 right-0 h-full w-1.5 cursor-col-resize hover:bg-primary-200"
-										onMouseDown={(e) => onColResizeStart(i, e)}
-									/>
-								)}
-							</th>
+		<>
+			{/* Filter bar */}
+			<div className="flex shrink-0 flex-wrap gap-1 border-b border-neutral-200 bg-white px-3 py-2">
+				{FILTER_CATEGORIES.map((cat) => (
+					<button
+						key={cat}
+						type="button"
+						onClick={() => setFilter(cat)}
+						className={cn(
+							"rounded-md border px-2 py-0.5 text-xs font-medium transition-colors",
+							filter === cat
+								? "border-neutral-900 bg-neutral-900 text-white"
+								: "border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50",
+						)}
+					>
+						{cat}
+					</button>
+				))}
+			</div>
+
+			{/* Table */}
+			<div className="flex-1 overflow-auto">
+				<table className="w-full border-collapse font-mono text-xs">
+					<thead className="sticky top-0 z-10 bg-surface-raised">
+						<tr className="border-b border-neutral-200 text-left text-neutral-500">
+							{COL_HEADERS.map((header, i) => (
+								<th
+									key={header}
+									className="relative select-none whitespace-nowrap px-2.5 py-2 text-xs font-medium"
+									style={{ width: colWidths[i] }}
+								>
+									{header}
+									{i < COL_HEADERS.length - 1 && (
+										/* biome-ignore lint/a11y/noStaticElementInteractions: column resize drag handle */
+										<div
+											className="absolute top-0 right-0 h-full w-1.5 cursor-col-resize hover:bg-primary-200"
+											onMouseDown={(e) => onColResizeStart(i, e)}
+										/>
+									)}
+								</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{filteredEvents.map((event, index) => (
+							<NetworkRow
+								key={`${event.timestamp}-${event.data.method}-${event.data.url}`}
+								event={event}
+								index={index}
+								currentTimeMs={currentTimeMs}
+								activeRowRef={activeRowRef}
+							/>
 						))}
-					</tr>
-				</thead>
-				<tbody>
-					{networkEvents.map((event, index) => (
-						<NetworkRow
-							key={`${event.timestamp}-${event.data.method}-${event.data.url}`}
-							event={event}
-							index={index}
-							currentTimeMs={currentTimeMs}
-							activeRowRef={activeRowRef}
-						/>
-					))}
-				</tbody>
-			</table>
-		</div>
+					</tbody>
+				</table>
+			</div>
+		</>
 	);
 }
 
@@ -681,7 +824,7 @@ function NetworkRow({
 			</td>
 
 			<td className="whitespace-nowrap px-2.5 py-1.5 text-neutral-500">
-				{data.initiatorType}
+				{getResourceType(event)}
 			</td>
 
 			<td className="whitespace-nowrap px-2.5 py-1.5 text-neutral-500">
