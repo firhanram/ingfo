@@ -1,0 +1,765 @@
+{
+	"browserInfo": {
+		"url": "https://dealls.com/",
+		"title": "Info Lowongan Kerja & Peluang Karir Terbaru April 2026 | Dealls",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+		"platform": "MacIntel",
+		"browserName": "Chrome",
+		"browserVersion": "147.0.0.0",
+		"windowWidth": 1512,
+		"windowHeight": 773,
+		"devicePixelRatio": 1,
+		"language": "en-US"
+	},
+	"events": [
+		{
+			"type": "network",
+			"timestamp": 1776219532759,
+			"data": {
+				"url": "chrome-extension://invalid/",
+				"method": "GET",
+				"status": 0,
+				"statusText": "net::ERR_FAILED",
+				"initiatorType": "script",
+				"startTime": 1776219532759,
+				"responseEnd": 1776219532762,
+				"duration": 3,
+				"requestHeaders": {
+					"Referer": "",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+				},
+				"responseHeaders": {},
+				"requestBody": null,
+				"responseBody": null,
+				"mimeType": "",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 0
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219535475,
+			"data": {
+				"url": "https://unleash.sejutacita.id/api/frontend?sessionId=368680878&appName=nextjs&environment=default",
+				"method": "OPTIONS",
+				"status": 204,
+				"statusText": "",
+				"initiatorType": "preflight",
+				"startTime": 1776219535475,
+				"responseEnd": 1776219535560,
+				"duration": 85,
+				"requestHeaders": {
+					"Accept": "*/*",
+					"Access-Control-Request-Headers": "authorization,content-type,if-none-match",
+					"Access-Control-Request-Method": "GET",
+					"Origin": "https://dealls.com",
+					"Sec-Fetch-Mode": "cors",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+				},
+				"responseHeaders": {
+					"access-control-allow-credentials": "true",
+					"access-control-allow-headers": "authorization,content-type,if-none-match",
+					"access-control-allow-methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+					"access-control-allow-origin": "*",
+					"access-control-expose-headers": "ETag",
+					"access-control-max-age": "86400",
+					"alt-svc": "h3=\":443\"; ma=86400",
+					"cf-cache-status": "DYNAMIC",
+					"cf-ray": "9ec776616a95250a-SIN",
+					"date": "Wed, 15 Apr 2026 02:18:55 GMT",
+					"nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+					"priority": "u=1,i",
+					"report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=xHkTi%2FO2o4OUwFc3v3Ck%2F53v5Lr7Ns5%2FVU2MU6NiPBxP2K15Yln%2B0Vl5D0gPx6e%2FZ4w%2FOC2RaSKeEQNCeYwVmSUGUW6X8QdhoxCKCK7qdNfpK9Rnr%2BntpRMdQ7K%2FgrSUaTwIDcMw4uE%3D\"}]}",
+					"server": "cloudflare",
+					"server-timing": "cfExtPri",
+					"vary": "Access-Control-Request-Headers"
+				},
+				"requestBody": null,
+				"responseBody": null,
+				"mimeType": "",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 0
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219535475,
+			"data": {
+				"url": "https://unleash.sejutacita.id/api/frontend?sessionId=368680878&appName=nextjs&environment=default",
+				"method": "GET",
+				"status": 0,
+				"statusText": "net::ERR_ABORTED",
+				"initiatorType": "script",
+				"startTime": 1776219535475,
+				"responseEnd": 1776219535616,
+				"duration": 141,
+				"requestHeaders": {
+					"Accept": "application/json",
+					"Authorization": "*:production.899ccbfd4528fa655988e18d43b7170362408a20bfd2f0acac28ec16",
+					"Content-Type": "application/json",
+					"If-None-Match": "W/\"647ff-o3X6YEgVD+mUmOBWlQHPs6dy0uc\"",
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\""
+				},
+				"responseHeaders": {
+					"access-control-allow-credentials": "true",
+					"access-control-allow-origin": "*",
+					"access-control-expose-headers": "ETag",
+					"alt-svc": "h3=\":443\"; ma=86400",
+					"cache-control": "public, max-age=2",
+					"cf-cache-status": "DYNAMIC",
+					"cf-ray": "9ec77661babd250a-SIN",
+					"date": "Wed, 15 Apr 2026 02:18:55 GMT",
+					"etag": "W/\"647ff-o3X6YEgVD+mUmOBWlQHPs6dy0uc\"",
+					"nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+					"priority": "u=1,i",
+					"report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=dIy9uzjF1xVkOw26g2zZuaAcE40M1llbLPVcmymgxJ0F%2BC5afo%2B0aMW0oVD8ab4N4GdqWKKp3xvisTyuGwfM4VHa0%2FEcrKNO4oSYxb50AMlg7yH2jPEWiibbKwVrJ7EOulnlt%2FDxh0A%3D\"}]}",
+					"server": "cloudflare",
+					"server-timing": "cfExtPri"
+				},
+				"requestBody": null,
+				"responseBody": null,
+				"mimeType": "",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 0
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219535848,
+			"data": {
+				"url": "chrome-extension://invalid/",
+				"method": "GET",
+				"status": 0,
+				"statusText": "net::ERR_FAILED",
+				"initiatorType": "script",
+				"startTime": 1776219535848,
+				"responseEnd": 1776219535850,
+				"duration": 2,
+				"requestHeaders": {
+					"Referer": "",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+				},
+				"responseHeaders": {},
+				"requestBody": null,
+				"responseBody": null,
+				"mimeType": "",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 22
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219536815,
+			"data": {
+				"url": "https://unleash.sejutacita.id/api/frontend/client/metrics",
+				"method": "POST",
+				"status": 200,
+				"statusText": "",
+				"initiatorType": "script",
+				"startTime": 1776219536815,
+				"responseEnd": 1776219536996,
+				"duration": 181,
+				"requestHeaders": {
+					"Accept": "application/json",
+					"Authorization": "*:production.899ccbfd4528fa655988e18d43b7170362408a20bfd2f0acac28ec16",
+					"Content-Type": "application/json",
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\""
+				},
+				"responseHeaders": {
+					"access-control-allow-credentials": "true",
+					"access-control-allow-origin": "*",
+					"access-control-expose-headers": "ETag",
+					"alt-svc": "h3=\":443\"; ma=86400",
+					"cf-cache-status": "DYNAMIC",
+					"cf-ray": "9ec7766a1dc7250a-SIN",
+					"content-length": "2",
+					"content-type": "text/plain; charset=utf-8",
+					"date": "Wed, 15 Apr 2026 02:18:56 GMT",
+					"etag": "W/\"2-nOO9QiTIwXgNtWtBJezz8kv3SLc\"",
+					"nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+					"priority": "u=1,i",
+					"report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=vHx6n%2Fth0zeUMP2gKDSdfTWrQykcfr4FYXSd7uyZHssJ0yByG%2FDn1POBPRrdPrvcyuDfvBW4%2BX4UDx7STedT1jZCVDQrg7TzzJMrHlrg7NB3j15TAYluuHGwj35f4Zy2CAgP8OjVIWM%3D\"}]}",
+					"server": "cloudflare",
+					"server-timing": "cfExtPri",
+					"vary": "Accept-Encoding"
+				},
+				"requestBody": "{\"bucket\":{\"start\":\"2026-04-15T02:18:26.814Z\",\"stop\":\"2026-04-15T02:18:56.815Z\",\"toggles\":{\"dcp_job_recategorization\":{\"yes\":42,\"no\":0,\"variants\":{}},\"dcp_signup-v2\":{\"yes\":0,\"no\":42,\"variants\":{}}}},\"appName\":\"nextjs\",\"instanceId\":\"browser\"}",
+				"responseBody": "OK",
+				"mimeType": "text/plain",
+				"encodedDataLength": 492,
+				"cached": false
+			},
+			"elapsedMs": 989
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219536816,
+			"data": {
+				"url": "https://unleash.sejutacita.id/api/frontend/client/metrics",
+				"method": "OPTIONS",
+				"status": 204,
+				"statusText": "",
+				"initiatorType": "preflight",
+				"startTime": 1776219536816,
+				"responseEnd": 1776219536896,
+				"duration": 80,
+				"requestHeaders": {
+					"Accept": "*/*",
+					"Access-Control-Request-Headers": "authorization,content-type",
+					"Access-Control-Request-Method": "POST",
+					"Origin": "https://dealls.com",
+					"Sec-Fetch-Mode": "cors",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+				},
+				"responseHeaders": {
+					"access-control-allow-credentials": "true",
+					"access-control-allow-headers": "authorization,content-type",
+					"access-control-allow-methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+					"access-control-allow-origin": "*",
+					"access-control-expose-headers": "ETag",
+					"access-control-max-age": "86400",
+					"alt-svc": "h3=\":443\"; ma=86400",
+					"cf-cache-status": "DYNAMIC",
+					"cf-ray": "9ec77669bdb3250a-SIN",
+					"date": "Wed, 15 Apr 2026 02:18:56 GMT",
+					"nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+					"priority": "u=1,i",
+					"report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=4NyNbHe9wNjDoXzE2wAslN3JI1yqWrRqEFglSraAyGEuB1AhEuy%2FxL4L%2FZkiKbtVPpLkgHmhZJgl3C%2BtnmdRxPzE3gbFDwPvfIh0Bk1NVwUERUABo2Iv1ZtJdUJxtiNEu8MlfDhIrOU%3D\"}]}",
+					"server": "cloudflare",
+					"server-timing": "cfExtPri",
+					"vary": "Access-Control-Request-Headers"
+				},
+				"requestBody": null,
+				"responseBody": null,
+				"mimeType": "",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 990
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219545178,
+			"data": {
+				"url": "https://analytics.tiktok.com/api/v2/pixel/inter",
+				"method": "POST",
+				"status": 200,
+				"statusText": "",
+				"initiatorType": "script",
+				"startTime": 1776219545178,
+				"responseEnd": 1776219545471,
+				"duration": 293,
+				"requestHeaders": {
+					"Content-Type": "text/plain;charset=UTF-8",
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\""
+				},
+				"responseHeaders": {},
+				"requestBody": "{\"event_id\":\"\",\"message_id\":\"messageId-1776219545176-5679380234140\",\"is_onsite\":false,\"timestamp\":\"2026-04-15T02:19:05.176Z\",\"context\":{\"ad\":{\"sdk_env\":\"external\",\"jsb_status\":2},\"device\":{\"platform\":\"pc\"},\"user\":{\"anonymous_id\":\"01KP7EN8V3N3SY1XXVY6BJZFB5_.tt.1\"},\"pixel\":{\"code\":\"CMTHEB3C77U1PJEFRJN0\",\"runtime\":\"1\",\"codes\":\"CMTHEB3C77U1PJEFRJN0|CNERFC3C77UE36LJC1I0|D1HQOM3C77U8HMHBG73G|D1HSFPRC77U8HMHBG7TG|D1HSLM3C77U92NRAJVMG\"},\"page\":{\"url\":\"https://dealls.com/\",\"referrer\":\"\",\"load_progress\":\"2\"},\"library\":{\"name\":\"pixel.js\",\"version\":\"2.2.1\"},\"session_id\":\"c0da417d-3870-11f1-b97d-fa5631a2464f::sq0ZyvLp2mw7FANuYffd\",\"pageview_id\":\"c0da417d-3870-11f1-b97d-fa5631a2464f-cvdvd.0.0::c0e086ba-3870-11f1-81fe-02001724ce17\",\"variation_id\":\"default\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\",\"index\":0},\"_inspection\":{\"vids\":\"\",\"inter_id\":\"1.-1724.36::284335.9.828.777::303554.12.0\"},\"properties\":{},\"partner\":\"GoogleTagManagerClient\",\"signal_diagnostic_labels\":{\"raw_email\":{\"label\":\"missing\"},\"raw_auto_email\":{\"label\":\"missing\"},\"raw_phone\":{\"label\":\"missing\"},\"raw_auto_phone\":{\"label\":\"missing\"},\"hashed_email\":{\"label\":\"missing\"},\"hashed_phone\":{\"label\":\"missing\"},\"raw_eb_email\":{\"label\":\"missing\"},\"raw_eb_phone\":{\"label\":\"missing\"},\"hashed_eb_email\":{\"label\":\"missing\"},\"hashed_eb_phone\":{\"label\":\"missing\"}},\"action\":\"Pf\",\"auto_collected_properties\":{\"action_event\":\"twt\",\"inter\":{\"ct\":0,\"st\":3},\"page_inter\":{\"metrics_type\":\"ct|st\",\"ct\":0,\"st\":3}}}",
+				"responseBody": null,
+				"mimeType": "application/json",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 9352
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219549576,
+			"data": {
+				"url": "https://y.clarity.ms/collect",
+				"method": "POST",
+				"status": 204,
+				"statusText": "No Content",
+				"initiatorType": "script",
+				"startTime": 1776219549576,
+				"responseEnd": 1776219551735,
+				"duration": 2159,
+				"requestHeaders": {
+					"Accept": "application/x-clarity-gzip",
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\""
+				},
+				"responseHeaders": {
+					"Access-Control-Allow-Credentials": "true",
+					"Access-Control-Allow-Origin": "https://dealls.com",
+					"Connection": "keep-alive",
+					"Date": "Wed, 15 Apr 2026 02:19:11 GMT",
+					"Request-Context": "appId=cid-v1:a449a586-8786-487f-a449-dc1b282a2628",
+					"Server": "nginx",
+					"Vary": "Origin"
+				},
+				"requestBody": "\u001f\b\u0000\u0000\u0000\u0000\u0000\u0000\u0013í}ãÆö«¡Ðn÷lûàl;$KÚ]EèpH²½ÆÄ\u0006H$4 @\u0003`79¶^c_bßjäºº\u0000MÛ±3\u00113ÝU_f¨#+óÏFfÌ\fk\u0016ÍüØ\u0005Ø±b\u000f:ëÅÐøÓÁ_´ös¾x6 aÿ\u001cx©³C?å|yÜ\u0018Ð\u0016þklÛvßÌ\u001f\u001eVYZ\u0014ÍlYí\u001ewÐHùÓ\u0013{\u001bAÛq\u0000mÏ· gGï N÷Ã.Ýó çØ4=ð»t7\u0013ÐôÈîÒm\u0007zËÒcî\u0001ôB¦Ç\\7°¡\u0017Q|ß³PºïxÐ¶}\u0017\u0006\fÈ÷Â>Ã\r`à4ÃÇ\u001aÙA\u0004mÛò`\u0010ù4#\b°\bË¶\u0015Û0YFè¢\fÏò m\u0005>\fmAµ\u001dÛ¶å»0t¨ôÈõø\u001cËñ->Ç¡C\u0018\u0005!ãÅ0´ieE!V9D¹$E.a±\"c1Ø\u0016s8&9±euåG\u0005±Í2\".#AÈ8ì «J+pa\u0010ÐF\u001d¯Ï\b\u0003\u0018x\u001eÍp]áBÛl\u0018¸¤Æ0²!ª\u0000ò[da`7Bm\u0014»ÐÄ0²bhÛÐöQ©qWr-Ç\u0011\u001at¡\u0005\u0011±áòÐk«ýÌÝ½x³Û\u00064\u0002?x¿//?ÏÍìÐ«¼\rH\u0011<Ûg\bå¿\nÁ;\u0004g\\Ý¡ÞÌìEø!,~v\u001e!ð:\u0004ßÆ*Xnüc\u0019Ì¨8d/öó\u0001üéý*ÙËýûÓ{×Z÷\u0000±Õ\u0001\u0004¨\u0010Íóñe­gn\\\u001f×Î ø\\5>4ì÷§Í±I+gæ=\u001fûí¡9§\u0003\u001eu\u0014!r\u0010ìEö!ò|{æÙá³WÅÍ¢\u0007\b»¶tbë\u0015\u0000\u0001o\u0006ñk\u0000\"§\u0007\b^\u0001\u0010[\u0006¯)Bì:W6dì\u0007}_r_Ñb®\u0012Üñ\u0001¡Gp-«WÁ_1 \\Ëµûa\u001d½bPºVß\u0017lÔ£[Evx±\u001f\fhDQéVí²¹'ÿT}XEqÏß×ä¥üvß\u0013l×Fýi\u0011µõî0+î¶ÌV\r\u0002\b¶ë|ç¼·fþn±ÿÓîÙ[ô\u0000}O°m\u0007\u001aÑzwp÷Ç¶¹vQ»´-\fhµ¿Éö«Õûçµõâ¹ÝõU`÷U\u0010¯\u0002èë ò^\u0003àô\u0010¾ª\bNßQ_Ö\u0003ÐáäÍ ü°oñKÏ\u001fuýÈ\u001b,Á\b¿Û\u0017\u0000\rËù¹Á8¨àDËçUS8³ M£Õ.N9\u0000®\u001bÐ°Ãã©ÚåM1\n§ôÓ²<\u0003à9}\u001b¾¿ïDÞ«øû/õ\n~Û³È\u0002ÈcË\u00017¦\u0019d\u0001B3,èâE\u001eÊpÈZÎr mG>t=ÆF\u0014Ë\b=è\u0006L\u0006Y/%\u0017A7vXFÔs8h\u0005Ë2|,<ÂË¢ØÏd¥­mã/z`Aß²h\u000eY0ÚvV\u000b\u0005}/¢9dÙ\u0016Fq\u0018C?fX1]Æ:0vC\u0018ø¬dÙëY.b.ï\\Ëö-º$\u000baäG0dÅÃv\u0007F±\u000b#ÏaDqðJÌÁ\u0018\u001dÂÈ\tiºW°\u001d0b\u0018´ÔtùìØ\b=ò`\u00141\tdùL3l\u0018E´h~è\u0010:\u0011-\u001ej\"é\u001e-*\u001a{hzhÁ5DLª\b\bC\u0018\u0001Ë¨®\u000e\f#\u001fF´!\u001cT\u0006® ØgÑtV\u0019(=ÃèYex\u0010­@#Û¥é¤oàtÛa\u001cÒtÚ\u0003P¥:\u001eR¦\u0007^\u001eÀ0ôi:«\tTÑ1*\u001dM'Û\u0005îº0\f\u0002º°Eé>\u001e²åª+¤1[:B:Ó\u0013÷í>=²¨>\u001ej2.Ýhz(àD.[aúD.\u001aK÷¨\\ÔkùtÚy\u001dÜ¹øtF/é\u0013°Ea ¥{l­'¥Sü Òi=GDÏ(\u000e¨\\\u0013Û¾Î/Ä¸tVÞØ\u0013qè qb4OòéÝjÊ\u0016Ò­­ô0viº-à³öE3©\u001eøl#âx>\u0010q\\\u001f8´Ý]<ÇqéGÓO\u000f¢¦{\u0002}\u0010²t?\u0016Ò\u0003\u001e8>\u001b8¾E¿Ü¶%¤{\u000eMôq)¾ã¹b:Ã\tD\u001cÇc+\u0003¡\u001e\u0002Ûg_|¡>\u0003Ö^®Ø.Åè]_Lï¾ü\u0002OÇ£ëíâ³vw#\u0001Ç¨\\OÔÇ¨\\OÔÇhýx®c±ï¸PÏ~HëßôaíèIú´Þ|ËÑ§Kútéî\u0000¬\u000fKõaé\u0003ú\u0004\u0003r\u0001ü`\u0000'Ú+$§\u0016ø¸ÌôØÁñqïF\u0007\u0010!Ù I\u001di\u001c;Ð<49£´\u001dC'òÉ§¦ËÅ¿G\u000eù9ç.ÿ+^é¡=\u001d#n/cX\u001e\u0002©Ïð\u001a\u0012Úa`ùÐH)7>tVÐ\u000e\u0004h\u0003-J\u000e¸ðÉI@æ\u000e'\u0002ßÃ»ëüvj¾\u0007Cô\u001dZxk9¡Eò\\/¦?ðX\u001fZ>þ!`)!K\u0018N\u001cZ\u0001úÁ¶hmSb°]üÃ»wï ±'XÙ\u0000:h¹åÃ(Æ×ßýû¿}o~ñýï¾ûéËïÿðùýï¿úáÏÿh@£iOEöøÁÌËUv\u0003ÇöB/r\u0003/|\u000bªç¬^\u0017ÕË\u001c<çM¾(²·`_5yWå\u001cÔY¶ùsö\u0016¼ä«v;\u0007Öþø\u0016l³|³mé/«¼Ù\u0017éi\u000e\u0016Eµ|ÿÖ@\nùD+ãÍl\u001eLã?~úö.§¶ÎÙê-ÈË&£è+$¬Æ|õù\u00064ÞüæQwÊ¢NH\bß|ÿå\u001fqjL\u0013~üéß|e@ãá\røÃþ\u0004~Ü¦«ê\u0005üPU-ø!k²\u0016¼y\u0000ómÕ´Nby§\u0005øU¾ÛWuíÛ_\u0012ç?'eÒJzó(BN§\u0015i[ÖóÇ*\u0016enåLMëÉ$b[È¹JK\u0004¿$åÃ_6Í¼\\-\u0006<{3gæ¿o¿þ\t|/³²ÉÀ_\u0000«~\u0014µ\u0001xó\u0015é)«Á¾®öYÝæY*\u000bÏÃ\u001ejÀÝÝù-Þç­¹=í·YÙÌAYÙý=HË\u0015¸+«\u0016ÜíÒzf[ç»9ÈË\"Gù÷ ªÁÝ¹«>UgeÛåq¬Ëª¨ê9¨7»u]í@­@\r6`q\u0010°2\u0000¼`¾ÈÖUA0O×mVC0/ÒåûU]í\u0019\u0015\u0000¦Ù¾mM¶y\u0003ëí@Þi$ï·¨êUVx\u0004ÌAS\u0015ùJ$(²t\u001bTBÜ\u000fÅÜuU¶æ\u000bí-Z¶Nï\u0001ªzi1Û\u0014i³ÍVæ¬®\u0006HÊÃ.«ó¥¹Î7:;CÔìÓå°.\u001dT.ÉÒ+Ç+\u001aQ\u0016øÄ²,KmÒæ\u001fA0Ób¿Mñ ûTÌÇCö\u001chT@8(³ÎËÍ(\f&¤ÓY(ì\f ¦¡3Ø°VÕz\u0000¹OÃ \rUëõz=LtF©êÐ¢Á>2h\u0016Åa¨ì\u001a\r2k\u0001eU¶uÚ\f\u0015xS§§f\u0016C]}{ÈÌºjÓv /³z\b½B\u0003¤=\rõÛ´=ÔÃÈM¶ÏÓ<4uõzb´óðt½'jò\u000fC\u001a³v´Á:s-×QiÂî\\[vg\u001bµ£\u001cmÝj¼;²3íÝÓé\u001aþ\u0017ôß/øsÞ}Ûm¶ËÈWm^WU\u000bA·!¨ø{Ò¤è[\u0018_mV'\u0006\u0004\u001c§MVçk\bSÓf;óC`¦û}$\u0005ê­¸«Êj`Ð\u000fè#Aðã¿}[ùC¶9\u0014i\rÁ·YYT\u0010|[é²àªlª\"m HoòEV§è²«Ä¬\u001e\u0012ãêPçY\r¾Ë^ªN\u0001ÜÍ:[¾5\u0007Õûb¹½Ãý)Y¶\u000bìpæF÷\u001ajÇêÈ£hæ#òÀ\u0001v4s]OGïõô¡5ó>\u00053;¶ãÌ\u001c;ÐÑû=}àÎÂOÁÌqCàø3×µeúlÕi!Ê\b°Nv\u0018\u0002;pgãÊLevhë´ÀÅþd®£u0@a[Ä][Ùr\u0004×Æ'Y«tÄÅ$+{\u0019/­\u0001\u0012¬ÿ'\u000b?MÓ!\u0012\\-ÄAr\u001b2\u0000i°\u000e¼\u0001\u0010\u0004®\u001fûö\u0000II¼ÔsÜx$Æ$®ï¬\u001ddQ¤Ë÷süur^¶9\u001a±Ü\u0017Îì×=3Ç¯³\u001dÇQ¶i^fµ¹[Í\u0013éó¼c1\u0007~Àg¶Ù±5Í\u001cÌB_nø\u0003É¶\u0011Ë´XÞÙà\u0001Qß´Ín\u000ef\u0006¤ÙiAfp\"\u0005¨ØÌ=³\u001d\u0015©ØèBY$(T\\{¦A:\u0016£H<\u0010·06wÙ*?ìæÀçÚÏo²]¾¨Õ\u001c\u0004\u001c\u0005[8£eM6\u00073Ëñy}øÜ\u001aeó¹tÑn¢mó1[¡â\u0004ße×é*?4¸Í£n±Ô%ãtÔt\\-îà\f¾²Ò2ß¡íÆþP4Ù\u001càÿÓåa/ÍEö!Ïê»\u0007\u0005Á,À¾\u0007y¹F~È¡/2î\u001d¼«l\u001eìhð¦×\\\u001dÈÌ<\u00073ÛoÆ(Û|êd}(éê^«ÔQ`ps­Ó]^æà9­ï¸OJ>\u0002,(S*÷u¾Kë\u0013\bãl¹ZK$ér-LWk'[é\t(DY+yr¢\u0014d*]{U\u001aé)ÈL­â4çcJA&ÒÌ\nSPQ2\u001bûkÏÑSit\u0010dæ°\\fMCKk­ãµ<ö\u0014Ä_Å«@\u0005©×éNu¨Ï6ë4oÐ\u0010ATA&Ïùª9ï³\u0012QùÙ*óä1°>\u0014Å\u001cÄq\u001cÓÞ*-|\u0016iC×=o¸~·óWvüêÖ­xÎ¦[ôEÅÆ\u0001I@Û\u0013~ëA*ú\rþ>]»Å\u0014ÂË®ù:G\u000b¦¬È-ú\u001cÚ¶*?ºØm»+äÅ\u001e=|!³}þ!3ÓÕÏ¦\u0015ómº ëwVåÂükÏØ¤¦\u0019m±;¶ä\u0013ãs´®\u0004_ >\u0000¾ÚU?çhq\u0018?f*\u0003¿ûZöãi·¨\nø]ÕV\"û½ iÖ¨\u001dÚ6/7^g\b²ªwi! =§u'Àq,LFëÚ#ÝÛ|³-ð·îÄð4ºOë\fÐõÍZ³Öìb)Z·ÛfuÞ\n=Èl«=Û«ÛýpAÿ¥E=Ùfuv÷Ôæm½»×vU¶¬Ø´(WYz\u0005XUmÛMÓèX9l\b¶\u000e\u0004[\u0017­\u0007ÁÖ`\u001b0Ñd¦§»H¾<ÒéWÅÃ\u0010´µ1X¢I6MÕ^@Ð´uUn\n`åD+¬æéÕ*àýb\u0006Ñn\u000fÁ¾Î\u0004Vý¸¿ð\u001b´ÙE\u0003Sò6£±\u0007<?$¹gÓå\u0015­òf\u0016¦Ftædd\u0007Ôî³Î\u0006òeZioÊ9þ,¡!¡Ê\u000býOu\u0013n7Ë«73¢ØþÒ¶Õn\u000eÌY·|í:µÚj($6EW\u0003æú-ºw(9-è|26×,«¢H÷h\u0015Ê~\u0012¾ø\f]-\u000f\r:ÿcÂè\u0001ß\u001c¤¶âé÷uµ©³¦T]9whmÇXº«\"oZ3oÅ2W\u0005\u0004\u0002]V\u001e\u0018\u0007&¤gè§Ïw\u001b\bç\r\u0004Ïù*« X¦å3\u001a\u0013éaW\u0010äë:Ýe\u0010d»E¶ Zü-Û!íwùjU°¾ ]§É2±8\u0006´KfÄ:\u000eë3r%%\u0007\u0004y¹?´\u0010¥\b\u0004Õ¾ÝÔÕa\u000fq[§uòý[;õªWC¤\u001b\"Yµ-º\u0003é/\u0007ø\\mïê\u000eÐØº\u0014-àúåª;bæ\u000eig$ÅVdÿàe'ßzRöyÞÜ=í\u000eEïì\u001d\u0004Oh&znÛhÏø9º\u0010´ÚãïÆå«IîóÌ¦MÑiªcëñ6£\u0014\"+WsàÉüû\"]f[¬{7ëõJI¹\u000bK|­Ø]Z¦û}Öiv8ô\u0018t¨*ì\u001eâyÙÖyÙ +0ò9Ù\u001f»V®í\u001a­úðR¶(ÕLÐQãMÓ.?Þå%(Ò\u0005D×øþÎsPb/G©Þc\u001cª\u0007Î\u0002¾õ)ä×¤ìIOûÃgü\u001d¦:#uÀ¦?±aXõ6YZ/·ÜRI^òõ/OË=Ì\n¤å\n>dæsZ\u001cºOÚ./ûL±å\u0017htBÖ¬ÍDd\f­òVùºÐÎ·.²ã\u0004vsgÅª1_jTªZ\u001a\fÊ5ª\u0002\u001bAø»1Õ<eiMt¸\u0006eWíözUzº\u001ed[\u001dnQ¢¼<´Ùõ8M¶¬ÊÕ-ô)üf`Y¯òl÷\u001a$tiV®ÒÚÜçË÷YVù2m«º_4ñÇ\u0004êï£«²´È;Áøì^PÊãYX²t\u001bÔÓ>{L\f\u0018èãBjdÅ#¤4Å.GIÝ,ÈO\u001f\u0004bú\u0007æ\u001c/«¥¼,ñ·=/%¡¥YÏZ\u001dÚËX¶ùjïhíÌËª½£iq(Û¼0×h*á^¯Pf@Ê\u0019Ú²Úí«2+[tÊÛ¥\u001eÚ¼È{ûY|ÖÝ\\$ÉÃ2­Wæ6K¹\u000fMÎïûÜ\u00076g¢¯\u0003_²Ù¾ÊÑM¤=#á&VõV!Kí83fáÄÜèW¤ð©7sãÉÓES\u0015Ãgû,#\u0013/Ø¯ñl¦Òêöo3b a1jjo;Èn®\u0017ïÁ\u001b`ÝkXO\u00123\u001bÎ ð¢Kd\u0017c\"À+-'^ð¡3)'If¾°'Õ«ëÌ|ÙÀèlØÀ´y©5w¯¤°Û²\\\u0002àMböDV²/\u0017³½úDé\u0014\"Æ\u001eh£iÌÙ±¦q;Rÿ*²5®ö\u0007§ûZdë\u0016ÝÏ}ªÒ¹\"Í¤%|Õ2Ë\u0015Ù½)¬R£~0mÆÕ\u0019i\nß¾Ù²*È 2»²oê\u001cïÛ\u000e»²Ûî½\fÙÐìÓRb©Ñ\u0012¥\u0003\u0007<Ð\u001fT>,Ë\u0019 Q¹Ý±§\u0014öP]ò^æG_¥\u0001\bù5ÛIcÙz\u000e_e\bì¸z<Ïî(ÌîtfWaö¦3Kýd·PÔ>3\u0014~Yóq~YùÂ´45?ÖÓ/tmM\u0010&VÈòC9Ø¡ÝB&o¡f¨\u0013+T(Qú\u000ev\u001b°©³\u0019¾\u0005\u0013¾BôTíÌw¨_Mü`aAî$!î4\u0011®NÀä¸SK¢ÌX7I7M§\u00110­\u0014\u0013Ë +A0I@0M@ \u0011\u0010M\u0012\u0010M\u0013\u0010i\u0004Ä\u0004ÄÓ\u0004Ä\u001a\u0001¶5ImM\u0013aËN<ö¦Ép&Ê\u0017\u001eDÆ´ÞêLì®®¿&É\u001díIòNe÷Ö4Ýæ8Úkf!dÐ óªGû]\u0012ãÝöcñ¢Q¶íØEgÛÆÄ¶\u001f\u0010\u0017uõmßÏ/êÁ[®û^Ö/·¦=±Jmù+\u001eÍ-ê\nõ¼åº\u0002N§H(KÏ\u0014\u000f3ÅLH±$¹C\u0004fè \u000ex?è\t\u0010¥¤::\u001aí·üIé¤\u001d$áou:\u0010ü®Iàx\u0011W$£CSþ\u0006½\\ö\u0001êÙpÛèi Ý7\u0010Z7Ò\u0012ãd_\u001bQ2eUôb®ûS[J´FgkUÙJv\u001evdBè©öGFR\r_\u0015\"RÍÝ!©0ÁîTíÑ/´s¾H\u001db \u001c\r\u000f¯½î¶R¤Þ­&h·[©}îEì³£½AÓe_úYé,{¤c'³Ç:v{ºöò4Ö²ýî\rý&ïîmïû\nÂ\u001c$Q:æñ/ÝÄºú\u000e\u000e«×\u0019\u0018;X5ëS¤¢ÙÙqv\f¬\u0015E{]êI,`ÒÚÃâD|F\u0010\u0004*\u0011`y¨\nÛ#ä\u0002ª;Ä\u0019øÒæhùêªi¶i^+l,CÇUVè.©¨^úSBÆÇeé8éÁ¦ÌEÅª9´\u0015ÚÔ7èºBØéw9sÜ¡t\u0013\u000b;\u0011hÐ°FôÿþáÆ6&h³Ý\u001e·\n\u0001Ã³2á\u000eµ¬\n¡­ò:cæ¾øCÜ¤µÙ®15j_T|÷\r39 Y\u001a\u001eáR`!ý\u001ae\u000blÈ´1_ÌEÖ¾p_%Lë\u0006¨,3F¥E\u0010ÕU\u00004*3\u001aîpTaÃjg¥Ø\u00196é^ü.nÒÁ3\u0006ù«xí\t|¶m¢Hå<\u00061;\u0013\u0018\u001d\rÛDÊ^\u001a1»\u0013\u0018]m<´`\u0002[ ²%ÉSG$%IîLsîñ2_©\u0000Mº¿ö\u001dY±Ö\n~vP`fMïäå®ÙÖr¶¢Xÿ²<+|ßäìA\u0000~\u0014oëÑ=7ÍéYÈe e\në©C:z¥rhd`Ã\u0019ôÞ«_\u0013I&3¤Êû×\u0016÷Z~~3\u0006èô\bÅf\n±ÑsïVS¸åU\u0013ãVø¡²\u0017ªîèN\u0006\u001f¤\u0016\u0002ôfîøJá<,ºÖ&W3\u0017ÉÀÒ_ÔÜ¦ø¿[ËðÉÄÅ9Íu®\u0006vôÀ'\u0005\u001aÁ^\"0i5íqaót&`½\u0012\bkR±ª\bÁ[]-rY\u0012*¯¬Áì®eDåÎf÷Ï}¤ú VVlC#>\rÒu4î]Ðd(w\u001cÊ»\u0000Ê\u001bâÞÇâµ`ôÉíy J(lúwO\u001db\u0016©)?\u0002$\u000fÞ\b\u001a}\u0006\u0016\u0004<ÀëLòÅê\u0004ëÌóôE\u0003Þ¡Þ/ú2Û\u0016\u001e\u0016\u001a¿lã\u0016Z{E©mËº\u0007ÁeÅæ\u0007ÃN£\u000e\b®ù.í*\u0014~[$\u000fîX;Xø·ºM;¨\"_Ó\u0004\u0018å\u001e¸\u0013k\t\u001d\u001ddeÝh©â®(ãÔÅMK´-#ë¶åôoQÎ!K_¹+iýcP\u0006\u0000÷Dÿ2°h\u0004,¶ÎNèä¥ÿ­&ô!Á¯i\r\u000ekzß\u0013\u0015ü³%_ÝhV\u001f\u0012|uÉ#ÿ5%Ï·yöQÚ<¾]Ç\u0013Û{É~nÖ!ÏÜo5ë\f\t~MÉ9¬é3\u0010ñ©2m¾ ´ÊTAÏ®²5ê27\u001a+\u001a¯©2Z¢É+\u001fêæêRë«w\u00020\r§§×@áwþSq0ñ\u0010\bu)p\u0011\u0016å\u0019$þ\u0007.$<\n$×:gÖ\u00042'>E¦\u0003&UDãÔ$y°Gû7þc§·éßªÈ×toR\u001c`OìÝL¨s¦îmËèÜ¢Îe\fÏ·åâÆå\foQÎpJ9×yQôéYw¯#_\u001fÊ»8ÆÂÝztï§&Ý|p\u0007ûg\u0018¥Ãýý±¿U\u0015ß/N¼{Þ\u001f\u0015/³¼Ý\u001fÅ; òUÊþØ\u001f\u0010NpTËõP®töÇþFg\u001a«\u0002\\®bÜ¸?ö%Ó <\u0005àB\u001dT\räNy\u0006@íöS6-ØôkôIÚ·Njß\u001aE»ÖIßµÆ14Z(=k\u0014AîX'}Ç\u001aÇÐh¡ô«Q\u0004¹[Ôn5Ê¯ÊWzÕ(¿Ü©N½¡Ì$þHíQJ§\u001cïNrlÕvn¼¿oÕún½¿oM[©þ±W\u000brí×êl?þîHâ_¨üg\u000e)\u0000j÷\u0019\u0005K°ÐôK^\u001fáËbÑw­1¡ \u0004³u«£Gé¢)\nsôÖ­\u0019Î:\u0013X/ªs¬½ë9QGÑk\u000f}êN®½H>[è\bOd»1ê:\u0010<ßÃ{Øf7.¶Ù].Vr\u0001©\u0013{Ô9Áá Ååb%/Z±Í\u0019±Í+Ä6gÅ\"³nÑ\u0004÷\u0010$[v,ö |¿Ù±¸,î\u0010?ÈâK,Ì;¥ráÙù·uµgkA¨K=\u000e©^t¤i´â Æ¾<\u0005i;\u0012n\nÞ?Ð\u000bÅ\u0019ú\b½D2ã([$ïíl8G£ôÞ³?íÅ<eWÉAR­¼zºÀú\u0002µd6Äî\u00061©CVCBßWïð.¸¸ã\u0011ü)\bÊ1\u0018\u0010LA\b´\bç\u0011\bJÁ9b\u001eÁà¨F0Æõà¨F0Æ+£\u001aÁ\u0018¯Rj\u0004#\u0011bD0û'\u0001#\u0011k1¨ñ\u0011~J¡[\u001bô¾ZGø9*\rpô8í¼±ç\u0013.Å£©\\`\u000fH\u001aõg¤9to-Èòt¥ºÅUÒKK4é¦P\u0015èJt«\u0001)hÒý +Òhyë\u0012E¯.Qtqâ±tKÌ\u0001IjÒ}å\u00019»Z¦hD¹ÖU½@XÒ\u0005òHâ\u00055Â\u0002E\t3ÄSò0ì¯l\u0019\u0003·3 ñ à\u001e¥ðQ\f1ö6ª¢g£q \u0010'ÎÎS.ã\tõ#g+Þíf4ðÊN\\­öQu¼ý\u0011\u0004û#0íý+&\u0017û\u0005²qÛ»ÀBËtÎrXÝz÷èÔñðÑî¡ÎÅ$â3Õà@J®LSt5£ì|\"\u000eýí\u0016¡Ù\r\u0014\u0000µ)j%ë\u001f úã\u0005©È!$p|Ô#ýó}8Å}8Ú\u001fñ&\u001dÁùNþ\u001dTNóê\u001e@\fÎþ¦{\u0000õ\u0001Ì(Åüêçk>\u0015%\u000eX¯ó;x$¿ñ¦éÅ¡\u0016æë>ðÌ¢L\t]H)!µ\u001f%$`Qâ·|\u0012\u0013Q|'!¯%=Zò4!\u0005ÜBÿÒÃZJ}Ïê9¢ë8Ôzâ±Ä\nSCvéóµU¨çÒg\u000fTª\u0014KG}½ê3µm \u0006ÛbNî¿ÿ¯~ê;Uba`\u00024\r%\tì§\u001dîä#¥ÁCOtÕ\t¹yê­B¬éTËÒ&c³Íù¸4Ý\bÐ\u0006¹éG M\u001a\u0001f$òQrOÁ9×\u0016;-âök&5±dO\u0002§ °Ûé¯R<\u0005lDH\u0014÷\u0019ì\u00027®P¬X\u0013EÓQ\u0015èÓÂ¿Ïªgµ¤,t¥ï(÷¨i(§[u`_¨\"\"ýF\u001c\u001atàKü}óút¶?Egí)¸Û¢×sÿë·¡ø×$\u000boDæ8uÌöHsÞÚ\u0019wµðþ+áýiðÁ+á3ð\\¿à{¾Qxjù\u000f8Î\u000bød½pn°\\Ê¯uT>U×[ÌZÃ\u00070ô°b f¤ÀT\u0017U¾Î@t@Lg>éO©~üÇ\t>Fõ\u000f+r=ç=ÿxÕ÷æÓêÄýõ¡*ñ\u0011l?GêCºÁyåÄÕ\u0002N\u0000äÎþuXÝy\f%»QZG®;1Ä¡bdþÁ´­9þ\u0005ÒDºs\u00162MÉýsïU´­\u0011ð>\u0015y|Âwêz,yCË}·û¨Ùhlá¿Ø.ÆÝ\u001fÁ¿è7Ëx¯z/eÒå\f\u001f|áoxÏ¾Ê\u001b\u00143h$sÏî9ËîLÎ9ïæðT:\nÜ9Ï:\u001c\u001aÝÞ ¯¦ÒE\u0001¡¡í\u0018÷6mÿü\u0014u¦¨Ú$yÄÞËÉ\u0011n¼K9såéØëùÒoÓæî\ts#ÖÇÄàY9§ô¢³\u001dâ0§\u0003{]«¾.BIò$¿n7D>3\u0003ÆòÀ¯Q`¢\u000eú&Áz)ÎuR\u0014³L½\u0014÷õ\u0012Ü)øÞëñ%À®c Ýv<²\u000e!<1¦\u001d\u0000<&\u0006nøaËý)Æ\u000bCRûÉ{Dä¤;Üñ5ú|íâZ£Ê\rÖÛÊ`\u000ev\u001eénèÄ²éÍ\u000fÒìwHvw¤JÕ$ Á@w$ò£\"Pþ¾Jÿ\u0011añ¨ù§ÿê&\u0016Có¼<¥ËxW:\u000edÄ3\u001dÏB\\$É\u001d:O*Ò¦I7Iò$ÿL=°þ3\u0016pOÅ\u0010ËÍó\u0004ÆÀ\u001coP`\u0010LÌMÁ\u001fÁ\u0019óUJ{W+ý:¿ËXiæcA\u001ba\u0006]ÒU\u0006À\u0002:\u001d¢û¶GW¢\u0019ØW÷Ð\u0018}^W\u0015e7Í~J\u0011Ã\u0010#Ë»:ër¸\u0010ï¦¾Íb8b6ÂB\u001f¬¢Ë^êk1YddqáM\u001a\u0015ð­Ýµ-å\u0011»CK¢&÷ñi¢È\u0014\u0007Q\u001a²b9Tæ¢3ë°¬UÖ´õaÂÌÁ'KË\u0005ÍbA?ÉüÌZ¥4Äé\u0012k|%ÿI\u0016-qÀÒ¨·¥\u0019\rö[°sö¸C!ÀPë§eK\u000f\u000f93¿Á6¤iÝE/\u0007\u0002\u0007Ãûì}vÂq\u0018\u001b Aì\u001dãBì]Ý¬]Àõ_då°It (f#ÍÐ èÀ­W¯ãÑ¨&á¡ ò¤©¬K\u00053\\_C0sõ\n7E¾ÊL\u0016Æ¯Hé]Tí\u00160Z\"\f:LU4`·çßO\u0013iÊW¦XõJLCu \tð-¦<rq\b¡®Ò9ÒûñÆ70s0ý+ÖÁØBIåîA0µÞIÿÅíZÐvdyðÉñßAãåÈÖ\u0001&\u001eÍUµ<ìÐ Ç§½ÍcP|xþ9Îüf¹7 ñ\u0019;Wü½\u0012¹Í©lÓã\u001c$ÆÄÀri¤<ä~3-¨¹\u000eêòyZ {¤&I¡ÐO\u001f\u0015ýÃG@ç\u001d]\u0001Ïâ¹ëDPøèz\fÎÊü*\u001cfÄ}\u0015\bµ°º\n·Èº\nH´àº\t\u0014]ÜF-j!v]eáqMïç¢\u0005]Í\r45Ób¿Me EYÙ¦ì×ÓU§\u000eÆuÂø}ÕG¬\u001c^Ì\rªHûëTT\u0010yæÜ¦ó£W÷TV¶Ø\u001fQñþÌøúZæîQdå¦Ý^Ð5F5¦¢.©k\fº+:'æ£·p\tþ¾èÈ\u001cèª6î­®aÆEWt6HW¡ô¦JWWdÑtÝê,¨¯ûQû¨ë@\u0019ÕU\bà­pn0§òhï\u0017/±\u000füðÚ±Ç\u001bõÝ\bé6ÃY1\u001a¼\rÚm\u0006¸Æ(ñ6x7\u0018ò²ÑãmÀn2\tFÓ¡wðÉÃÀaN\u0003lèØN\u0004/¿þ½\u0001º*²Çt¿/PÈî¼*\rhà£åG\u0012Î\u0005\u001fÆ¡\u0013¥p$¼\u0011X\u0017ïCâ!EÉ`þH\u001f<\u000bK8D'ï]'\u0014ÑcÐ\u000e¼~ÑÅ\"r-I\u001cÜ`$¼W\tÙ\n\u001a\u000bwY]¸ \u0001.v\u0017\u0011§}pH\u0005±p\u001e1\rq\b\u0000IÅØ\u0002Ø\u000b\u0010ò_3óõzyD%ã·]K0W\u0012âÛóþb\u000f³ù]zðÉÄ\u001aUÔ´g>`®\"äçÂ\u0018.èà|\u0001y\\ß\u0007c¦Ô«ñão?ÿ®ÓÞ¶1{äJêo51PÔ5P\b\\§/LçÊ)?T'Âk/\u0019º1Þüd@ã·u¶OÑb\u0012ÍÕÈêd<Ø³ßAãÕ¡\u0006»|YWû-êãyÃl/\u0013¦¶YÅ{\u0016e\u00018ÝéÒmA}>\f©Ú$÷i ¿\u0003Ç¸.i\u0019\"ê\"_¾\u0007iyÂ1ÞQ9öé¡É@»ÍÀ²:íªz)1Gª°ý\u000bJD[Õ¸çQÿýïÿÁ9\u0001).ç\u0001ã®(ÇmÛîç\u000f\u000f///³\u0017wVÕ\u0007Ç²¬\u0007B7\u001ag@Ü1óìå7Õñ\u0011-º\u001d\u000fà4dû¦\u000f\u0003\u001aä¼ý÷äÖ¥\u0014³O@õ¸L÷¸\u001fÉ?WyÙ¥z/\u000eKä/ügîò% ræ\u001bÐ@w¸4DÈc[\u001fðhòBÖ\u001e«îÔeDÒpìÓvk@cõø­í\u0000;~v1EÜÕ\\\u0004bÄ\bb`[ÏN\u001a\u0010o;l\u0014HÐz6\u001dÄâ[\u001dKLQ$TÛ±\u0001\u0013.8© ¯UÛE³÷ñÑ%ó{\u0014ø\u001eßö$½\u001dµ'&Ï\u0013¹Å\u001c\u000f\u001a_÷ïÿö½ùÅ÷¿ûî§/¿ÿÃwæ÷¿ÿêo>ÿ#=V6~üéß|%±¹6ù¶ÔÐqpªoC\u001fF\u0011Cüá«/¾ÿáË¯¿ûwóï¿ûéï¿1óù\u000f¸!OEöØf¡¦ð\"7ðÂ·\\à\u0016j|õ\u0016ì+bù<\u0007ÈI\bºzË®?\u0003î\u0013ÿ\"Å\u001aÆ5ï\u0010Í7?v²qºK2ÿøéÛoº^ZºhªâÐfoIy\fOÂ\u001d£\u001f1G`ÿøêó/\rh¼ù\r\u001e5Íüáa¥EÑÌÕî\u0001Sú@\u000f\u001a¿ùþK\\¹~@\u0013H\rCãá\røÃþ\u0004~$Kø\u001fÐµæ\u000f\u0019: xó\u0000æÛªiÿ\u0016Å.Á¯ò\u001d²iLËöí/IóÑ!iû2\u000f\u001dG²ñç\u001eí¥ô>Dßó'Äq35-)í\"ç*­.\u0013è¬\fD®\u0006~\rÞ°Z\u0010ypD!çáÍ¯@æÅK^®M\u0003½3sÀ_À·_ÿ\u0004¾ÉYÙdà/5+GÚ\u0016¼yHÊÏôÕ®ãò.ê9Ó»;f7¿=í·YI\u000bp\u000fÒr\u0005îÊª\u0005w,¤xïX¸êûû{PÕàîÎÜU\u001fÌªÎñM.ÍãX©éL½YÜá\u001b-t£X\rXÜß÷¶¬o /2tã\u000bÁ<]·Y\rÁ|Î\u0016'½I|ÿÓ_)y§¼\u000fJ\u0018B\u001dp\u0004\u000f!Ú¿Å\\Á¢wV£Í¦·\u0010\u0003¹üýÂ\u0000xsp¨{>\u000eEOû\u001ax£,d3Ë©\u0011\u0004²í\u0016â\t\u0003õpyPz = M=ªÖÉìj\u0007`\u0004\u0013ÛQÎB)ç¹ýiìVü9+ù\u000e\fÒpæèÃDg^èh\u0006\ryÕ©U¸?e\u0018 `Ç\u0006\u0003ÙÝ9À@~¿±\u001f¬|´S\u001f\u001aì\u001e[ßoé^z(\u001bm\u0007ò¸Ãó\u0014£G9¸Òõfù¬i¨1Äg¸ghÎµròsî\\[jNkÎQ¶®|ÂrìL{§\"2\u0011³\n%ç)äkÜn³\u001d=Áæa\u0010të#ÚytDç*_£Bb@pÈqÙdu¾ 95m¶3\u000f9\u0004&:>ÉL\u0002AOõV@DûÖ9A?`?f\u0010üøoßVeeþmÐf\u0015o³²¨ ø¶*Óe\u0005Á\u0017UÙTEÚ@\u0018ßä¼@ÙUb@V\u000fñEu¨ó¬\u0006ße/HÕN@§\u0000ÿÊiÞ,·wq8³?\u00053Ëv\u001dÎÜè^CíX\u001dy\u0014Í|D\u001e8Àf®ëéè½>´fÞ§`fÇ6pc\u0007:z¿§\u000fÜYø)9n\b\u001cæº¶LÏí;\u0019\u0001ÖÉ\u000eC`\u0007îÌq\\{\u0012ÂU­£u0@\u0014\n¦w*\t®\rÞM%q1ÉÊ^ÆKk\u0004ëÿÉÂOÓt\u0004W\u000bo­§\u0004$Luà\r$pýØ·\u0007H\"Lâ¥ãÆ\u0003$1&áL\u0000{\u0012|GÂ\u0013H9äµ\u0010ÿ3ûuÏÌ¡\u0006~£â=\u0007N¤ÏóÅ\u001cø\u0001IÏ¢æ`\u0016útÁ'µ\u0017Ea©g¡/Ò6»9E\u001a\u0010Éé)\u00039>Â\u0014 \u0002¹ËÙ$ymíBY$(T\\{¦A<¢ÊH<êÌr\u000e|®­t\u000e'Q¼ûBðÔ8\u00073Ëñy}\u0004?(Ïüw¢â\u0004ßew1Hçý\u001c\u0017ds\u000elGMÇÕ\u0012¨é\u000eÎà+K8pS9\u0007\u001dá-ò¥¹È>äY}7ó ° \u0005\u0010Ø÷ifAÏeE\rG\u001e^ÏÁÌö1JåÑ¸V\u001d\u0007\u0002núc0ç\u000fóÔè#0ÈÒ»:îÇ,\u0017h§\u000b\b$tÏ.ºz\u0002\n£\u0003ê)ÈTºö\u0016«4ÒS4[Åi(ÏÇýi1¢°ÂÔ\u001fTÌÆþÚsô\u0014d\u001a] £\t¢÷4µÖñZE9/sð¿W\n_÷\u0006çJ6\r8#\u001a«Tôy±`±Í\u0001t>\u0007q\u001cÇ2]ø,:çjo¸~·óWvüø\u0005Jþ\u0001ÏÙ]t\\6\u000e­·%l=ÈQE¿Áïbg\b/7æóu\u0016Løþ\b}G\u000em[\u001f]ì¶Ý\u0015òb\u001e¾Ù\u001e\u001d\n§+ti%,çÛtA×ï¬ÊEWÈ36©iFfì-%ùäÄø\u001c­+\u0001>\u000b\u0007_íªs´¸K\u001f³Mß}­Mûñ´[T\u0005Iü®j+]ð>¼ÎÐÒ\u001aµCÛæå¦Ñë,\u0011APVõ.-\u0004$ü\u0010\nÏo£X*ÖµGº7·ùf[ào\u0013Ýqo¡fí^uÇ½\u0014­ÛÁá+Q¡\u0007\u0004\u0016N\u0017z/UîÚ¼-²þiÐ]úÇÊÜ;e°ªÚ¶\u0016§Ñ±rØ\u0010l\u001d\b¶.\u0004[\u000f­\u000fÁ¶s­Ïùð\u0016Ë#~õY¬8Ò#?{°D\u001fl4ª½ \u001e[JÑ>+'Z©A\u0001Õ*àýb\u0006Ñn\u000fÁ¾Î\u0004Vý¸¿ð\u001b´ÙE\u0003Sò6£±\u0007<?$yçñtyE«¼Ùq.8²¨¢É\u000e¨-\u000fÝg\u0005\räË´`\u0001\u001bÐg{âÏ\u0001þ§º\t·åÕÛ\u001fQlÿE!¯ÑÌY·|í:µðM9\bÚ{åû-ºÏ(9-ÄàÔÚ¹fY\u0015EºG«Pöð5ÄgøØ­@÷ý\u001eðÍÇÞûºÚÔÐúìÊ¹Ck;ÆÒ]¹\u0014yÓè*'®\n\b\u000e\u0005\u0004»¬<0\u000eL8à\r(ßm z\bÁs¾Ê*\biùÆDzXå\u0015\u00049~µ\u0002A¶[ ?\u001aÕâçlÙ\u000ei¿ËW«õ\u0005éÊNÅ1 ]z4ûk*ÖqX+,9 ÀÓ 5e Ú·èÕÛøJë,åû·vêU\u0007¯H7$E2ÙS¾«í]Êc¢±È]gd¯ì.Xý|ë©kª¼¹{Ú\u001d6ß\u0017Ù;\bÐLô\u000eÝ¶Ñ1ñst!hµï_vÈn\u0007Ð;ytêH1EÆÛ^\u001aR\f½ãôdþ}.³-Ö}üe!wa¯\u0015»KËt¿ÏÒ:-Ñ\u000e\u001eîÓ\u0013U]RÒC\u001c3/Û:/\u001bt\u0005F>'ûc·²Ò*ÓûãûÝÀÏÄQßÖ¼ëÁX´¼þ;\"M'uFãÔÐéOl\u0018V½M¨rK%y!Ê×¿<-÷0+t\u000e+tú\u0011#Ù®äe¿)¶ü\u0002NÈµA³UÞ*_\u0017ÎÞi\u0002»¹Î³bÕ(²Ç¾o¡-ä¨\nR\u001c±)¬æ)Kk¢Ã5(»ªl·×Ã¬ÒÓõ Ûêp\u0012åå¡Í®Ç!\u000fÙo¡OQä7\u0003Ëê|g»× ¡K3ô2ßÜçË÷YVÈ¶ªûEÓPÄ$²æ;äèª,-ò><1çôC\u001eÏÂ¥Û öÈ\nÉK\fôq¡I5²\u000e\u0012RÃb·¼«\b~ú \u0010Ó?0çxY-åe¿íy)\u0001\f-ÍzÖêÐ^ÆúDìøÞÑÚ!2¨m_b\u001cÊ6/Ì5Z# J¸Wæ+ÕtH9C[V»}UfÄ¡@zhó\"ïí{fIòYws$\u000fØaÄ6K¹\u000fMÎïûÜ\u00076g¢¯\u0003_²Î×\në­çü¬HÎÊð¯HáSoJÇ3ë¶\u001e_±{ãÉ!B\u0005B¶KSiuû·\u00193=§ÔÔ\u0000cR\f]ÂzÇ£JJ\u0010xÑ%²Ë1\u0011@àÍÊ\u0013¯ÂFøÐ\u0010×tÄÑâ6\u000b1»\u0013\u0018%4Ø@é:\u001eRK\u0000¼IÌ[\u0019je/\b?\u0013¼RN!iì9Æ\u001ci¹¨â£ÜÔ¿ÈÃ\u0002ä3²ûZ`\u0003R_<<!t®H3©a\t#_µ£ÌrÅbvo\n«Ô¨\u001fú¤½EbY\u0015d\u0010õA³¼Ã®ì¶;b/C64û´Xjô¡DéÀ\u0001\u000fô\u0007\u000fË²eF&HTnÇß\u0016öP\u0013ã©î&¶&ÕC(ûvÒØc¶#\u0011dåÚqõxÝQÝéÌ®ÂìMgúÉn¡¨}f\u0004)ü²æãü²òiij~¬§+5_èÚ (-M¬å%r°5Ã¯Cd2y\u000b5CX¡BÒw°p2qs6Ã·`ÂWhÔ¡X÷\u001d:çRLù`ÑAS¼ÎÕ\u001a\u00110¹$îÔ(s%õÍ6EÈëü¯a\u0001ÓJ1±\fº\u0012\u0004\u0004\u0004Ó\u0004\u0004\u001a\u0001Ñ$\u0001Ñ4\u0001F@<I@<M@¬\u0011ÐG*\u001f`[ÓDÈÌÉØ&Ã(C^x\u0010\u0019Óz«3±»:ºþÜÞFB\u001cbv<ß[ÓtãHZ\u0010ðë@W=Úï\u0018ï¶\u001f\u0017²m?Ä.\u001a<Û~ä\\4&¶ý¸¨«oû~~Q\u000fÞrÝ÷²~¹EÏÕ¦qÊ_ùôhnQW\b¬ç-×\u0015p:EBYz¦x)\u001edB%É\u001d\"0C\u0007uÀû\u0001\f\\\u0004D\u0007L(%ÕÑÑh¿äOJ'í \t³¬³¬Ôà÷R\u0002Ç¸\"\u0019\u001dò7èå²\u000fPÏÛF7L\u000399¦u#-1N¨ùµ\u0011%SVE/æº?µ¥Dkt¶V­dçhG&ji$ÕðU!²(ÕÜ\u001d2/ÃÝ©Ú£_hç|:\u0016Å@9\u001a\u001e^{Ým¥HÝ\u0007l\u001cÑn·RûÜØgG{¦Ë¾ô³ÒYöHÇ\u001eOfuìötíåi\n;\u000eèvoè7yw×y\u0018æh\u0006¼\u000boýùºú\u000e\u000e«×\u0019\u0018;X5ëS¤¢ÙÙqr\u001e;'Ë\u001cÈ½.õ$O|CÏÎa{_\u0004A \u0012\u0001¨\u0003\u0007´\u0001'\u0017PÝq$ußçhùêªi¶i^+l,CÇÅ¹àù¼óK&$.,VÍ¡­Ð¦¾A×\u0015ÂN¿Ëã\u000e¥XØ\u0000ö\u000bè¯~\u0001¨sÅOÀðì¦Ìgï\n¾­rô ûâ3\u000eqÆ{\u0002`îÞ°aF3\u0007$KÃ#Q\n,¤_£lùãXdí\u000b÷UêÜtºÁ'*ËQi\u0011Du\u0015\u0000Ê;\u001cUØ°ÚY)v\u0006ä\u001cAø.nÒÁ3\u0006ù«H\u001c+ç³5l\u0013E*ç1ÙÀèhØ&ÊTöÒÄõÈyFWe\"O#-À\u0016¨lIòÔ$\tbI;ÓÜ¤{¼LãWj#À$aî¥HgMV¬u£\u0002¥\u001d\u0014YÓ;9f¹k¶õ¡\\¦­h Ö¿XÏ\"ß79{\u0010\u001fÅàbàÛztÏMsz\u0016rY%\baÂzªçP¦ `©\u001c\u001a\u0019¼[î8[0!UÞ¿¶¸×òóK1\u0000D§G(6Sø{·Â-¯\u0018÷´Â\u000f½PuGw2ø }´\u0010 7sÇW\nç9dÑµ^4¹¹Hö\u0004þ\u0002¤æ.4Å7üÝZO$\u000e,Îi®s5°£\u0007>)Ðø\fö\u0012\u0001a\\L«i\u000bD\f§3\u0001+ì@XUE\bÞêjËP\u0018\"#\u0017Ïq CÂëûHõ1\u001cÔÅCÛPî\u0005Pî8w\u0001\u0012pUXÿ6ô<\u0016G¬\u0005£OnÏ\u0003QB\t\u000b±ÓAL\u000b£3\f$\u000fÞ\b\u001a}\u0006\u0016\u0004<ÀëLòÅ¾&^_4à\r\u0018êý¢/³ãJ\u0006£Æ/Ûâø¦å^Qj\u0014æ\u0014\u0004\u0015\u001f\f¯@%Dxº°ÿ©Pømq<¸cí@B&y«Û´*ò5MQî;±öÐÑAfYÖ\u0006*î2N\u001dXLèØ´DÛ2²n[Nÿ\u0016å\u001c²ôËÉ¹\u0012Öÿ9\u0006e\u0000pOô/\u0003FÀbëìN^úßjB\u001f\u0012üÖà°¦÷=QÈ?[òÕfõ!ÁW<\u001a;^òø|g\u001f¥ÍãÛµy<±Í¹ìçf\u001dòÌýV³Îà×Ã>\u0003\u0011*Óæ\u000bB«L\u0015$ùì\n([£.s£±¢ùú(ÞÓW>Ô\u0003Í%Õ¥ÖWï\u0004`\u001aNO¯Âïü§â`â!\u0010êRà\",Ê3\bIü\u000f\\\u0006É5ç ¹Ö9³&9{ßI:¨1Lg|ðòÑþÿØémú·*ò8é\u0013{w\u001f|¼îmËèÜ¢C±ÏÊ\u0018oËÅË\u0019Þ¢ár\"7É&}zÖÝ+åÈ×ò.±p·\u001eÝû©I7\u001fÜÁþ\u0019FépìoU§M¶\u0014\u0000YçË,oYÀë\u000bAä«\u0014\u0014Ñú2\bG\u0005¸\\\u000fåJ\u0007Å¼¾\fÂU\u0001.×C1nD±±/ð\u0014\u000buP5;å\u0019\u0000µoÚ\u0017vNÙ´`Òw®Ñ'%jß:©}k\u0014AîZ'}×\u001aÇÐh¡ô¬Q\u0004¹cô\u001dk\u001cC£Ò¯F\u0011änuR»Õ(¿*_éU£ür§:õ2ø#µG)r¼;É}²UÛqºñþ¾Uëºõþ¾5m¥úÇ^-Èµ_«³ýø»#¡òy:¤\u0000¨Ýg\u0014@.ÁBÓ.y}ÄG(áïé»k\t\u0005ñ$­[\u001d=J\u0017MQº`\u0019lÍpÖ\u0019À|Qcí]Ï:^{èSwríEòÙBGx\"Û]Q×Pä\u0011ü\u001eÞkÄ6»q±Íîr±\u000bHØ£Î\t\u000e\u0007q,.\u0017+yyÔmÎm^!¶9+\u0016u& ¼ Ù\n´c±\u0007YäûÍÅ\u001ddqXüA\u0016_baÞ)\u000bÏÎ×¼­«=[\u000bB]\\êqHõJ¤#M£¥\u0014\u00075\u0011ÃK\u0013Üp\u0003TðþÉ^@,Î\b,ÎÎ\u0005\u0019ÏDÙ\"yogÃ9\u001a\u0015¤÷ýi/æ)»JüË\fjåÕÓ\u0005Ö\u0017H¬%Cl´!$vwÄ4I\u001d²\u001a\u0012ú¾zwÁÅ\u001dàOAPÁx`\nB Eà<<@pT\u001a\fÎ\u0011ó\b\u0006G51®\u0007G51^¡\u001cÕ\bÆxrT#\u0018á$p\u0014#¡Ü?\t\u0018ñ$XA=ðS\nÝÚ ÷Õ:ÂÏQi0£Çiç=p±,\u001eMÝä\u0002{@Ò¨?#ÍÔ¤{kA§+Õ-®\u0006¤\\Z¢I7¬@W¢[\\u\fH¹´Dî7\u0004Y®DË[(zu¢K\u0014\u000f¥\\b\u000eHº´Tî+\u000fÈÙÕ2mD#bÌµ®êÝ\u001ct\u0004âÄÂÅ7\u0014\u0016(J!_a¿|eË\u0018¸\u0001\u0004\u0001÷($d±´YT\u0015=\u001bs\u00048qvrY<\u001cO¨\u001f9[ñn7£Wvâjµªãí Ø\u001fiï\\1¹Ø/]ÛÞ=Da\u000b÷GÌe:g9¬n½Ë{têxøhH÷PNçb\u0012ñjp %WM¦)ºQv>C\u0011þvÐì\u0006\nÚ\u0014µõ\u000fÐNýñTHä\u0010\u00128>êþù>â>\u001cíx\u000eÌà|'Nÿ\u000e*§yu\u000f \u0006gÓ=ú\u0000fEb~õó5ÎÃ\u0012\u0007¬È×yÁ\u001d<ßxÓôâP\u000bóu\u001fxJHfQ¦Ä.¤ÚÇ\u0012I°(ñ[CC>(¾ÂÅ×¿\u001erde¡H\u0001·Ð¿ô°Rß³:dè:\u000eµx,±ÂÔ]ú|m\u0015ªá¹ôÙ\u0003*âÒçQ_¯úLm\u001bÁ¶X¥\u0003ðõ3V?Ü©\u0012\u000b\u0003Ü\u0014 i(I`?íp'\u001c)\u000b\u0002OW§Þ*ÄJxNµ,m26ÛKÓ\u0000m~\u0004Ò¤\u0011`F\"\u001f%÷\u0014\u0013ym±Ó¢øÇ((n¿fR\u0013Kö$Px\n\u0002»¹þ*ÅS`ÉÈFDQxÁ.pã\nÅ5Q4X9í\u0019uY1>-üû¬zVKÊBWúrrºU\u0007ö*\"ÒoÄ¡A\u0007¾Äß7\u000f©OgûStÖ»-z9\u0007ø¿~\u001bM¹ðFdSÇl4ç­y'Y\u000bï¿\u0012Þ\u0006\u001f¼\u0012>8\u0003Ï\u0005ù»\b¾ç\u001b§øã¼OÖ\u000bgé\u0006Ë¥\fùZGåSUy½Å¬5|\u0000C\u000f+\u0006jF\nLuQåë\fD\u0007ÄtæþêÇàcTÿ°\"×Øs\u000eØóW}on9­NÜY\u001fª\u0012\u001fÁös¤>¤\u001b,YWN\\ý)à\u0004@îì_ÕWÉPò·\u0018¥uäº\u0013C\u001c*&Iæ\u001fLÛã_ M4©;g!ÓÜ?÷^YEÛj\u0019\u0001ïSÇ'|§®Ç7´Üw»È\u0016þíbÜý\u0011ü~³÷ª÷÷R&]ÎðÁ\u0017þ÷ì«¼A1VI2×øì³ìÎtèón\u000eOu¨£Àó¬Ã¡Ñí\rújÊ(]\u0014\u0010\u001aÚqoÓ\u0006ùÏOQ·hªMGì½\u001cá&É»$3W¾Ø½®/ù6mî07b}L\fsJ/:Û!\u000es9°×µêë\u0002)$OIòëæyCä33`,\u000fü\u001a\u0005&ê _i\u0012¬â\\'E1ËÔKq_/Áï½\u001e_2\tì:\u0006Úm'É#ë\u0010Â\u0013cÚ\u0001\u0010Écbà\u001f¶Üb¼0$µ¼GDNºÃ\u001d_£\u000fÉ×.®5ªÜ`½­©\fæ`çîN,Þü mÉ~dwGªTM\u0002ò\u0018\fÄxGr(?*\u0002åï«ô\u001fñ\u0018\u0016ú¯~Øhb14ÏÉSº×y¥ã@F<Óñì(ÄEÜ¡ó¤\"m$y$IòÏÔ\u0003ë?c\u0001÷T\fq¸Ü<oH`\fÌñ\u0006\u0005\u0006ÁÄÜ\u0014ü\u00111_¥´wµÒ¯ó»fÎ9\u0016´ñ\u0017fÐ%]e\u0000, Ó!ºo{t%Ñ}u\u000fÑçuUQvÓì§\u00141\f1²¼«³.\u000bñnèÛ,#&i#,ôÁ*\n¸ì¥N¸\u0016EF\u0016\u0017Þ¤Q\bßÚ][ÙRÎ\u0018\u0011¹;´$jr\u001f\u000f&Lq\u0010¥!+\u0006Ce.:³\u000eËZeM[\u001f(LÉ\u001c|²´ÜØYÐ,\u0016øÌÏ¬UJSI\u001e)±ÆWòdÑb\u0019\u0007,z[Ñ`ï¸\u0005;g;\u0014\u0002\fµ~Z¶ôðsù8ó\u001blCÖ]ôr p0¼ÏÞg'\u001c±\u0001\u001aÄÞ±\u00189.ÄÞØÍºÙ\u0005\\ÿEV\u000eûD§\bb6Ò\f\u001d\by\u000eÜzõ:\u001ej\u0012\u001eÚ\t\"OÊºT0Ãõ5\u00043W¯pSä«Ìdaüøt¾HÙEÕn\u0001£Õè)Â ÃTE\u0003v{Îùý4¦|eU¯Ä4X\u0007\u0000ßbhÊ#\u0017\u0010ê*C¸¨(½\u001fo|\u00033\u0007³Ø¿¢h\u001d-Tî\u001e\u0004SÛèô_\fèØ~\b=hG\u0007\u001cÿ\u001d4^l\u001d`¢éÑ\\UËÃ\u000e\rz|ÚÛ<îìÕÂýS|tþd@ã3v(¯¸{%bSÙ¦Ç9H7ÅÒ@yÈûfZPk\u001dÔãó´ 1÷HE2\r¡>*úÎû\u0001»\u0002s× \u0016ñ\u0013Ñõ\u0018ùU8Ìû*\u0010j`u\u0015\u0006ou\u0015hÀu\u0013(º0¹ZÔ@ìºÊÂÃþÞÏÙD\r\u000b \u001bhj¦Å~Ê@ÿ\f\u0001³²M7Ù¯§«NýëñÛªX9¼\u001bT\u0000÷×©¨þ\u001cò*Í¹=çG¯î\u001b©¬ì°?¢âýñõµÌ(+Ý£ÈÊM»½ kjLE]R×:\u0019tStNÌGo\u0005á\u000eü#}Ñ5ÐUmÜ\u001b\r]\u0005Ãl®\u0002éL®Bé-®\u001c¯È éºÕ\tYO_÷\u0019£æQ× +ª«\u00108\u0013Á[áÜ`NåÑþ:ß/^b\u001f÷áµc·é»\u0011Òm³b3x\u001b´Û\fpMâmðn0äeÇÛÝd\u0012\u0010m*§C\u0019ïàkY¡ãÁ\u0000\u001d\u0006Dè\u001f\u001f\u001a_~ý{\u0003\u001aø\u0018ùQ9\u0015\"±» ²$HëOã\u0010¨Dy\u0010üÞ®\u000fÑ»!ì;\u0007;}émùeÓd|R\u0011\u0013\r¼wLµ\u00013\u001f ×\u0019)°ºbÅ<'\nc 1\u0003\u0007ÇÂô6£\u000f,hüæw?ýôýw\u00064ppp\u0012^Û\u0010Ó}R,\u0016A%)\u001aP\u001bý\u0005\u001cz\u0017¦Aë´NGÛ§)=\u001fVÚé¶á\u001dA;õ\u000eýîv9\u000eÍy÷ÿEjC¨´%ðH\u000b\u0019?þöóï×\u001fx¸|3_éS\u0014\u001fcù¬³\u0004\u001e|r¾À¯\u000fæ\bw\u0014 ¼\u0015´\u000bHÕ\u001aè¥yÞ\u0018Ð8î²yÜ¶í~þððòò2{qgU½yp,Ëz $xUýèx\u00064È}\nùù9Ï^~S\u001d\u001fÑ\nÓñ\u0000NCF¨è\u0006Ì\u00069[~ä½u©&Åì\u0013Ð\"tî\u001fq}É?WyÙ¥\u001a(\u000eKä\u001bügîÓC*EJ ûJ\u001a\u000eã±­\u000f¤ä!í:\r=\u0007z.ô<èùÐ\u000b \u0017B/^\f}ë\u001e/;ô'ßÁý1\"òUxÍ\u000eiM\u0015vg>à]¾õ\u0012bÒ\u00057?\u0019ÐøßÿþÿýïÿÿPB´'nJ\u0014p\bµå£Êzt»VóûF³#\u0003\u001aõñ\u0011O'¡ÍºChÁ§\u0000\r¦#\"~\nm\u0018:0taè!-BT\u001e\u0016³OÛ­\u0001Õã·¶\u0003ìøÙÅH.«ÞÐOû\u0010ÄÀ¶4\u0004!ÞØ(¦ õl:ÅëXÜNx5w:Í\u0003NshNäù¤ú\t\u001f¡EE{\n]ãâB¼Ã\f\u000eù,Ø¡åâÏÂXbJ'´¼i®\u0017#JÛ²`,}gÈg\u0005ÏJ8\"\u0005§Xl¦ÎÕå¯Dw\u00064òÕã6KqôôyÖT~h9Ó4õ&É\u000f-\u001ae0\u00193\u0019Mn¥8´I¶5UºmO-=¹Øî$Êw¿ü?n\u001bÀ{d\u0001\u0000",
+				"responseBody": null,
+				"mimeType": "text/plain",
+				"encodedDataLength": 274,
+				"cached": false
+			},
+			"elapsedMs": 13750
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219557784,
+			"data": {
+				"url": "https://dealls.com/_next/data/79XiAG5teKLhJxlUA9LBZ/idn/loker/innovation-lab-specialist-1~arya-noble.json?slug=innovation-lab-specialist-1%7Earya-noble",
+				"method": "GET",
+				"status": 200,
+				"statusText": "",
+				"initiatorType": "script",
+				"startTime": 1776219557784,
+				"responseEnd": 1776219557878,
+				"duration": 94,
+				"requestHeaders": {
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"purpose": "prefetch",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\"",
+					"x-middleware-prefetch": "1",
+					"x-nextjs-data": "1"
+				},
+				"responseHeaders": {
+					"alt-svc": "h3=\":443\"; ma=86400",
+					"cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+					"cf-cache-status": "DYNAMIC",
+					"cf-ray": "9ec776ecde6fa2f1-SIN",
+					"content-encoding": "zstd",
+					"content-type": "text/html",
+					"date": "Wed, 15 Apr 2026 02:19:17 GMT",
+					"nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+					"priority": "u=1,i",
+					"report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=wpVCiMf6AmkjPWnmOslJk4r7i2yMmt%2FmlOPjPYl92OLLgRBF70yqJheKvbaARCkWIeg3vdMlvY%2FKX%2Fu%2BkqXWv1HvlfvzAAtJruBN7UoVQOSd3qrXAgTTANM%2FPT1%2F\"}]}",
+					"server": "cloudflare",
+					"server-timing": "cfExtPri",
+					"via": "1.1 google",
+					"x-matched-path": "/loker/[slug]",
+					"x-middleware-skip": "1"
+				},
+				"requestBody": null,
+				"responseBody": "{}",
+				"mimeType": "text/html",
+				"encodedDataLength": 557,
+				"cached": false
+			},
+			"elapsedMs": 21958
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219565178,
+			"data": {
+				"url": "https://analytics.tiktok.com/api/v2/pixel/inter",
+				"method": "POST",
+				"status": 200,
+				"statusText": "",
+				"initiatorType": "script",
+				"startTime": 1776219565178,
+				"responseEnd": 1776219565458,
+				"duration": 280,
+				"requestHeaders": {
+					"Content-Type": "text/plain;charset=UTF-8",
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\""
+				},
+				"responseHeaders": {},
+				"requestBody": "{\"event_id\":\"\",\"message_id\":\"messageId-1776219565176-7491567559816\",\"is_onsite\":false,\"timestamp\":\"2026-04-15T02:19:25.176Z\",\"context\":{\"ad\":{\"sdk_env\":\"external\",\"jsb_status\":2},\"device\":{\"platform\":\"pc\"},\"user\":{\"anonymous_id\":\"01KP7EN8V3N3SY1XXVY6BJZFB5_.tt.1\"},\"pixel\":{\"code\":\"CMTHEB3C77U1PJEFRJN0\",\"runtime\":\"1\",\"codes\":\"CMTHEB3C77U1PJEFRJN0|CNERFC3C77UE36LJC1I0|D1HQOM3C77U8HMHBG73G|D1HSFPRC77U8HMHBG7TG|D1HSLM3C77U92NRAJVMG\"},\"page\":{\"url\":\"https://dealls.com/\",\"referrer\":\"\",\"load_progress\":\"2\"},\"library\":{\"name\":\"pixel.js\",\"version\":\"2.2.1\"},\"session_id\":\"c0da417d-3870-11f1-b97d-fa5631a2464f::sq0ZyvLp2mw7FANuYffd\",\"pageview_id\":\"c0da417d-3870-11f1-b97d-fa5631a2464f-cvdvd.0.0::c0e086ba-3870-11f1-81fe-02001724ce17\",\"variation_id\":\"default\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\",\"index\":0},\"_inspection\":{\"vids\":\"\",\"inter_id\":\"1.-1724.36::284335.9.828.777::322788.19.646\"},\"properties\":{},\"partner\":\"GoogleTagManagerClient\",\"signal_diagnostic_labels\":{\"raw_email\":{\"label\":\"missing\"},\"raw_auto_email\":{\"label\":\"missing\"},\"raw_phone\":{\"label\":\"missing\"},\"raw_auto_phone\":{\"label\":\"missing\"},\"hashed_email\":{\"label\":\"missing\"},\"hashed_phone\":{\"label\":\"missing\"},\"raw_eb_email\":{\"label\":\"missing\"},\"raw_eb_phone\":{\"label\":\"missing\"},\"hashed_eb_email\":{\"label\":\"missing\"},\"hashed_eb_phone\":{\"label\":\"missing\"}},\"action\":\"Pf\",\"auto_collected_properties\":{\"action_event\":\"twt\",\"inter\":{\"ct\":0,\"st\":3},\"page_inter\":{\"metrics_type\":\"ct|st\",\"ct\":0,\"st\":3}}}",
+				"responseBody": null,
+				"mimeType": "application/json",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 29352
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219569834,
+			"data": {
+				"url": "https://y.clarity.ms/collect",
+				"method": "POST",
+				"status": 204,
+				"statusText": "No Content",
+				"initiatorType": "script",
+				"startTime": 1776219569834,
+				"responseEnd": 1776219570673,
+				"duration": 839,
+				"requestHeaders": {
+					"Accept": "application/x-clarity-gzip",
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\""
+				},
+				"responseHeaders": {
+					"Access-Control-Allow-Credentials": "true",
+					"Access-Control-Allow-Origin": "https://dealls.com",
+					"Connection": "keep-alive",
+					"Date": "Wed, 15 Apr 2026 02:19:30 GMT",
+					"Request-Context": "appId=cid-v1:a449a586-8786-487f-a449-dc1b282a2628",
+					"Server": "nginx",
+					"Vary": "Origin"
+				},
+				"requestBody": "\u001f\b\u0000\u0000\u0000\u0000\u0000\u0000\u0013XËnë8\u0012ý\u0003FU|\u0015/Ð»Þô~0,$[¶\u0015Ëïw\u0006ó\u001bý\u0013ýWý%\u0003R¤iª;j#@ÂÔ©:¬:,J\"ÿS4Å÷\u001f\u0005/©T¶`\bLR0ä¨\u0015»ªpnësÁ\nx×²Â\u001bµóvr\u0017\f\u0018÷?ÅâxÜ\u001e¾û6mª®;Íê[ñÆªøþã\u0000¨\u0019 #`ÊÈ7æí\u0012s»\nve?·\u001bÛu°[üÔ.è\u000b»åØ\u00114\"\u0003õ`7Á.(³\fv¥\u001fíC°kÙ!ú\u0013Ïì\u0002Ýæv\u0019ò1 3»\u000e<FäþÑ.2»þ2«Ëp\nvñ\u0018\u0014ÑÕkDô×Y½FE~åi\f\u000fvÊò1\u0014y,<Ú\u0007gù\u0010ÊhÏò!\u0019t&0]\u0005~ÂL2¡.Êõ¡\u000fÉ,\u001fË£¿´\u001dÂºP®E\u001bì:ËÇÊ°.d²|lÔr}¬VÁëccÚ\\\u001fK&Úóym´c¶.Àc\u00016/\u0018xìDW\u0006\\\u0006¬\u0019Pé µ\u0003aÓ ç\u0003*Ë\u0003 ò\bà:\u0000y;\u0002@\u0004r]\u0001P\u0005 \u0017\n@Éa09È\u0010\u0001\u0003I@A\u0000\u0006T\u0003I Tî¶É\u0000°\u0001\u0018H\u0002&L s\u0002\u0015æ\t\u0010V\u0016q(\réâ`=ÀÆ$\u0018\u001eJ(\u0006`èr\u0014ùny\u0000òÇ\u0006 \u000fu\be\u0007@¨\\¼@8ù@\u00120ä\u0003ªð¬D9Ì\nÂärUì\u00129X¨\u0004!UßÔ¨þ2y¨C\rçÀÐ»jX \u0002õ_\"â»À½û8\u00133`\u0005ëm³j\u000f]I\u001d®å¹Z¯\u000bVh¤Éyzè°ÔUEÓ­.\u0005ñîñú)\u0002#\" VÐlu\u0012Ûëq]\nèöb^\u001d;÷J¯\u000fJZ¯?¶}·&Æ\u001bþU¼Ù«y³N¥Ç}}>®Þï\u0004\u0006ï\tØ/\u0013ø)Á\u0004\u0002YAÍ®¦ã~u*»«X¬é¡`\u0005éÅ¬]ájUow«³¬\u0013A\u0000\f±â:ÇIwà¼4f&ìº½9\rÖbS/&RÜÔmó1%\b\u0006(\u0015xk<7ÛR¬.r«¹_\u0005¥ÛÝrjKl·¥à³;\u0003%\u0011\u0015°¼Í¯j¥<_'ÛÅé0KË\u0000¥\u0004s\u001b{H5P\u0012A ­jSÒz1oº£¸E\u00197r;-eÕÁµÅå<1<4ÖO1Ø{\u000eó¨y½X¸]ÔÛ©:´NÈzY\u001f'»Ë¢¤º^Ì\u0016Ëesg°I\u0006éf\"6­]RËÃGC¨É\t©ùÇîºnK\\îÞ÷Û®K\fI\u0007©´oý]wë**ÅîVíNk£\u0003Ã\u001eÅu_ù|>9Q¥\u0012CÒA\u0012w\f¶\u0002ìDWê\u000eåâ£\u0005\u0015sø8Í%íg·Ë\u0002¯UbH:(\u000e_l¿1 O:(äO1$\u001dPïàhÔ%\\V5Õ­MñI\u0005%í\u0013ñ\u000f\u001ahøûñð Á/â}3®Ïû])¸Yª°\u000f\u0004\u0006ï\u0004ñ\u0004ù9ÃC\tÖ>Ãòþ\\Ð bHË á©\u001c;$\u0004ô`ø[\f©´Û3øÍ¾y¿4¥Ò·\t^ôl\u0018ÒóQ\u000bóÅÃø§\fþu\u001f\u0019ìS\f\u000fUHþ\u0014I9H|AÁ\u0003xá±\nù\u0014\u0003abPÏ0èÇ\u001cô\u0013\fKÀ\u0006´<~\u000ea@\u0014&Ä_\u000bCá\u0012\u0002>\u0002bô\u001d1þ¨/b\fÉ 3þr@òX\u0010wLÇp1À!!Â0@¥#â¯\u001d°Ì¼1Ç\f¸s&2ÐÜ2í¾¯ÑD\u0004UBÈ!\u0014\u0012\u0000!\u0013¢Ág\u001f\u0010\u0019%0¾Ï\u0000­\râ\t\u0011à\u0018\u0011J\bºï \u001ec´N\b8$|A\u001bèoK¬æL»\u0003¢4ym°îÊÂ\u0001&\u0000¾6\u000f(ë#â$ÖöTÀî+,ÔâO4\u0011G@`¢DE ù\u0000 \bPL·#ÔAÐ/r_Hr\u00115ö\u0012ûµ£`Xcø¥4wä¾Æ^GÔ\u0011è×¸\u0007\u001co¸l¡pye\u00041.E¥\u0002 ñ\u000eø\u001e\u0011¸/#2-|ïADRûK%\f\u0007V\nW[=âwð'¤þ>N2w¨\u0003d¨üÑËMýí[¸Pc\u0002á\t.¤åîQÐßºhÍ\u0004GN\u0011\u00123Æ0$éÞ;\u000fÿº²;\u0013\u0017\u0014[ºÎe ¤áÊ}¶2Ð\u0016\t¦]>Ä\u0014Ó¹þ×!1\u0004Í¿ÐLûô]R\tPk?ÐÑbz^\u0001d¸ñ\u0003\u001b äq\u0000îärB4\u001c½I\u0018\u000e~ £EÅHdxÿÅlCàq\u0000qq B¸«\u0000\u0018{{cÅ¶¿ÂôehW£u¿\u0014+þù¯\u0015þþÇ¿ÿñ½ÿS¼KM;ÒÓ%9ÊÓ\u000b4ÊÓÍ³x§_\u0003wåÌ*VüúÛ¿\u000bVLºêpøeÖ^éË¬k®/W/×Ù©ë^Úc³:¼Nõ±Ù¿¼\u000eÇvv{­ã¥iÖ/õüõ²hÍË?êùë±Ù\u001fÛj{=·®9¾*^°¢þ²hªi³]WçºÚ4ÆÊÕ·Ê(OßK£<åhN5ÚSö\u001cÝ*}Ãò´ckï·Ì(O\u0018í£=ÅXúmû=ßþû?\"¸n\u001c÷\u0018\u0000\u0000",
+				"responseBody": null,
+				"mimeType": "text/plain",
+				"encodedDataLength": 274,
+				"cached": false
+			},
+			"elapsedMs": 34008
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219591842,
+			"data": {
+				"url": "https://y.clarity.ms/collect",
+				"method": "POST",
+				"status": 204,
+				"statusText": "No Content",
+				"initiatorType": "script",
+				"startTime": 1776219591842,
+				"responseEnd": 1776219592739,
+				"duration": 897,
+				"requestHeaders": {
+					"Accept": "application/x-clarity-gzip",
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\""
+				},
+				"responseHeaders": {
+					"Access-Control-Allow-Credentials": "true",
+					"Access-Control-Allow-Origin": "https://dealls.com",
+					"Connection": "keep-alive",
+					"Date": "Wed, 15 Apr 2026 02:19:52 GMT",
+					"Request-Context": "appId=cid-v1:a449a586-8786-487f-a449-dc1b282a2628",
+					"Server": "nginx",
+					"Vary": "Origin"
+				},
+				"requestBody": "\u001f\b\u0000\u0000\u0000\u0000\u0000\u0000\u0013Kn[1\fE÷¢aA8ü¼Î\u0002\u000f4HS8M|P è6²ì*+)¨Oüf\u0015\fØ÷é\\\u0014Åç?é&í/\u0013îÊ.×\u0004Ì ¢\u0019\u0011\u0011Ò¯|õL¯wW¯\t\u0012ý0=ò}¨»Û»ëß·\t\b°}Ò÷ççÇ§ýÅÅ·ãéô´»~¸¿H\u0007HÇ´¿¼\u0014\u0015S\u0001b ®\b¦\bÄ\u000fÐHÆ3\u001a¤NR\u0007a0q Ö¹Ç|C\f3\u000eâ9K\u0001\u0013\r0·\u00149yf©\u0011\b²T0\tiÚc9\u0003\u0002bç\u0001ÈZvÃ Q½Û -ÀÞzú\tª4\u0010ù\u0004\u001cç­y\u0000\u001ds0v A\u001c¤âHÒ¢!\u000f@:¶T0*@Â4àD\u001a®¨\u0006£È¢:@îç\u0017$°&F÷U7$\n°Þ³ #4_\u001f0\u0005\u0002ÊÄÀ9î9s©Í\u0011>\u0004ÂlZ@¸°ç\ríÏ\u000b¸;pQvÙ>J\u0001{\u0014oî\\àçËé\u0014ed2\u0010\u0018¨P\u0006\u0001RÐx\u00032eà\fJg\u0018XÔ\u001d\u0005\u0010DÌð)JT\u001a¢\u0015Å)hìR+2WÔQÕæ÷\u0002EËÜU\u0007Ê8P3O$ÞÆ\u0004Èmåp8@zlïc?\u0001ÕøÊ¾|M>ÞÞ?ÞÞ÷ý'µ»jÇ\\rú²³5jÅ\u0019ÿ\u0001¾è\\=Qoøs¹KýÊíNeµ}*V}l´zö>xKÎ6KÎ6ºÿu\u001eþþ\u0003ÇJ~B¿\u0006\u0000\u0000",
+				"responseBody": null,
+				"mimeType": "text/plain",
+				"encodedDataLength": 274,
+				"cached": false
+			},
+			"elapsedMs": 56016
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219595475,
+			"data": {
+				"url": "https://unleash.sejutacita.id/api/frontend?sessionId=368680878&appName=nextjs&environment=default",
+				"method": "GET",
+				"status": 0,
+				"statusText": "net::ERR_ABORTED",
+				"initiatorType": "script",
+				"startTime": 1776219595475,
+				"responseEnd": 1776219595713,
+				"duration": 238,
+				"requestHeaders": {
+					"Accept": "application/json",
+					"Authorization": "*:production.899ccbfd4528fa655988e18d43b7170362408a20bfd2f0acac28ec16",
+					"Content-Type": "application/json",
+					"If-None-Match": "W/\"647ff-o3X6YEgVD+mUmOBWlQHPs6dy0uc\"",
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\""
+				},
+				"responseHeaders": {
+					"access-control-allow-credentials": "true",
+					"access-control-allow-origin": "*",
+					"access-control-expose-headers": "ETag",
+					"alt-svc": "h3=\":443\"; ma=86400",
+					"cache-control": "public, max-age=2",
+					"cf-cache-status": "DYNAMIC",
+					"cf-ray": "9ec777d95b3b9e23-SIN",
+					"date": "Wed, 15 Apr 2026 02:19:55 GMT",
+					"etag": "W/\"647ff-o3X6YEgVD+mUmOBWlQHPs6dy0uc\"",
+					"nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+					"priority": "u=1,i",
+					"report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=JaF3SupeYLWMNJgsgtT0UAIkFWcUPABxHFzUsCdkZuPsfY%2Fgqpxynptn6QU6LZICScx3qs5wTNzKhc35NJzBKRKd7aO7Mjo5NxztNkrtTPGbf1VmExxhuQkQG2K39VzeKAl2uUX5M0s%3D\"}]}",
+					"server": "cloudflare",
+					"server-timing": "cfExtPri"
+				},
+				"requestBody": null,
+				"responseBody": null,
+				"mimeType": "",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 59649
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219595476,
+			"data": {
+				"url": "https://unleash.sejutacita.id/api/frontend?sessionId=368680878&appName=nextjs&environment=default",
+				"method": "OPTIONS",
+				"status": 204,
+				"statusText": "",
+				"initiatorType": "preflight",
+				"startTime": 1776219595476,
+				"responseEnd": 1776219595654,
+				"duration": 178,
+				"requestHeaders": {
+					"Accept": "*/*",
+					"Access-Control-Request-Headers": "authorization,content-type,if-none-match",
+					"Access-Control-Request-Method": "GET",
+					"Origin": "https://dealls.com",
+					"Sec-Fetch-Mode": "cors",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+				},
+				"responseHeaders": {
+					"access-control-allow-credentials": "true",
+					"access-control-allow-headers": "authorization,content-type,if-none-match",
+					"access-control-allow-methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+					"access-control-allow-origin": "*",
+					"access-control-expose-headers": "ETag",
+					"access-control-max-age": "86400",
+					"alt-svc": "h3=\":443\"; ma=86400",
+					"cf-cache-status": "DYNAMIC",
+					"cf-ray": "9ec777d8fb359e23-SIN",
+					"date": "Wed, 15 Apr 2026 02:19:55 GMT",
+					"nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+					"priority": "u=1,i",
+					"report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=nnD1vopvmoYwNPkE%2BJbIyz%2BA961Lk9Euma1pvxxQDCNyqrDu6lAx8a6t22H5Qbc2GQD68Rx%2BN5WfeJbbsiPlipZxXWxAyT5WzRQrdRrCS7wdrXRq8qfSyJXDx5l12xcoYfHt9aTn2Sw%3D\"}]}",
+					"server": "cloudflare",
+					"server-timing": "cfExtPri",
+					"vary": "Access-Control-Request-Headers"
+				},
+				"requestBody": null,
+				"responseBody": null,
+				"mimeType": "",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 59650
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219626406,
+			"data": {
+				"url": "https://dealls.com/_next/data/79XiAG5teKLhJxlUA9LBZ/idn/loker/live-runners-intern-1~sirclo.json?slug=live-runners-intern-1%7Esirclo",
+				"method": "GET",
+				"status": 200,
+				"statusText": "",
+				"initiatorType": "script",
+				"startTime": 1776219626406,
+				"responseEnd": 1776219626744,
+				"duration": 338,
+				"requestHeaders": {
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"purpose": "prefetch",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\"",
+					"x-middleware-prefetch": "1",
+					"x-nextjs-data": "1"
+				},
+				"responseHeaders": {
+					"alt-svc": "h3=\":443\"; ma=86400",
+					"cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+					"cf-cache-status": "DYNAMIC",
+					"cf-ray": "9ec77899bea33bdd-SIN",
+					"content-encoding": "zstd",
+					"content-type": "text/html",
+					"date": "Wed, 15 Apr 2026 02:20:26 GMT",
+					"nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+					"priority": "u=1,i",
+					"report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=gAbWEzU3A8aatU3eDmQuUK5js7TBKPJnf8w2ETi%2Bs6YIPOYt4EuQzz9I18XuvUypq4agirF3O%2FGUN4QbyzC%2BlY1VDOKf7D2DOeWOA1ooIXOcFg3zX%2B1umc0Fd1iu\"}]}",
+					"server": "cloudflare",
+					"server-timing": "cfExtPri",
+					"via": "1.1 google",
+					"x-matched-path": "/loker/[slug]",
+					"x-middleware-skip": "1"
+				},
+				"requestBody": null,
+				"responseBody": "{}",
+				"mimeType": "text/html",
+				"encodedDataLength": 552,
+				"cached": false
+			},
+			"elapsedMs": 90580
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219648325,
+			"data": {
+				"url": "https://y.clarity.ms/collect",
+				"method": "POST",
+				"status": 204,
+				"statusText": "No Content",
+				"initiatorType": "script",
+				"startTime": 1776219648325,
+				"responseEnd": 1776219649118,
+				"duration": 793,
+				"requestHeaders": {
+					"Accept": "application/x-clarity-gzip",
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\""
+				},
+				"responseHeaders": {
+					"Access-Control-Allow-Credentials": "true",
+					"Access-Control-Allow-Origin": "https://dealls.com",
+					"Connection": "keep-alive",
+					"Date": "Wed, 15 Apr 2026 02:20:49 GMT",
+					"Request-Context": "appId=cid-v1:a449a586-8786-487f-a449-dc1b282a2628",
+					"Server": "nginx",
+					"Vary": "Origin"
+				},
+				"requestBody": "\u001f\b\u0000\u0000\u0000\u0000\u0000\u0000\u0013[jcG\u0010·bÎc(ÙuëªnC\u001e²\u0010HÞ\u001ed[(H²3mÌ&fW³P}ÑQB \u0007\\êïïºv·þ¶ÓãÓ÷ù>\tX@9&HP`úãÏôi÷üi~7Ýð!¬ÝÝËç\u000f\u0013\u0010`ý~;ßO\u000f\u000f¯ÛÍ~ºy;<Lk6ÓãÓ\u0014,\u0010h\rOR\u0018\\\u0015\u0013\u0003\u000esâ\u0004Äh@¹â \u0010åØ_¸\u0011Á4º1['$3Ñ\u0002Ä®pÍ )\u0001\u0011GL»ÐÕÀ@\u0014\u001f\u0006\u0002\u0019[ ®Éw¤6#Ì¡Sï(éì\u0010=t*\u001dy¾A@,¥£ì\u001dÃ\u0014»¤wBJºEQ¢´\u000bå ºEEoæÙaa44\\ôy\u0014&¾E¡ê@¥\rQ0Êæ:a¿6\u0017)ÂÚ *½M\u000e¥&·t\u001dHÉ\u0011¦äj[\u001a0\u0007\u0012â\u000e¼·<CÙ\n\u000er­4I\"\u0001d\"3ðùÔd7 \u000eö\u0018ÉË\f4@O7µ\u00194P\u000fp¯ÐZÃ\u001a \u0000½ÿÆ7®0w é?\"ªå+Í3h7`#F6~¯Gº¯Ò¨<\u0000Õî\u0016#(uÎ\u001dÔ6\u0010÷K¤ÇH\u0007È1A\u0011î ]ê\nrmûpË\f|\fJ\u0011­_Ï\u0019ä\u000e\u0004g\u0010\u0005²\rÿ\u0005R\u0005.æñ¾DÄú)(\u0010P\"\u0006N©4Ë9+S\u0003²Å\u0018$©c\u0006a6Í ªê|CÛ÷Ì\u0019Ü\u001d8+»Ü~\u001cêè[ÂªN\u0006ÇË~\u001fI0f@AemSÌ-^\b\u0005N`e\u0016µäk<á0r\u0013Fq0\fA\u001d\u0019w±ÉXÑ¡I\\\r\u001bhx¶ìXcYqW\\\u001c\u001d½\u001aä5yqî~\\\u001c­\u001aûq×ØØåcWá\u0016\"c\u0017gº\u001a]e¬Hß\u0013\u000fch|¬dnÉçÒ2<úC\u0011\u0006s«´\b·º\u000eM\u001a»l}óX)mE\u0011AÃà¦Qì9+j+P±{V´|ó@Ã3õh\u0018<Tc½^ÃôÞ~4k]\u0006L)°\u0014¦úáÇ\t¦ýætúþ×·ãyux;¾Ý·Ï«Óá®­l_wÃÝyó|Ùo>®ÃénsÜ\u001d6çíêý²?müãöu¥Sx.-ÐôÝ/\u0013Lß¾|ýöåëcû7Õwª&jKµûu<µËvíÚÿ)}qEy±Ï²Ðg?d´XÉ\u000bóìçx²\u001eôEÊ¥3êWeÒ\u0017W\u0017G_<£v]\u0017)irý×ß\u001b\u0002ã\u001ep\u000b\u0000\u0000",
+				"responseBody": null,
+				"mimeType": "text/plain",
+				"encodedDataLength": 274,
+				"cached": false
+			},
+			"elapsedMs": 112499
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219655461,
+			"data": {
+				"url": "https://unleash.sejutacita.id/api/frontend?sessionId=368680878&appName=nextjs&environment=default",
+				"method": "OPTIONS",
+				"status": 204,
+				"statusText": "",
+				"initiatorType": "preflight",
+				"startTime": 1776219655461,
+				"responseEnd": 1776219655549,
+				"duration": 88,
+				"requestHeaders": {
+					"Accept": "*/*",
+					"Access-Control-Request-Headers": "authorization,content-type,if-none-match",
+					"Access-Control-Request-Method": "GET",
+					"Origin": "https://dealls.com",
+					"Sec-Fetch-Mode": "cors",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+				},
+				"responseHeaders": {
+					"access-control-allow-credentials": "true",
+					"access-control-allow-headers": "authorization,content-type,if-none-match",
+					"access-control-allow-methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+					"access-control-allow-origin": "*",
+					"access-control-expose-headers": "ETag",
+					"access-control-max-age": "86400",
+					"alt-svc": "h3=\":443\"; ma=86400",
+					"cf-cache-status": "DYNAMIC",
+					"cf-ray": "9ec7794f6e1c44bb-SIN",
+					"date": "Wed, 15 Apr 2026 02:20:55 GMT",
+					"nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+					"priority": "u=1,i",
+					"report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=gwXw6Uk2OEB5umL1zyrEomScdlXGXhUO6LoOd9FJnESm7PH40HwLYMODMJ1kILcKNsxpf4kXwg8Xq7F9LGNQvrzi2Le5GFvDPx1y8zcJEI0SQZL7rRYevX%2BGU%2FKaYyH8xSjNpgIU7KI%3D\"}]}",
+					"server": "cloudflare",
+					"server-timing": "cfExtPri",
+					"vary": "Access-Control-Request-Headers"
+				},
+				"requestBody": null,
+				"responseBody": null,
+				"mimeType": "",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 119635
+		},
+		{
+			"type": "network",
+			"timestamp": 1776219655461,
+			"data": {
+				"url": "https://unleash.sejutacita.id/api/frontend?sessionId=368680878&appName=nextjs&environment=default",
+				"method": "GET",
+				"status": 0,
+				"statusText": "net::ERR_ABORTED",
+				"initiatorType": "script",
+				"startTime": 1776219655461,
+				"responseEnd": 1776219655609,
+				"duration": 148,
+				"requestHeaders": {
+					"Accept": "application/json",
+					"Authorization": "*:production.899ccbfd4528fa655988e18d43b7170362408a20bfd2f0acac28ec16",
+					"Content-Type": "application/json",
+					"If-None-Match": "W/\"647ff-o3X6YEgVD+mUmOBWlQHPs6dy0uc\"",
+					"Referer": "https://dealls.com/",
+					"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+					"sec-ch-ua": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\"",
+					"sec-ch-ua-mobile": "?0",
+					"sec-ch-ua-platform": "\"macOS\""
+				},
+				"responseHeaders": {
+					"access-control-allow-credentials": "true",
+					"access-control-allow-origin": "*",
+					"access-control-expose-headers": "ETag",
+					"alt-svc": "h3=\":443\"; ma=86400",
+					"cache-control": "public, max-age=2",
+					"cf-cache-status": "DYNAMIC",
+					"cf-ray": "9ec7794fbe2344bb-SIN",
+					"date": "Wed, 15 Apr 2026 02:20:55 GMT",
+					"etag": "W/\"647ff-o3X6YEgVD+mUmOBWlQHPs6dy0uc\"",
+					"nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+					"priority": "u=1,i",
+					"report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=LQchka16y2scYcovxyYRXfvY3VgjxK5121VpK7GSKZnMPY9C5QhwTA3fXhgoQA6zX5zhLo2Zx8e12Yy5Z3pLIygDxTsvuhDTgvaTLgRdFptUl6wMAZyShmfed2g63z9gNJTVQQ%2BKzs0%3D\"}]}",
+					"server": "cloudflare",
+					"server-timing": "cfExtPri"
+				},
+				"requestBody": null,
+				"responseBody": null,
+				"mimeType": "",
+				"encodedDataLength": 0,
+				"cached": false
+			},
+			"elapsedMs": 119635
+		},
+		{
+			"type": "console",
+			"timestamp": 1776219661206,
+			"elapsedMs": 125380,
+			"data": {
+				"level": "warn",
+				"args": [
+					"[TikTok Pixel] - Invalid Event Name Format\nIssue: 1 event name was rejected for not following TikTok format requirements.\nSuggestion: Go to your source code and update these event types according to TikTok format requirements. See https://ads.tiktok.com/help/article/custom-events?lang=en for more information."
+				],
+				"trace": []
+			}
+		},
+		{
+			"type": "console",
+			"timestamp": 1776219661207,
+			"elapsedMs": 125381,
+			"data": {
+				"level": "warn",
+				"args": [
+					"[TikTok Pixel] - Invalid Event Name Format\nIssue: 1 event name was rejected for not following TikTok format requirements.\nSuggestion: Go to your source code and update these event types according to TikTok format requirements. See https://ads.tiktok.com/help/article/custom-events?lang=en for more information."
+				],
+				"trace": []
+			}
+		}
+	],
+	"recordingStartTime": 1776219535826,
+	"recordingDurationMs": 120493
+}
