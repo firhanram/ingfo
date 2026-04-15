@@ -122,15 +122,6 @@ function getDomain(url: string): string {
 	}
 }
 
-function getFullPath(url: string): string {
-	try {
-		const parsed = new URL(url);
-		return parsed.pathname + parsed.search;
-	} catch {
-		return url;
-	}
-}
-
 function isErrorStatus(status: number): boolean {
 	return status === 0 || status >= 400;
 }
@@ -569,7 +560,8 @@ function SummaryPanel() {
 			{expanded === "errors" && errorEvents.length > 0 && (
 				<ExpandedList
 					items={errorEvents.map((e) => ({
-						label: getFullPath(e.data.url),
+						label: getDisplayName(e.data.url),
+						icon: <ResourceTypeIcon resourceType={getResourceType(e)} />,
 						badge: `${e.data.status} ${e.data.statusText}`,
 						badgeColor: "text-error-500",
 					}))}
@@ -578,7 +570,8 @@ function SummaryPanel() {
 			{expanded === "large" && largestEvents.length > 0 && (
 				<ExpandedList
 					items={largestEvents.map((e) => ({
-						label: getFullPath(e.data.url),
+						label: getDisplayName(e.data.url),
+						icon: <ResourceTypeIcon resourceType={getResourceType(e)} />,
 						badge: formatBytes(e.data.encodedDataLength),
 						badgeColor: "text-warning-700",
 					}))}
@@ -587,7 +580,8 @@ function SummaryPanel() {
 			{expanded === "slow" && slowestEvents.length > 0 && (
 				<ExpandedList
 					items={slowestEvents.map((e) => ({
-						label: getFullPath(e.data.url),
+						label: getDisplayName(e.data.url),
+						icon: <ResourceTypeIcon resourceType={getResourceType(e)} />,
 						badge: formatDuration(e.data.duration),
 						badgeColor: "text-info-700",
 					}))}
@@ -644,7 +638,12 @@ function SummaryChip({
 function ExpandedList({
 	items,
 }: {
-	items: { label: string; badge: string; badgeColor: string }[];
+	items: {
+		label: string;
+		icon: React.ReactNode;
+		badge: string;
+		badgeColor: string;
+	}[];
 }) {
 	return (
 		<ul className="mt-2 space-y-1 border-t border-neutral-100 pt-2">
@@ -653,7 +652,10 @@ function ExpandedList({
 					key={`${item.label}-${item.badge}`}
 					className="flex items-center gap-2 font-mono text-xs text-neutral-600"
 				>
-					<span className="truncate">{item.label}</span>
+					<span className="flex items-center gap-1.5 min-w-0">
+						{item.icon}
+						<span className="truncate">{item.label}</span>
+					</span>
 					<span
 						className={cn("ml-auto shrink-0 font-semibold", item.badgeColor)}
 					>
@@ -1197,7 +1199,7 @@ function CodeBlock({ code, mimeType }: { code: string; mimeType: string }) {
 
 	return (
 		<div
-			className="overflow-auto rounded-md bg-surface-sunken p-3 text-xs [&_pre]:!bg-transparent [&_code]:!text-xs"
+			className="overflow-auto rounded-md bg-surface-sunken p-3 text-xs [&_pre]:!bg-transparent [&_pre]:!whitespace-pre-wrap [&_pre]:!break-all [&_code]:!text-xs"
 			// biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output is safe
 			dangerouslySetInnerHTML={{ __html: html }}
 		/>
