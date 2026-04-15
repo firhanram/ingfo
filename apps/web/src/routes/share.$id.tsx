@@ -286,6 +286,38 @@ function SharePage() {
 	const [activeTab, setActiveTab] = useState<"network" | "console">("network");
 	const [copied, setCopied] = useState(false);
 	const activeRowRef = useRef<HTMLTableRowElement>(null);
+	const [leftPanelWidth, setLeftPanelWidth] = useState(50); // percentage
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	// Panel resize (left/right columns)
+	const onPanelResizeStart = useCallback(
+		(e: React.MouseEvent) => {
+			e.preventDefault();
+			const container = containerRef.current;
+			if (!container) return;
+			const startX = e.clientX;
+			const startWidth = leftPanelWidth;
+			const containerRect = container.getBoundingClientRect();
+			const onMove = (ev: MouseEvent) => {
+				const delta = ev.clientX - startX;
+				const deltaPercent = (delta / containerRect.width) * 100;
+				setLeftPanelWidth(
+					Math.min(80, Math.max(20, startWidth + deltaPercent)),
+				);
+			};
+			const onUp = () => {
+				document.removeEventListener("mousemove", onMove);
+				document.removeEventListener("mouseup", onUp);
+				document.body.style.cursor = "";
+				document.body.style.userSelect = "";
+			};
+			document.body.style.cursor = "col-resize";
+			document.body.style.userSelect = "none";
+			document.addEventListener("mousemove", onMove);
+			document.addEventListener("mouseup", onUp);
+		},
+		[leftPanelWidth],
+	);
 
 	// Column resize
 	const onColResizeStart = useCallback(
@@ -355,9 +387,9 @@ function SharePage() {
 			</header>
 
 			{/* ── Body ──────────────────────────────────────────────── */}
-			<div className="flex min-h-0 flex-1">
+			<div ref={containerRef} className="flex min-h-0 flex-1">
 				{/* ── Left column: Video + Summary ─────────────────── */}
-				<div className="flex w-1/2 flex-col border-r border-neutral-200">
+				<div className="flex flex-col" style={{ width: `${leftPanelWidth}%` }}>
 					{/* Video */}
 					<div className="flex flex-1 items-center justify-center bg-surface-sunken p-6">
 						{/* biome-ignore lint/a11y/useMediaCaption: screen recording, no captions available */}
@@ -374,8 +406,22 @@ function SharePage() {
 					<SummaryPanel />
 				</div>
 
+				{/* ── Resize handle ───────────────────────────────── */}
+				{/* biome-ignore lint: resize handle uses mouse drag only */}
+				<div
+					role="separator"
+					aria-valuenow={Math.round(leftPanelWidth)}
+					aria-valuemin={20}
+					aria-valuemax={80}
+					tabIndex={0}
+					onMouseDown={onPanelResizeStart}
+					className="group relative flex w-0 shrink-0 cursor-col-resize items-center justify-center"
+				>
+					<div className="absolute inset-y-0 -left-0.5 w-1 bg-neutral-200 transition-colors group-hover:bg-primary-600 group-active:bg-primary-600" />
+				</div>
+
 				{/* ── Right column: Browser Info + Tabs ────────────── */}
-				<div className="flex w-1/2 flex-col">
+				<div className="flex min-w-0 flex-1 flex-col">
 					{/* Browser Info */}
 					<BrowserInfoPanel browserInfo={browserInfo} />
 
