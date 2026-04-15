@@ -36,6 +36,9 @@
 			"recommended": true,
 			"suspicious": {
 				"noShorthandPropertyOverrides": "off"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "off"
 			}
 		}
 	},
