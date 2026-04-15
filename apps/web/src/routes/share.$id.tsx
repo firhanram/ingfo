@@ -89,7 +89,31 @@ function formatElapsed(ms: number): string {
 	return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
-function getPathname(url: string): string {
+function getDisplayName(url: string): string {
+	try {
+		const parsed = new URL(url);
+		const pathname = parsed.pathname;
+
+		// For root paths like "/", show the hostname
+		if (pathname === "/" || pathname === "") {
+			const query = parsed.search;
+			if (query) return parsed.hostname + query;
+			return parsed.hostname;
+		}
+
+		// Get the last path segment
+		const segments = pathname.split("/").filter(Boolean);
+		const lastSegment = segments[segments.length - 1];
+
+		// Append query string if present
+		const query = parsed.search;
+		return lastSegment + query;
+	} catch {
+		return url;
+	}
+}
+
+function getFullPath(url: string): string {
 	try {
 		const parsed = new URL(url);
 		return parsed.pathname + parsed.search;
@@ -527,7 +551,7 @@ function SummaryPanel() {
 			{expanded === "errors" && errorEvents.length > 0 && (
 				<ExpandedList
 					items={errorEvents.map((e) => ({
-						label: getPathname(e.data.url),
+						label: getFullPath(e.data.url),
 						badge: `${e.data.status} ${e.data.statusText}`,
 						badgeColor: "text-error-500",
 					}))}
@@ -536,7 +560,7 @@ function SummaryPanel() {
 			{expanded === "large" && largestEvents.length > 0 && (
 				<ExpandedList
 					items={largestEvents.map((e) => ({
-						label: getPathname(e.data.url),
+						label: getFullPath(e.data.url),
 						badge: formatBytes(e.data.encodedDataLength),
 						badgeColor: "text-warning-700",
 					}))}
@@ -545,7 +569,7 @@ function SummaryPanel() {
 			{expanded === "slow" && slowestEvents.length > 0 && (
 				<ExpandedList
 					items={slowestEvents.map((e) => ({
-						label: getPathname(e.data.url),
+						label: getFullPath(e.data.url),
 						badge: formatDuration(e.data.duration),
 						badgeColor: "text-info-700",
 					}))}
@@ -814,7 +838,7 @@ function NetworkRow({
 			<td className="max-w-0 px-2.5 py-1.5 text-neutral-800" title={data.url}>
 				<span className="flex items-center gap-1.5">
 					<ResourceTypeIcon resourceType={getResourceType(event)} />
-					<span className="truncate">{getPathname(data.url)}</span>
+					<span className="truncate">{getDisplayName(data.url)}</span>
 				</span>
 			</td>
 
