@@ -728,23 +728,22 @@ function ConsoleRow({
 	event: ConsoleEvent;
 	currentTimeMs: number;
 }) {
-	const isPending = event.elapsedMs > currentTimeMs;
-	const levelColors: Record<string, string> = {
-		error: "text-error-500 bg-error-50",
-		warn: "text-warning-700 bg-warning-50",
-		info: "text-info-500 bg-info-50",
-		log: "text-neutral-600 bg-white",
-	};
-	const colorClass = levelColors[event.data.level] ?? levelColors.log;
+	const isPassed = event.elapsedMs <= currentTimeMs;
 
 	return (
 		<div
 			className={cn(
-				"flex gap-3 px-4 py-2 font-mono text-xs",
-				colorClass,
-				isPending && "opacity-30",
+				"flex items-start gap-3 px-4 py-2 font-mono text-xs",
+				event.data.level === "error" && "bg-error-50",
+				event.data.level === "warn" && "bg-warning-50",
 			)}
 		>
+			<span
+				className={cn(
+					"mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full",
+					isPassed ? "bg-primary-300" : "bg-neutral-200",
+				)}
+			/>
 			<span className="shrink-0 text-neutral-400">
 				{formatElapsed(event.elapsedMs)}
 			</span>
@@ -789,16 +788,18 @@ function NetworkRow({
 	const rowClasses = cn(
 		"border-b border-neutral-100 transition-colors",
 		isError && isPassed && "bg-error-50",
-		isActive && !isError && "bg-primary-50",
-		isPending && "opacity-30",
-		!isPending && !isActive && !isError && "hover:bg-neutral-50",
+		!isPending && !isError && "hover:bg-neutral-50",
 	);
 
 	return (
 		<tr ref={isActive ? activeRowRef : undefined} className={rowClasses}>
 			<td className="whitespace-nowrap px-2.5 py-1.5 text-neutral-400">
 				<span className="flex items-center gap-1.5">
-					{isActive && <PulsingDot />}
+					<StatusDot
+						isPassed={isPassed}
+						isActive={isActive}
+						isError={isError}
+					/>
 					<span>{index + 1}</span>
 				</span>
 			</td>
@@ -838,14 +839,35 @@ function NetworkRow({
 	);
 }
 
-// ── Pulsing dot ──────────────────────────────────────────────────────────────
+// ── Status dot ───────────────────────────────────────────────────────────────
 
-function PulsingDot() {
+function StatusDot({
+	isPassed,
+	isActive,
+	isError,
+}: {
+	isPassed: boolean;
+	isActive: boolean;
+	isError: boolean;
+}) {
+	if (isActive) {
+		return (
+			<span className="relative flex h-2.5 w-2.5">
+				<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75 motion-reduce:animate-none" />
+				<span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent-400" />
+			</span>
+		);
+	}
+
 	return (
-		<span className="relative flex h-2 w-2">
-			<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-400 opacity-75 motion-reduce:animate-none" />
-			<span className="relative inline-flex h-2 w-2 rounded-full bg-accent-400" />
-		</span>
+		<span
+			className={cn(
+				"inline-flex h-2.5 w-2.5 shrink-0 rounded-full",
+				isError && isPassed && "bg-error-500",
+				!isError && isPassed && "bg-primary-300",
+				!isPassed && "bg-neutral-200",
+			)}
+		/>
 	);
 }
 
