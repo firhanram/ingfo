@@ -14,15 +14,14 @@ function formatTime(ms: number): string {
 
 interface RecordingControlBarProps {
 	micEnabled: boolean;
-	micPermission: PermissionState;
 }
 
 export function RecordingControlBar({
 	micEnabled: initialMicEnabled,
-	micPermission,
 }: RecordingControlBarProps) {
-	const micGranted = micPermission === "granted";
-	const [micEnabled, setMicEnabled] = useState(initialMicEnabled);
+	// Mic can only be toggled (mute/unmute) if it was enabled at recording start
+	const micStartedOn = initialMicEnabled;
+	const [micMuted, setMicMuted] = useState(false);
 	const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 	const [showDurationLimit, setShowDurationLimit] = useState(false);
 	const { elapsedMs, isPaused } = useRecordingStore();
@@ -90,7 +89,7 @@ export function RecordingControlBar({
 	}
 
 	function handleToggleMic() {
-		setMicEnabled((prev) => !prev);
+		setMicMuted((prev) => !prev);
 		browser.runtime.sendMessage({
 			type: "TOGGLE_MIC",
 		} satisfies Message);
@@ -185,21 +184,21 @@ export function RecordingControlBar({
 				{/* Mic toggle */}
 				<button
 					type="button"
-					onClick={micGranted ? handleToggleMic : undefined}
+					onClick={micStartedOn ? handleToggleMic : undefined}
 					className={
-						micGranted
+						micStartedOn
 							? "flex size-8 cursor-pointer items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white"
-							: "flex size-8 items-center justify-center rounded-full text-white/30 cursor-not-allowed"
+							: "flex size-8 cursor-not-allowed items-center justify-center rounded-full text-white/30"
 					}
 					title={
-						micGranted
-							? micEnabled
-								? "Mute microphone"
-								: "Unmute microphone"
-							: "Microphone permission not granted"
+						micStartedOn
+							? micMuted
+								? "Unmute microphone"
+								: "Mute microphone"
+							: "Restart recording to use microphone"
 					}
 				>
-					{micEnabled && micGranted ? (
+					{micStartedOn && !micMuted ? (
 						<Mic className="size-4" />
 					) : (
 						<MicOff className="size-4" />

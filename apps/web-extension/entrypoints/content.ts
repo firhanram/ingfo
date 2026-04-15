@@ -184,13 +184,6 @@ export default defineContentScript({
 			controlBarUi?.remove();
 			recordingStore.reset();
 
-			// Mic permission is scoped to the extension origin, not the
-			// webpage origin, so content scripts cannot query it directly.
-			// Instead, derive permission from whether mic was enabled at
-			// recording start — the popup only allows micEnabled=true when
-			// permission is already granted.
-			const micPermission: PermissionState = micEnabled ? "granted" : "prompt";
-
 			controlBarUi = await createShadowRootUi(ctx, {
 				name: "ingfo-recording-control-bar",
 				position: "overlay",
@@ -201,7 +194,6 @@ export default defineContentScript({
 					root.render(
 						createElement(RecordingControlBar, {
 							micEnabled,
-							micPermission,
 						}),
 					);
 					return root;
