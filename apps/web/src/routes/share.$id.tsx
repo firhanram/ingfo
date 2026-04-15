@@ -1,13 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	AlertTriangle,
+	Braces,
 	ChevronDown,
 	ChevronRight,
 	Clock,
+	Code,
+	FileCode,
+	FileText,
 	Globe,
 	HardDrive,
+	Image,
 	Link2,
 	Monitor,
+	Paintbrush,
+	Type,
 } from "lucide-react";
 import {
 	type JSX,
@@ -804,11 +811,11 @@ function NetworkRow({
 				</span>
 			</td>
 
-			<td
-				className="max-w-0 truncate px-2.5 py-1.5 text-neutral-800"
-				title={data.url}
-			>
-				{getPathname(data.url)}
+			<td className="max-w-0 px-2.5 py-1.5 text-neutral-800" title={data.url}>
+				<span className="flex items-center gap-1.5">
+					<ResourceTypeIcon resourceType={getResourceType(event)} />
+					<span className="truncate">{getPathname(data.url)}</span>
+				</span>
 			</td>
 
 			<td className="whitespace-nowrap px-2.5 py-1.5">
@@ -869,6 +876,42 @@ function StatusDot({
 			)}
 		/>
 	);
+}
+
+// ── Resource type icon ───────────────────────────────────────────────────────
+
+function ResourceTypeIcon({ resourceType }: { resourceType: string }) {
+	const iconClass = "h-3.5 w-3.5 shrink-0";
+
+	switch (resourceType) {
+		case "fetch":
+		case "xhr":
+		case "preflight":
+			return <Braces className={cn(iconClass, "text-accent-500")} />;
+		case "document":
+			return <FileText className={cn(iconClass, "text-info-500")} />;
+		case "script":
+			return <FileCode className={cn(iconClass, "text-warning-500")} />;
+		case "stylesheet":
+			return <Paintbrush className={cn(iconClass, "text-success-500")} />;
+		case "font":
+		case "woff2":
+		case "woff":
+		case "ttf":
+			return <Type className={cn(iconClass, "text-primary-500")} />;
+		case "png":
+		case "jpeg":
+		case "gif":
+		case "svg":
+		case "webp":
+		case "ico":
+		case "avif":
+			return <Image className={cn(iconClass, "text-accent-400")} />;
+		case "websocket":
+			return <Globe className={cn(iconClass, "text-success-500")} />;
+		default:
+			return <Code className={cn(iconClass, "text-neutral-400")} />;
+	}
 }
 
 // ── Method badge ─────────────────────────────────────────────────────────────
