@@ -114,6 +114,14 @@ function getDisplayName(url: string): string {
 	}
 }
 
+function getDomain(url: string): string {
+	try {
+		return new URL(url).hostname;
+	} catch {
+		return url;
+	}
+}
+
 function getFullPath(url: string): string {
 	try {
 		const parsed = new URL(url);
@@ -265,8 +273,17 @@ function categorizeRequest(event: NetworkEvent): FilterCategory {
 
 // ── Column config ────────────────────────────────────────────────────────────
 
-const COL_HEADERS = ["#", "Name", "Method", "Status", "Type", "Size", "Time"];
-const DEFAULT_COL_WIDTHS = [40, 260, 80, 64, 72, 72, 72];
+const COL_HEADERS = [
+	"#",
+	"Name",
+	"Method",
+	"Status",
+	"Type",
+	"Domain",
+	"Size",
+	"Time",
+];
+const DEFAULT_COL_WIDTHS = [40, 220, 72, 56, 72, 120, 64, 72];
 const MIN_COL_WIDTH = 36;
 
 // ── Main component ──────────────────────────────────────────────────────────
@@ -886,6 +903,13 @@ function NetworkRow({
 
 			<td className="whitespace-nowrap px-2.5 py-1.5 text-neutral-500">
 				{getResourceType(event)}
+			</td>
+
+			<td
+				className="max-w-0 truncate px-2.5 py-1.5 text-neutral-400"
+				title={getDomain(data.url)}
+			>
+				{getDomain(data.url)}
 			</td>
 
 			<td className="whitespace-nowrap px-2.5 py-1.5 text-neutral-500">
