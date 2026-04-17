@@ -4,22 +4,42 @@ import {
 	uploadRecording,
 } from "#/features/recording/api/create-upload-urls.server";
 
+const corsHeaders = {
+	"Access-Control-Allow-Origin": "*",
+	"Access-Control-Allow-Methods": "POST, OPTIONS",
+	"Access-Control-Allow-Headers": "Content-Type",
+};
+
+function jsonWithCors(data: unknown, init?: { status?: number }): Response {
+	const res = Response.json(data, init);
+	for (const [key, value] of Object.entries(corsHeaders)) {
+		res.headers.set(key, value);
+	}
+	return res;
+}
+
 export const Route = createFileRoute("/api/upload")({
 	server: {
 		handlers: {
+			OPTIONS: () => {
+				return new Response(null, {
+					status: 204,
+					headers: corsHeaders,
+				});
+			},
 			POST: async ({ request }) => {
 				const form = await request.formData();
 				const recording = form.get("recording");
 				const metadata = form.get("metadata");
 
 				if (!(recording instanceof File)) {
-					return Response.json(
+					return jsonWithCors(
 						{ error: "Missing 'recording' file field" },
 						{ status: 400 },
 					);
 				}
 				if (typeof metadata !== "string") {
-					return Response.json(
+					return jsonWithCors(
 						{ error: "Missing 'metadata' text field" },
 						{ status: 400 },
 					);
@@ -28,7 +48,7 @@ export const Route = createFileRoute("/api/upload")({
 				try {
 					JSON.parse(metadata);
 				} catch {
-					return Response.json(
+					return jsonWithCors(
 						{ error: "metadata is not valid JSON" },
 						{ status: 400 },
 					);
@@ -36,13 +56,10 @@ export const Route = createFileRoute("/api/upload")({
 
 				try {
 					const result = await uploadRecording(recording, metadata);
-					return Response.json(result);
+					return jsonWithCors(result);
 				} catch (err) {
 					if (err instanceof UploadError) {
-						return Response.json(
-							{ error: err.message },
-							{ status: err.status },
-						);
+						return jsonWithCors({ error: err.message }, { status: err.status });
 					}
 					throw err;
 				}
