@@ -34,6 +34,26 @@ export interface ConsoleEvent {
 
 export type RecordingEvent = NetworkEvent | ConsoleEvent;
 
+export interface BrowserInfo {
+	url: string;
+	title: string;
+	userAgent: string;
+	platform: string;
+	browserName: string;
+	browserVersion: string;
+	windowWidth: number;
+	windowHeight: number;
+	devicePixelRatio: number;
+	language: string;
+}
+
+export interface RecordingMetadata {
+	browserInfo: BrowserInfo;
+	events: RecordingEvent[];
+	recordingStartTime: number;
+	recordingDurationMs: number;
+}
+
 export const FILTER_CATEGORIES = [
 	"All",
 	"Fetch/XHR",

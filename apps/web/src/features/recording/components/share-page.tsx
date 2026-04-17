@@ -1,7 +1,8 @@
 import { Link2 } from "lucide-react";
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Route } from "#/routes/share.$id";
 import { DEFAULT_COL_WIDTHS, MIN_COL_WIDTH } from "../lib/columns";
-import { browserInfo, consoleEvents, networkEvents } from "../lib/data";
+import { parseRecordingData } from "../lib/data";
 import { BrowserInfoPanel } from "./browser-info-panel";
 import { ConsolePanel } from "./console-panel";
 import { NetworkPanel } from "./network-panel";
@@ -9,6 +10,9 @@ import { SummaryPanel } from "./summary-panel";
 import { TabButton } from "./tab-button";
 
 export function SharePage() {
+	const { recordingUrl, metadata } = Route.useLoaderData();
+	const data = useMemo(() => parseRecordingData(metadata), [metadata]);
+
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const [currentTimeMs, setCurrentTimeMs] = useState(0);
 	const [colWidths, setColWidths] = useState(DEFAULT_COL_WIDTHS);
@@ -100,7 +104,7 @@ export function SharePage() {
 				</span>
 				<span className="mx-2 text-neutral-300">·</span>
 				<span className="truncate text-sm text-neutral-500">
-					{browserInfo.title}
+					{data.browserInfo.title}
 				</span>
 
 				<button
@@ -124,13 +128,17 @@ export function SharePage() {
 							ref={videoRef}
 							controls
 							className="max-h-full max-w-full rounded-lg shadow-lg"
-							src="/dummy-recording.webm"
+							src={recordingUrl}
 							onTimeUpdate={onTimeUpdate}
 						/>
 					</div>
 
 					{/* Summary */}
-					<SummaryPanel />
+					<SummaryPanel
+						errorEvents={data.errorEvents}
+						largestEvents={data.largestEvents}
+						slowestEvents={data.slowestEvents}
+					/>
 				</div>
 
 				{/* ── Resize handle ───────────────────────────────── */}
@@ -150,20 +158,23 @@ export function SharePage() {
 				{/* ── Right column: Browser Info + Tabs ────────────── */}
 				<div className="flex min-w-0 flex-1 flex-col">
 					{/* Browser Info */}
-					<BrowserInfoPanel browserInfo={browserInfo} />
+					<BrowserInfoPanel
+						browserInfo={data.browserInfo}
+						totalRecordingMs={data.totalRecordingMs}
+					/>
 
 					{/* Tabs */}
 					<div className="flex shrink-0 border-b border-neutral-200 bg-surface-raised">
 						<TabButton
 							active={activeTab === "console"}
 							label="Console"
-							count={consoleEvents.length}
+							count={data.consoleEvents.length}
 							onClick={() => setActiveTab("console")}
 						/>
 						<TabButton
 							active={activeTab === "network"}
 							label="Network"
-							count={networkEvents.length}
+							count={data.networkEvents.length}
 							onClick={() => setActiveTab("network")}
 						/>
 					</div>
@@ -172,6 +183,7 @@ export function SharePage() {
 					<div className="flex min-h-0 flex-1 flex-col">
 						{activeTab === "network" && (
 							<NetworkPanel
+								networkEvents={data.networkEvents}
 								currentTimeMs={currentTimeMs}
 								colWidths={colWidths}
 								onColResizeStart={onColResizeStart}
@@ -179,7 +191,10 @@ export function SharePage() {
 							/>
 						)}
 						{activeTab === "console" && (
-							<ConsolePanel currentTimeMs={currentTimeMs} />
+							<ConsolePanel
+								consoleEvents={data.consoleEvents}
+								currentTimeMs={currentTimeMs}
+							/>
 						)}
 					</div>
 				</div>

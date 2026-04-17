@@ -1,9 +1,14 @@
 import { cn } from "#/lib/utils";
-import { consoleEvents } from "../lib/data";
 import { formatElapsed } from "../lib/format";
 import type { ConsoleEvent } from "../lib/types";
 
-export function ConsolePanel({ currentTimeMs }: { currentTimeMs: number }) {
+export function ConsolePanel({
+	consoleEvents,
+	currentTimeMs,
+}: {
+	consoleEvents: ConsoleEvent[];
+	currentTimeMs: number;
+}) {
 	return (
 		<div className="flex-1 overflow-auto">
 			{consoleEvents.length === 0 ? (

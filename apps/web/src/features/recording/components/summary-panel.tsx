@@ -7,12 +7,20 @@ import {
 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { cn } from "#/lib/utils";
-import { errorEvents, largestEvents, slowestEvents } from "../lib/data";
 import { formatBytes, formatDuration, getDisplayName } from "../lib/format";
 import { getResourceType } from "../lib/network-filters";
+import type { NetworkEvent } from "../lib/types";
 import { ResourceTypeIcon } from "./resource-type-icon";
 
-export function SummaryPanel() {
+export function SummaryPanel({
+	errorEvents,
+	largestEvents,
+	slowestEvents,
+}: {
+	errorEvents: NetworkEvent[];
+	largestEvents: NetworkEvent[];
+	slowestEvents: NetworkEvent[];
+}) {
 	const [expanded, setExpanded] = useState<string | null>(null);
 
 	const toggle = useCallback(

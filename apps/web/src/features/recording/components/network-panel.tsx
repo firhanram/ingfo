@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { cn } from "#/lib/utils";
 import { COL_HEADERS } from "../lib/columns";
-import { networkEvents } from "../lib/data";
 import { categorizeRequest } from "../lib/network-filters";
 import {
 	FILTER_CATEGORIES,
@@ -12,11 +11,13 @@ import { NetworkDetailPanel } from "./network-detail-panel";
 import { NetworkRow } from "./network-row";
 
 export function NetworkPanel({
+	networkEvents,
 	currentTimeMs,
 	colWidths,
 	onColResizeStart,
 	activeRowRef,
 }: {
+	networkEvents: NetworkEvent[];
 	currentTimeMs: number;
 	colWidths: number[];
 	onColResizeStart: (colIndex: number, e: React.MouseEvent) => void;

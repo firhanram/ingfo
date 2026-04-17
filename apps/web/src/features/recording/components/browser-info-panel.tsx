@@ -1,12 +1,14 @@
 import { Clock, Globe, Monitor } from "lucide-react";
 import { cn } from "#/lib/utils";
-import { totalRecordingMs } from "../lib/data";
 import { formatElapsed } from "../lib/format";
+import type { BrowserInfo } from "../lib/types";
 
 export function BrowserInfoPanel({
 	browserInfo,
+	totalRecordingMs,
 }: {
-	browserInfo: typeof import("../lib/data").browserInfo;
+	browserInfo: BrowserInfo;
+	totalRecordingMs: number;
 }) {
 	return (
 		<div className="shrink-0 border-b border-neutral-200 bg-white px-5 py-4">
