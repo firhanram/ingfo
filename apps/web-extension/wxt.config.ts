@@ -16,10 +16,10 @@ export default defineConfig({
 			"audioCapture",
 			"debugger",
 		],
-		// host_permissions: [
-		// 	"http://localhost:5433/*",
-		// 	// TODO: add production web app URL once set
-		// ],
+		host_permissions: [
+			"http://localhost:5433/*",
+			// TODO: add production web app URL once set
+		],
 	},
 	vite: () => ({
 		plugins: [tailwindcss()],
