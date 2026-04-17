@@ -1,7 +1,9 @@
-import { Download, FileJson, Pause, Play, X } from "lucide-react";
+import { Pause, Play, Share2, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
+import type { Message } from "@/lib/messages";
 import type { RecordingMetadata } from "@/lib/metadata-types";
+import { shareRecording } from "@/lib/share-recording";
 
 interface VideoPreviewDialogProps {
 	videoDataUrl: string;
@@ -31,7 +33,8 @@ export function VideoPreviewDialog({
 	const [videoDuration, setVideoDuration] = useState(durationMs / 1000);
 	const [trimStart, setTrimStart] = useState(0);
 	const [trimEnd, setTrimEnd] = useState(durationMs / 1000);
-	const [isExporting, setIsExporting] = useState(false);
+	const [isSharing, setIsSharing] = useState(false);
+	const [shareError, setShareError] = useState<string | null>(null);
 
 	// Refs to avoid stale closures in event handlers
 	const trimStartRef = useRef(trimStart);
@@ -166,28 +169,26 @@ export function VideoPreviewDialog({
 	const trimmedDuration = trimEnd - trimStart;
 	const isTrimmed = trimStart > 0.1 || trimEnd < videoDuration - 0.1;
 
-	async function handleDownload() {
-		if (!isTrimmed) {
-			// No trim needed — download directly
-			const link = document.createElement("a");
-			link.href = videoDataUrl;
-			link.download = `recording-${Date.now()}.webm`;
-			link.click();
-			return;
-		}
-
-		// Trim via canvas re-encoding
-		setIsExporting(true);
+	async function handleShareReplay() {
+		setIsSharing(true);
+		setShareError(null);
 		try {
-			const trimmedBlob = await trimVideo(videoDataUrl, trimStart, trimEnd);
-			const url = URL.createObjectURL(trimmedBlob);
-			const link = document.createElement("a");
-			link.href = url;
-			link.download = `recording-${Date.now()}.webm`;
-			link.click();
-			URL.revokeObjectURL(url);
+			const blob = isTrimmed
+				? await trimVideo(videoDataUrl, trimStart, trimEnd)
+				: await fetch(videoDataUrl).then((r) => r.blob());
+			const result = await shareRecording(blob, metadata);
+			await browser.runtime.sendMessage({
+				type: "SAVE_SHARED_RECORDING",
+				payload: { ...result, createdAt: Date.now() },
+			} satisfies Message);
+			window.open(result.shareUrl, "_blank", "noopener");
+			onClose();
+		} catch (err) {
+			setShareError(
+				err instanceof Error ? err.message : "Failed to share recording",
+			);
 		} finally {
-			setIsExporting(false);
+			setIsSharing(false);
 		}
 	}
 
@@ -319,45 +320,27 @@ export function VideoPreviewDialog({
 						</div>
 					</div>
 
-					{/* Trim info + download */}
+					{/* Trim info + share */}
 					<div className="mt-3 flex items-center justify-between">
-						<span className="text-xs tabular-nums text-neutral-500">
-							{isTrimmed
-								? `Trimmed to ${formatTime(trimmedDuration * 1000)}`
-								: ""}
-						</span>
+						{shareError ? (
+							<span className="text-xs text-red-600">{shareError}</span>
+						) : (
+							<span className="text-xs tabular-nums text-neutral-500">
+								{isTrimmed
+									? `Trimmed to ${formatTime(trimmedDuration * 1000)}`
+									: ""}
+							</span>
+						)}
 
-						<div className="flex items-center gap-2">
-							<button
-								type="button"
-								onClick={() => {
-									const json = JSON.stringify(metadata, null, 2);
-									const blob = new Blob([json], {
-										type: "application/json",
-									});
-									const url = URL.createObjectURL(blob);
-									const link = document.createElement("a");
-									link.href = url;
-									link.download = `recording-metadata-${Date.now()}.json`;
-									link.click();
-									URL.revokeObjectURL(url);
-								}}
-								className="flex cursor-pointer items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
-							>
-								<FileJson size={16} />
-								Metadata
-							</button>
-
-							<button
-								type="button"
-								onClick={handleDownload}
-								disabled={isExporting}
-								className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500 disabled:cursor-not-allowed disabled:opacity-50"
-							>
-								<Download size={16} />
-								{isExporting ? "Exporting..." : "Download"}
-							</button>
-						</div>
+						<button
+							type="button"
+							onClick={handleShareReplay}
+							disabled={isSharing}
+							className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500 disabled:cursor-not-allowed disabled:opacity-50"
+						>
+							<Share2 size={16} />
+							{isSharing ? "Sharing..." : "Share Replay"}
+						</button>
 					</div>
 				</div>
 			</div>

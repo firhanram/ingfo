@@ -66,6 +66,18 @@ export type Message =
 			level: "log" | "warn" | "error" | "info" | "debug";
 			args: string[];
 			trace: string[];
+	  }
+
+	// Shared recording persistence: Content → Background
+	| {
+			type: "SAVE_SHARED_RECORDING";
+			payload: {
+				shareId: string;
+				recordingUrl: string;
+				metadataUrl: string;
+				shareUrl: string;
+				createdAt: number;
+			};
 	  };
 
 // --- Offscreen messages (background ↔ offscreen document) ---

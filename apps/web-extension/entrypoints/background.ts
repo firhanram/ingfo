@@ -2,6 +2,7 @@ import {
 	consoleCleanupFunction,
 	consoleInjectorFunction,
 } from "@/lib/console-interceptor";
+import { db } from "@/lib/db";
 import type { Message, OffscreenMessage, Region } from "@/lib/messages";
 import type {
 	BrowserInfo,
@@ -163,6 +164,19 @@ export default defineBackground(() => {
 					},
 				});
 				sendResponse({ ok: true });
+			}
+
+			// --- Shared recording persistence ---
+			else if (message.type === "SAVE_SHARED_RECORDING") {
+				db.recordings.put(message.payload).then(
+					() => sendResponse({ ok: true }),
+					(err: unknown) =>
+						sendResponse({
+							ok: false,
+							error: err instanceof Error ? err.message : String(err),
+						}),
+				);
+				return true; // keep sendResponse alive for async put
 			}
 		},
 	);
