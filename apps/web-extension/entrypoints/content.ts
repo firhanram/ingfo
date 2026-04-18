@@ -42,7 +42,7 @@ const floatingCss = `${floatingHostCss}\n${styles}`;
 
 export default defineContentScript({
 	matches: ["<all_urls>"],
-	cssInjectionMode: "ui",
+	cssInjectionMode: "manual",
 	main(ctx) {
 		// --- Screenshot UIs ---
 		let selectionUi: Awaited<ReturnType<typeof createShadowRootUi>> | null =
