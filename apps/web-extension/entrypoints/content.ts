@@ -261,7 +261,6 @@ export default defineContentScript({
 			}
 
 			function handleMessage(event: MessageEvent) {
-				if (event.source !== iframe.contentWindow) return;
 				if (event.origin !== previewOrigin) return;
 				const data = event.data;
 				if (!data || typeof data !== "object") return;

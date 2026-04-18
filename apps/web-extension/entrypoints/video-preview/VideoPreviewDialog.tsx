@@ -202,8 +202,8 @@ export function VideoPreviewDialog({
 					thumbnailDataUrl,
 				},
 			} satisfies Message);
-			window.open(result.shareUrl, "_blank", "noopener");
 			onClose();
+			window.open(result.shareUrl, "_blank", "noopener");
 		} catch (err) {
 			setShareError(
 				err instanceof Error ? err.message : "Failed to share recording",
