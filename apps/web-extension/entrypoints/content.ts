@@ -9,7 +9,6 @@ import { PreviewDialog } from "./content-ui/PreviewDialog";
 import { RecordingControlBar } from "./content-ui/RecordingControlBar";
 import { SelectionOverlay } from "./content-ui/SelectionOverlay";
 import styles from "./content-ui/style.css?inline";
-import { VideoPreviewDialog } from "./content-ui/VideoPreviewDialog";
 
 const hostOverrideCss = `:host {
 	position: fixed !important;
@@ -54,8 +53,7 @@ export default defineContentScript({
 			null;
 		let controlBarUi: Awaited<ReturnType<typeof createShadowRootUi>> | null =
 			null;
-		let videoPreviewUi: Awaited<ReturnType<typeof createShadowRootUi>> | null =
-			null;
+		let videoPreviewTeardown: (() => void) | null = null;
 
 		// Track mic state for control bar re-renders
 		let micEnabled = false;
@@ -211,34 +209,90 @@ export default defineContentScript({
 			durationMs: number,
 			metadata: RecordingMetadata,
 		) {
-			videoPreviewUi?.remove();
+			videoPreviewTeardown?.();
 
-			videoPreviewUi = await createShadowRootUi(ctx, {
-				name: "ingfo-video-preview",
-				position: "modal",
-				zIndex: 2147483647,
-				css: fullCss,
-				onMount(container) {
-					const root = ReactDOM.createRoot(container);
-					root.render(
-						createElement(VideoPreviewDialog, {
-							videoDataUrl,
+			// Render the preview UI inside a chrome-extension:// iframe so the
+			// host page's CSP (notably media-src) does not block playback of the
+			// recording blob. The blob is transferred into the iframe via
+			// postMessage so the object URL is created at the extension origin.
+			const container = document.createElement("div");
+			container.style.cssText = [
+				"position: fixed",
+				"inset: 0",
+				"width: 100vw",
+				"height: 100vh",
+				"z-index: 2147483647",
+				"background: transparent",
+			].join(";");
+
+			const iframe = document.createElement("iframe");
+			iframe.src = browser.runtime.getURL("/video-preview.html");
+			iframe.allow = "autoplay";
+			iframe.style.cssText = [
+				"width: 100%",
+				"height: 100%",
+				"border: 0",
+				"background: transparent",
+				"display: block",
+			].join(";");
+			container.appendChild(iframe);
+
+			const previewOrigin = new URL(iframe.src).origin;
+			let initialized = false;
+
+			async function sendInit() {
+				if (initialized) return;
+				initialized = true;
+				try {
+					const response = await fetch(videoDataUrl);
+					const videoBlob = await response.blob();
+					iframe.contentWindow?.postMessage(
+						{
+							type: "VIDEO_PREVIEW_INIT",
+							videoBlob,
 							durationMs,
 							metadata,
-							onClose() {
-								videoPreviewUi?.remove();
-								videoPreviewUi = null;
-							},
-						}),
+						},
+						previewOrigin,
 					);
-					return root;
-				},
-				onRemove(root) {
-					root?.unmount();
-				},
-			});
+				} catch (err) {
+					console.error("[ingfo] Failed to load video for preview", err);
+				}
+			}
 
-			videoPreviewUi.mount();
+			function handleMessage(event: MessageEvent) {
+				if (event.source !== iframe.contentWindow) return;
+				if (event.origin !== previewOrigin) return;
+				const data = event.data;
+				if (!data || typeof data !== "object") return;
+				if (data.type === "VIDEO_PREVIEW_READY") {
+					sendInit();
+				} else if (data.type === "VIDEO_PREVIEW_CLOSE") {
+					teardown();
+				}
+			}
+
+			function handleKeyDown(e: KeyboardEvent) {
+				if (e.key === "Escape") {
+					iframe.contentWindow?.postMessage(
+						{ type: "VIDEO_PREVIEW_CLOSE_REQUEST" },
+						previewOrigin,
+					);
+				}
+			}
+
+			function teardown() {
+				window.removeEventListener("message", handleMessage);
+				document.removeEventListener("keydown", handleKeyDown);
+				container.remove();
+				videoPreviewTeardown = null;
+			}
+
+			window.addEventListener("message", handleMessage);
+			document.addEventListener("keydown", handleKeyDown);
+			videoPreviewTeardown = teardown;
+
+			document.documentElement.appendChild(container);
 		}
 
 		// --- Message listener ---
@@ -293,6 +347,7 @@ export default defineContentScript({
 					countdownUi = null;
 					controlBarUi?.remove();
 					controlBarUi = null;
+					videoPreviewTeardown?.();
 					sendResponse({ ok: true });
 				}
 			},

@@ -20,6 +20,12 @@ export default defineConfig({
 			"http://localhost:5433/*",
 			// TODO: add production web app URL once set
 		],
+		web_accessible_resources: [
+			{
+				resources: ["video-preview.html"],
+				matches: ["<all_urls>"],
+			},
+		],
 	},
 	vite: () => ({
 		plugins: [tailwindcss()],

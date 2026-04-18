@@ -7,7 +7,7 @@ import { shareRecording } from "@/lib/share-recording";
 import { captureThumbnailDataUrl } from "@/lib/thumbnail";
 
 interface VideoPreviewDialogProps {
-	videoDataUrl: string;
+	videoBlob: Blob;
 	durationMs: number;
 	metadata: RecordingMetadata;
 	onClose: () => void;
@@ -21,7 +21,7 @@ function formatTime(ms: number): string {
 }
 
 export function VideoPreviewDialog({
-	videoDataUrl,
+	videoBlob,
 	durationMs,
 	metadata,
 	onClose,
@@ -36,38 +36,15 @@ export function VideoPreviewDialog({
 	const [trimEnd, setTrimEnd] = useState(durationMs / 1000);
 	const [isSharing, setIsSharing] = useState(false);
 	const [shareError, setShareError] = useState<string | null>(null);
-	// Chromium can refuse to decode frames from very large data: URLs while
-	// still parsing metadata, leaving the <video> element blank. Convert the
-	// incoming data URL to a blob URL for reliable playback (and far less
-	// memory overhead). The blob URL is revoked on unmount.
+	// Create a same-origin blob URL inside this iframe document so playback is
+	// not subject to the host page's media-src CSP.
 	const [videoSrc, setVideoSrc] = useState<string | null>(null);
 
 	useMountEffect(() => {
-		let objectUrl: string | null = null;
-		let cancelled = false;
-
-		if (videoDataUrl.startsWith("blob:")) {
-			setVideoSrc(videoDataUrl);
-			return;
-		}
-
-		fetch(videoDataUrl)
-			.then((r) => r.blob())
-			.then((blob) => {
-				if (cancelled) return;
-				objectUrl = URL.createObjectURL(blob);
-				setVideoSrc(objectUrl);
-			})
-			.catch(() => {
-				// Fall back to the original data URL so the UI still has a src.
-				if (!cancelled) setVideoSrc(videoDataUrl);
-			});
-
+		const objectUrl = URL.createObjectURL(videoBlob);
+		setVideoSrc(objectUrl);
 		return () => {
-			cancelled = true;
-			if (objectUrl) {
-				URL.revokeObjectURL(objectUrl);
-			}
+			URL.revokeObjectURL(objectUrl);
 		};
 	});
 
@@ -101,94 +78,91 @@ export function VideoPreviewDialog({
 
 	function handleTimeUpdate() {
 		const video = videoRef.current;
-		if (!video || isScrubbing.current) return;
+		if (!video) return;
 		setCurrentTime(video.currentTime);
 
-		// Stop at trim end
-		if (video.currentTime >= trimEndRef.current) {
+		// Auto-pause at trim end during playback
+		if (video.currentTime >= trimEndRef.current && !video.paused) {
 			video.pause();
 			setIsPlaying(false);
-			video.currentTime = trimStartRef.current;
-			setCurrentTime(trimStartRef.current);
 		}
 	}
 
 	function handlePlayPause() {
 		const video = videoRef.current;
 		if (!video) return;
-
-		if (isPlaying) {
-			video.pause();
-			setIsPlaying(false);
-		} else {
-			if (video.currentTime >= trimEnd || video.currentTime < trimStart) {
-				video.currentTime = trimStart;
+		if (video.paused) {
+			// If at or past trim end, restart from trim start
+			if (video.currentTime >= trimEndRef.current - 0.05) {
+				video.currentTime = trimStartRef.current;
 			}
 			video.play();
 			setIsPlaying(true);
+		} else {
+			video.pause();
+			setIsPlaying(false);
 		}
 	}
 
-	function getTimeFromMouseEvent(e: React.MouseEvent | MouseEvent): number {
-		const track = trackRef.current;
-		if (!track) return 0;
-		const rect = track.getBoundingClientRect();
-		const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
-		return (x / rect.width) * videoDuration;
-	}
-
-	// Scrub playback position by dragging on the track
 	function handleScrubStart(e: React.MouseEvent) {
-		e.preventDefault();
-		const video = videoRef.current;
-		if (!video) return;
-
-		const wasPlaying = !video.paused;
-		if (wasPlaying) video.pause();
 		isScrubbing.current = true;
+		updateScrubPosition(e.clientX);
 
-		function seekTo(mouseEvent: React.MouseEvent | MouseEvent) {
-			const time = getTimeFromMouseEvent(mouseEvent);
-			const clamped = Math.max(
-				trimStartRef.current,
-				Math.min(time, trimEndRef.current),
-			);
-			// biome-ignore lint/style/noNonNullAssertion: video is checked above
-			videoRef.current!.currentTime = clamped;
-			setCurrentTime(clamped);
-		}
-
-		seekTo(e);
-
-		function onMouseMove(moveEvent: MouseEvent) {
-			seekTo(moveEvent);
+		function onMouseMove(ev: MouseEvent) {
+			if (isScrubbing.current) updateScrubPosition(ev.clientX);
 		}
 
 		function onMouseUp() {
 			isScrubbing.current = false;
 			document.removeEventListener("mousemove", onMouseMove);
 			document.removeEventListener("mouseup", onMouseUp);
-			if (wasPlaying) videoRef.current?.play();
 		}
 
 		document.addEventListener("mousemove", onMouseMove);
 		document.addEventListener("mouseup", onMouseUp);
 	}
 
-	// Drag trim handles
+	function updateScrubPosition(clientX: number) {
+		const track = trackRef.current;
+		const video = videoRef.current;
+		if (!track || !video) return;
+		const rect = track.getBoundingClientRect();
+		const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+		const time = ratio * videoDuration;
+		video.currentTime = Math.max(
+			trimStartRef.current,
+			Math.min(trimEndRef.current, time),
+		);
+	}
+
 	function handleTrimHandleMouseDown(
 		e: React.MouseEvent,
 		handle: "start" | "end",
 	) {
-		e.preventDefault();
 		e.stopPropagation();
+		const track = trackRef.current;
+		if (!track) return;
 
-		function onMouseMove(moveEvent: MouseEvent) {
-			const time = getTimeFromMouseEvent(moveEvent);
+		function onMouseMove(ev: MouseEvent) {
+			if (!track) return;
+			const rect = track.getBoundingClientRect();
+			const ratio = Math.max(
+				0,
+				Math.min(1, (ev.clientX - rect.left) / rect.width),
+			);
+			const time = ratio * videoDuration;
 			if (handle === "start") {
-				setTrimStart(Math.min(time, trimEndRef.current - 0.5));
+				const newStart = Math.min(time, trimEndRef.current - 0.5);
+				setTrimStart(newStart);
+				if (videoRef.current && videoRef.current.currentTime < newStart) {
+					videoRef.current.currentTime = newStart;
+				}
 			} else {
-				setTrimEnd(Math.max(time, trimStartRef.current + 0.5));
+				const newEnd = Math.max(time, trimStartRef.current + 0.5);
+				setTrimEnd(newEnd);
+				if (videoRef.current && videoRef.current.currentTime > newEnd) {
+					videoRef.current.currentTime = newEnd;
+				}
 			}
 		}
 
@@ -208,10 +182,11 @@ export function VideoPreviewDialog({
 		setIsSharing(true);
 		setShareError(null);
 		try {
-			const sourceUrl = videoSrc ?? videoDataUrl;
+			const sourceUrl = videoSrc;
+			if (!sourceUrl) throw new Error("Video not ready");
 			const blob = isTrimmed
 				? await trimVideo(sourceUrl, trimStart, trimEnd)
-				: await fetch(sourceUrl).then((r) => r.blob());
+				: videoBlob;
 			const thumbnailDataUrl = await captureThumbnailDataUrl(
 				videoRef.current ?? sourceUrl,
 				isTrimmed ? trimStart : 0,
