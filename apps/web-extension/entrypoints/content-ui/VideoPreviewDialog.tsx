@@ -36,6 +36,40 @@ export function VideoPreviewDialog({
 	const [trimEnd, setTrimEnd] = useState(durationMs / 1000);
 	const [isSharing, setIsSharing] = useState(false);
 	const [shareError, setShareError] = useState<string | null>(null);
+	// Chromium can refuse to decode frames from very large data: URLs while
+	// still parsing metadata, leaving the <video> element blank. Convert the
+	// incoming data URL to a blob URL for reliable playback (and far less
+	// memory overhead). The blob URL is revoked on unmount.
+	const [videoSrc, setVideoSrc] = useState<string | null>(null);
+
+	useMountEffect(() => {
+		let objectUrl: string | null = null;
+		let cancelled = false;
+
+		if (videoDataUrl.startsWith("blob:")) {
+			setVideoSrc(videoDataUrl);
+			return;
+		}
+
+		fetch(videoDataUrl)
+			.then((r) => r.blob())
+			.then((blob) => {
+				if (cancelled) return;
+				objectUrl = URL.createObjectURL(blob);
+				setVideoSrc(objectUrl);
+			})
+			.catch(() => {
+				// Fall back to the original data URL so the UI still has a src.
+				if (!cancelled) setVideoSrc(videoDataUrl);
+			});
+
+		return () => {
+			cancelled = true;
+			if (objectUrl) {
+				URL.revokeObjectURL(objectUrl);
+			}
+		};
+	});
 
 	// Refs to avoid stale closures in event handlers
 	const trimStartRef = useRef(trimStart);
@@ -174,11 +208,12 @@ export function VideoPreviewDialog({
 		setIsSharing(true);
 		setShareError(null);
 		try {
+			const sourceUrl = videoSrc ?? videoDataUrl;
 			const blob = isTrimmed
-				? await trimVideo(videoDataUrl, trimStart, trimEnd)
-				: await fetch(videoDataUrl).then((r) => r.blob());
+				? await trimVideo(sourceUrl, trimStart, trimEnd)
+				: await fetch(sourceUrl).then((r) => r.blob());
 			const thumbnailDataUrl = await captureThumbnailDataUrl(
-				videoDataUrl,
+				videoRef.current ?? sourceUrl,
 				isTrimmed ? trimStart : 0,
 			);
 			const result = await shareRecording(blob, metadata);
@@ -224,7 +259,7 @@ export function VideoPreviewDialog({
 					{/* biome-ignore lint/a11y/useMediaCaption: screen recording does not need captions */}
 					<video
 						ref={videoRef}
-						src={videoDataUrl}
+						src={videoSrc ?? undefined}
 						onLoadedMetadata={handleLoadedMetadata}
 						onTimeUpdate={handleTimeUpdate}
 						onEnded={() => setIsPlaying(false)}

@@ -1,58 +1,65 @@
-const MAX_WIDTH = 320;
-const JPEG_QUALITY = 0.7;
+const MAX_WIDTH = 1280;
+const IMAGE_TYPE = "image/webp";
+const IMAGE_QUALITY = 0.9;
 
 export async function captureThumbnailDataUrl(
-	src: string,
+	source: string | HTMLVideoElement,
 	atSeconds: number,
 ): Promise<string> {
-	const canvas = await captureThumbnailCanvas(src, atSeconds);
-	return canvas.toDataURL("image/jpeg", JPEG_QUALITY);
+	const canvas = await captureThumbnailCanvas(source, atSeconds);
+	return canvas.toDataURL(IMAGE_TYPE, IMAGE_QUALITY);
 }
 
 export async function captureThumbnailBlob(
-	src: string,
+	source: string | HTMLVideoElement,
 	atSeconds: number,
 ): Promise<Blob> {
-	const canvas = await captureThumbnailCanvas(src, atSeconds);
+	const canvas = await captureThumbnailCanvas(source, atSeconds);
 	return await new Promise<Blob>((resolve, reject) => {
 		canvas.toBlob(
 			(blob) => {
 				if (blob) resolve(blob);
 				else reject(new Error("Failed to encode thumbnail"));
 			},
-			"image/jpeg",
-			JPEG_QUALITY,
+			IMAGE_TYPE,
+			IMAGE_QUALITY,
 		);
 	});
 }
 
 async function captureThumbnailCanvas(
-	src: string,
+	source: string | HTMLVideoElement,
 	atSeconds: number,
 ): Promise<HTMLCanvasElement> {
-	const video = document.createElement("video");
-	video.src = src;
-	video.muted = true;
-	video.playsInline = true;
-	video.preload = "auto";
-	video.crossOrigin = "anonymous";
+	const ownsVideo = typeof source === "string";
+	const video = ownsVideo ? document.createElement("video") : source;
+	const originalTime = ownsVideo ? 0 : video.currentTime;
 
-	await new Promise<void>((resolve, reject) => {
-		video.onloadedmetadata = () => resolve();
-		video.onerror = () =>
-			reject(new Error("Failed to load video for thumbnail"));
-	});
+	if (ownsVideo) {
+		video.muted = true;
+		video.playsInline = true;
+		video.preload = "auto";
+
+		await new Promise<void>((resolve, reject) => {
+			video.onloadeddata = () => resolve();
+			video.onerror = () =>
+				reject(new Error("Failed to load video for thumbnail"));
+			video.src = source;
+		});
+	}
 
 	const seekTarget = Math.max(
 		0,
 		Math.min(atSeconds, Math.max(0, video.duration - 0.05)),
 	);
 
-	await new Promise<void>((resolve, reject) => {
-		video.onseeked = () => resolve();
-		video.onerror = () => reject(new Error("Failed to seek video"));
-		video.currentTime = seekTarget;
-	});
+	if (Math.abs(video.currentTime - seekTarget) > 0.01) {
+		await new Promise<void>((resolve, reject) => {
+			video.onseeked = () => resolve();
+			video.onerror = () => reject(new Error("Failed to seek video"));
+			video.currentTime = seekTarget;
+		});
+	}
 
 	const ratio = video.videoHeight / video.videoWidth || 9 / 16;
 	const width = Math.min(MAX_WIDTH, video.videoWidth || MAX_WIDTH);
@@ -63,7 +70,13 @@ async function captureThumbnailCanvas(
 	canvas.height = height;
 	const ctx = canvas.getContext("2d");
 	if (!ctx) throw new Error("Canvas 2D context unavailable");
+	ctx.imageSmoothingEnabled = true;
+	ctx.imageSmoothingQuality = "high";
 	ctx.drawImage(video, 0, 0, width, height);
+
+	if (!ownsVideo && Math.abs(video.currentTime - originalTime) > 0.01) {
+		video.currentTime = originalTime;
+	}
 
 	return canvas;
 }
