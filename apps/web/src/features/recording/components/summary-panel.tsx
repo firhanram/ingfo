@@ -146,7 +146,7 @@ function ExpandedList({
 	}[];
 }) {
 	return (
-		<ul className="mt-2 space-y-1 border-t border-neutral-100 pt-2">
+		<ul className="mt-2 max-h-48 space-y-1 overflow-y-auto border-t border-neutral-100 pt-2">
 			{items.map((item) => (
 				<li
 					key={`${item.label}-${item.badge}`}

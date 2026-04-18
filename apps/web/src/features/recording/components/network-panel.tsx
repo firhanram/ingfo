@@ -57,11 +57,11 @@ export function NetworkPanel({
 				{/* Table */}
 				<div
 					className={cn(
-						"overflow-auto",
+						"overflow-auto bg-white",
 						selectedEvent ? "w-1/2 border-r border-neutral-200" : "flex-1",
 					)}
 				>
-					<table className="w-full border-collapse font-mono text-xs">
+					<table className="min-w-full border-collapse font-mono text-xs">
 						<thead className="sticky top-0 z-10 bg-surface-raised">
 							<tr className="border-b border-neutral-200 text-left text-neutral-500">
 								{COL_HEADERS.map((header, i) => (
