@@ -69,6 +69,9 @@ export type Message =
 	  }
 
 	// Shared recording persistence: Content → Background
+	// Note: Blobs do not survive chrome.runtime.sendMessage's JSON
+	// serialization, so the thumbnail is transferred as a data URL and
+	// converted back to a Blob in the background before persisting.
 	| {
 			type: "SAVE_SHARED_RECORDING";
 			payload: {
@@ -77,6 +80,9 @@ export type Message =
 				metadataUrl: string;
 				shareUrl: string;
 				createdAt: number;
+				title: string;
+				durationMs: number;
+				thumbnailDataUrl: string;
 			};
 	  };
 

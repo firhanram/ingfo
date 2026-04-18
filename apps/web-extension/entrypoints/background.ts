@@ -168,14 +168,21 @@ export default defineBackground(() => {
 
 			// --- Shared recording persistence ---
 			else if (message.type === "SAVE_SHARED_RECORDING") {
-				db.recordings.put(message.payload).then(
-					() => sendResponse({ ok: true }),
-					(err: unknown) =>
-						sendResponse({
-							ok: false,
-							error: err instanceof Error ? err.message : String(err),
-						}),
-				);
+				const { thumbnailDataUrl, ...rest } = message.payload;
+				// Convert the thumbnail data URL back to a Blob here: Blobs
+				// cannot be sent through chrome.runtime.sendMessage because it
+				// serializes via JSON and a Blob collapses to `{}`.
+				fetch(thumbnailDataUrl)
+					.then((r) => r.blob())
+					.then((thumbnail) => db.recordings.put({ ...rest, thumbnail }))
+					.then(
+						() => sendResponse({ ok: true }),
+						(err: unknown) =>
+							sendResponse({
+								ok: false,
+								error: err instanceof Error ? err.message : String(err),
+							}),
+					);
 				return true; // keep sendResponse alive for async put
 			}
 		},

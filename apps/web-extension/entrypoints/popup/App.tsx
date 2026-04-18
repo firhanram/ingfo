@@ -18,10 +18,16 @@ const toggleActiveClass =
 	"cursor-pointer data-[state=on]:bg-accent-400 data-[state=on]:text-white data-[state=on]:hover:bg-accent-500";
 
 function Header() {
+	function openRecords() {
+		const getUrl = browser.runtime.getURL as (path: string) => string;
+		browser.tabs.create({ url: getUrl("/records.html") });
+		window.close();
+	}
+
 	return (
 		<header className="flex items-center justify-end gap-0.5 px-5 pt-4 pb-1">
 			<div className="flex items-center gap-0.5">
-				<Button variant="ghost" size="icon-sm">
+				<Button variant="ghost" size="icon-sm" onClick={openRecords}>
 					<House data-icon="inline-start" />
 				</Button>
 				<Button variant="ghost" size="icon-sm">

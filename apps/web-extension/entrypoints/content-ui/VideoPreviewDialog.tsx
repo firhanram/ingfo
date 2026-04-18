@@ -4,6 +4,7 @@ import { useMountEffect } from "@/hooks/use-mount-effect";
 import type { Message } from "@/lib/messages";
 import type { RecordingMetadata } from "@/lib/metadata-types";
 import { shareRecording } from "@/lib/share-recording";
+import { captureThumbnailDataUrl } from "@/lib/thumbnail";
 
 interface VideoPreviewDialogProps {
 	videoDataUrl: string;
@@ -176,10 +177,20 @@ export function VideoPreviewDialog({
 			const blob = isTrimmed
 				? await trimVideo(videoDataUrl, trimStart, trimEnd)
 				: await fetch(videoDataUrl).then((r) => r.blob());
+			const thumbnailDataUrl = await captureThumbnailDataUrl(
+				videoDataUrl,
+				isTrimmed ? trimStart : 0,
+			);
 			const result = await shareRecording(blob, metadata);
 			await browser.runtime.sendMessage({
 				type: "SAVE_SHARED_RECORDING",
-				payload: { ...result, createdAt: Date.now() },
+				payload: {
+					...result,
+					createdAt: Date.now(),
+					title: metadata.browserInfo.title,
+					durationMs: Math.round(trimmedDuration * 1000),
+					thumbnailDataUrl,
+				},
 			} satisfies Message);
 			window.open(result.shareUrl, "_blank", "noopener");
 			onClose();
