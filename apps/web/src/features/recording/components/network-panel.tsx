@@ -26,10 +26,16 @@ export function NetworkPanel({
 	const [filter, setFilter] = useState<FilterCategory>("All");
 	const [selectedEvent, setSelectedEvent] = useState<NetworkEvent | null>(null);
 
+	const indexedEvents = networkEvents.map((event, originalIndex) => ({
+		event,
+		originalIndex,
+	}));
 	const filteredEvents =
 		filter === "All"
-			? networkEvents
-			: networkEvents.filter((e) => categorizeRequest(e) === filter);
+			? indexedEvents
+			: indexedEvents.filter(
+					({ event }) => categorizeRequest(event) === filter,
+				);
 
 	return (
 		<>
@@ -83,9 +89,9 @@ export function NetworkPanel({
 							</tr>
 						</thead>
 						<tbody>
-							{filteredEvents.map((event, index) => (
+							{filteredEvents.map(({ event, originalIndex }, index) => (
 								<NetworkRow
-									key={`${event.timestamp}-${event.data.method}-${event.data.url}`}
+									key={originalIndex}
 									event={event}
 									index={index}
 									currentTimeMs={currentTimeMs}
