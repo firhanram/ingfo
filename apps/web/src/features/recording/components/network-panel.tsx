@@ -160,7 +160,7 @@ export function NetworkPanel({
 				<div
 					className={cn(
 						"overflow-auto bg-white",
-						selectedEvent ? "w-1/2 border-r border-neutral-200" : "flex-1",
+						selectedEvent ? "w-2/5 border-r border-neutral-200" : "flex-1",
 					)}
 				>
 					<table className="min-w-full border-collapse font-mono text-xs">
