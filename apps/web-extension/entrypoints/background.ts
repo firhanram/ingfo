@@ -548,11 +548,13 @@ async function handleRecordingTabReloaded(tabId: number): Promise<void> {
 		metadataEvents.push(entry as MetadataEvent);
 	});
 
-	// Update browser info with new URL
+	// Update browser info with new URL.
+	// Use `||` (not `??`) so that an empty string from a cross-origin tab
+	// without host permissions does not overwrite the original URL/title.
 	if (browserInfo) {
 		const tab = await browser.tabs.get(tabId);
-		browserInfo.url = tab.url ?? browserInfo.url;
-		browserInfo.title = tab.title ?? browserInfo.title;
+		browserInfo.url = tab.url || browserInfo.url;
+		browserInfo.title = tab.title || browserInfo.title;
 	}
 
 	// Re-mount the control bar (skip countdown — recording is already in progress)
