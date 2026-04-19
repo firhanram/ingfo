@@ -173,6 +173,19 @@ async function handleRecord(): Promise<void> {
 		mimeType: "video/webm;codecs=vp9,opus",
 	});
 
+	// Detect if the underlying capture stream ends unexpectedly (e.g. a
+	// cross-origin navigation in the captured tab terminates the tab-capture
+	// stream). Without this handler, MediaRecorder silently produces a frozen
+	// WebM. Finalize the recording gracefully so the user gets the footage
+	// up to the navigation point with a valid container.
+	for (const track of recordingStream.getVideoTracks()) {
+		track.addEventListener("ended", () => {
+			if (recorder && recorder.state !== "inactive") {
+				recorder.stop();
+			}
+		});
+	}
+
 	recorder.ondataavailable = (e) => {
 		if (e.data.size > 0) chunks.push(e.data);
 	};
