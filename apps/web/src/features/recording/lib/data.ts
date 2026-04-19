@@ -41,8 +41,14 @@ export function parseRecordingData(
 		.sort((a, b) => b.data.duration - a.data.duration)
 		.slice(0, 3);
 
+	// Prefer the authoritative recording duration captured by the recorder.
+	// Falling back to the event-derived max is unreliable: on pages where
+	// no network/console events fire after recording starts (e.g. static
+	// pages), the max elapsedMs would be 0 and the share page would show
+	// Duration 00:00.
 	const totalRecordingMs =
-		allEvents.length > 0 ? Math.max(...allEvents.map((e) => e.elapsedMs)) : 0;
+		metadata.recordingDurationMs ||
+		(allEvents.length > 0 ? Math.max(...allEvents.map((e) => e.elapsedMs)) : 0);
 
 	return {
 		browserInfo: metadata.browserInfo,
