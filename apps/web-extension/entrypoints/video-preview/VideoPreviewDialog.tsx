@@ -191,14 +191,21 @@ export function VideoPreviewDialog({
 				videoRef.current ?? sourceUrl,
 				isTrimmed ? trimStart : 0,
 			);
-			const result = await shareRecording(blob, metadata);
+			// Align the uploaded metadata duration with the actual video
+			// duration shown in the recordings list, so the share page and
+			// the card agree on the same number.
+			const durationMs = Math.round(trimmedDuration * 1000);
+			const result = await shareRecording(blob, {
+				...metadata,
+				recordingDurationMs: durationMs,
+			});
 			await browser.runtime.sendMessage({
 				type: "SAVE_SHARED_RECORDING",
 				payload: {
 					...result,
 					createdAt: Date.now(),
 					title: metadata.browserInfo.title,
-					durationMs: Math.round(trimmedDuration * 1000),
+					durationMs,
 					thumbnailDataUrl,
 				},
 			} satisfies Message);
