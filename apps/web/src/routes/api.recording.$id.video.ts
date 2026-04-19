@@ -15,14 +15,17 @@ export const Route = createFileRoute("/api/recording/$id/video")({
 					return new Response("Recording not found", { status: 404 });
 				}
 
-				return new Response(res.body, {
-					headers: {
-						"Content-Type":
-							res.headers.get("Content-Type") || files.recording.contentType,
-						"Content-Length": res.headers.get("Content-Length") || "",
-						"Cache-Control": "public, max-age=31536000, immutable",
-					},
-				});
+				const headers: Record<string, string> = {
+					"Content-Type":
+						res.headers.get("Content-Type") || files.recording.contentType,
+					"Cache-Control": "public, max-age=31536000, immutable",
+				};
+				const contentLength = res.headers.get("Content-Length");
+				if (contentLength) headers["Content-Length"] = contentLength;
+				const acceptRanges = res.headers.get("Accept-Ranges");
+				if (acceptRanges) headers["Accept-Ranges"] = acceptRanges;
+
+				return new Response(res.body, { headers });
 			},
 		},
 	},
