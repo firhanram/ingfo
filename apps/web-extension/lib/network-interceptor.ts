@@ -11,6 +11,7 @@ interface PendingRequest {
 	requestBody: string | null;
 	timestamp: number;
 	initiatorType: string;
+	resourceType?: string;
 }
 
 const pendingRequests = new Map<string, PendingRequest>();
@@ -55,6 +56,7 @@ function handleDebuggerEvent(
 			statusText: (response.statusText as string) ?? "",
 			responseHeaders: headers,
 			mimeType: (response.mimeType as string) ?? "",
+			resourceType: (params.type as string) ?? undefined,
 		});
 	} else if (method === "Network.loadingFinished") {
 		const pending = pendingRequests.get(requestId);
@@ -108,6 +110,7 @@ function emitEntry(
 		statusText?: string;
 		responseHeaders?: Record<string, string>;
 		mimeType?: string;
+		resourceType?: string;
 	},
 	endTime: number,
 	encodedDataLength: number,
@@ -125,6 +128,7 @@ function emitEntry(
 			status: errorText ? 0 : (pending.status ?? 0),
 			statusText: errorText || (pending.statusText ?? ""),
 			initiatorType: pending.initiatorType,
+			resourceType: pending.resourceType,
 			startTime: pending.timestamp,
 			responseEnd: endTime,
 			duration: endTime - pending.timestamp,

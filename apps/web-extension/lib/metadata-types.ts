@@ -8,6 +8,7 @@ export interface NetworkLogEntry {
 		status: number;
 		statusText: string;
 		initiatorType: string;
+		resourceType?: string;
 		startTime: number;
 		responseEnd: number;
 		duration: number;
