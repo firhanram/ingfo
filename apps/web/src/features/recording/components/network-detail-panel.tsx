@@ -23,7 +23,7 @@ export function NetworkDetailPanel({
 		: "text-success-500";
 
 	return (
-		<div className="flex w-1/2 flex-col overflow-hidden">
+		<div className="flex flex-1 flex-col overflow-hidden">
 			{/* Detail tabs header */}
 			<div className="flex shrink-0 items-center border-b border-neutral-200 bg-surface-raised">
 				<button
