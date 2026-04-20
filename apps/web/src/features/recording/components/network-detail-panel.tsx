@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronRight, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "#/lib/utils";
-import { formatBytes, formatDuration, isErrorStatus } from "../lib/format";
+import { formatDuration, formatSize, isErrorStatus } from "../lib/format";
 import { getResourceType } from "../lib/network-filters";
 import type { NetworkEvent } from "../lib/types";
 import { CodeBlock } from "./code-block";
@@ -73,10 +73,10 @@ export function NetworkDetailPanel({
 								label="Duration"
 								value={formatDuration(data.duration)}
 							/>
-							{data.encodedDataLength > 0 && (
+							{(data.encodedDataLength > 0 || data.cacheSource) && (
 								<HeaderRow
 									label="Size"
-									value={formatBytes(data.encodedDataLength)}
+									value={formatSize(data.encodedDataLength, data.cacheSource)}
 								/>
 							)}
 						</HeaderSection>

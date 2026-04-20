@@ -5,6 +5,16 @@ export function formatBytes(bytes: number): string {
 	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+export function formatSize(
+	bytes: number,
+	cacheSource?: "memory" | "disk" | "prefetch",
+): string {
+	if (cacheSource === "memory") return "memory cache";
+	if (cacheSource === "disk") return "disk cache";
+	if (cacheSource === "prefetch") return "prefetch cache";
+	return formatBytes(bytes);
+}
+
 export function formatDuration(ms: number): string {
 	if (ms < 1000) return `${Math.round(ms)} ms`;
 	return `${(ms / 1000).toFixed(2)} s`;

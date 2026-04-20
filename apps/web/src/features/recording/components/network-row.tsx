@@ -1,7 +1,7 @@
 import { cn } from "#/lib/utils";
 import {
-	formatBytes,
 	formatDuration,
+	formatSize,
 	getDisplayName,
 	getDomain,
 	isErrorStatus,
@@ -89,8 +89,13 @@ export function NetworkRow({
 				{getDomain(data.url)}
 			</td>
 
-			<td className="whitespace-nowrap px-2.5 py-1.5 text-neutral-500">
-				{formatBytes(data.encodedDataLength)}
+			<td
+				className={cn(
+					"whitespace-nowrap px-2.5 py-1.5 text-neutral-500",
+					data.cacheSource && "italic",
+				)}
+			>
+				{formatSize(data.encodedDataLength, data.cacheSource)}
 			</td>
 
 			<td className="whitespace-nowrap px-2.5 py-1.5 text-neutral-500">

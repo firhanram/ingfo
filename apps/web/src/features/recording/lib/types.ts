@@ -9,6 +9,7 @@ export interface NetworkEvent {
 		statusText: string;
 		initiatorType: string;
 		resourceType?: string;
+		cacheSource?: "memory" | "disk" | "prefetch";
 		startTime: number;
 		responseEnd: number;
 		duration: number;
