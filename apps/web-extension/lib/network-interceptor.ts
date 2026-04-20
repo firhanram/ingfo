@@ -12,6 +12,7 @@ interface PendingRequest {
 	timestamp: number;
 	initiatorType: string;
 	resourceType?: string;
+	cacheSource?: "memory" | "disk" | "prefetch";
 }
 
 const pendingRequests = new Map<string, PendingRequest>();
@@ -51,13 +52,25 @@ function handleDebuggerEvent(
 		const response = params.response as Record<string, unknown>;
 		const headers = (response.headers as Record<string, string>) ?? {};
 
+		const fromDiskCache = response.fromDiskCache === true;
+		const fromPrefetchCache = response.fromPrefetchCache === true;
+
 		Object.assign(pending, {
 			status: response.status as number,
 			statusText: (response.statusText as string) ?? "",
 			responseHeaders: headers,
 			mimeType: (response.mimeType as string) ?? "",
 			resourceType: (params.type as string) ?? undefined,
+			cacheSource: fromPrefetchCache
+				? "prefetch"
+				: fromDiskCache
+					? "disk"
+					: pending.cacheSource,
 		});
+	} else if (method === "Network.requestServedFromCache") {
+		const pending = pendingRequests.get(requestId);
+		if (!pending) return;
+		pending.cacheSource = "memory";
 	} else if (method === "Network.loadingFinished") {
 		const pending = pendingRequests.get(requestId);
 		if (!pending) return;
@@ -79,18 +92,29 @@ function handleDebuggerEvent(
 				const base64Encoded = result.base64Encoded as boolean | undefined;
 
 				let responseBody: string | null = null;
+				let bodyBytes = 0;
 				if (body) {
 					if (base64Encoded) {
-						responseBody = `[binary data, ${encodedDataLength} bytes]`;
+						// base64 → raw bytes is length * 3/4 minus padding
+						bodyBytes = Math.floor((body.length * 3) / 4);
+						responseBody = `[binary data, ${bodyBytes} bytes]`;
 					} else {
+						bodyBytes = new Blob([body]).size;
 						responseBody = body.slice(0, MAX_BODY_SIZE);
 					}
 				}
 
-				emitEntry(pending, endTime, encodedDataLength, responseBody);
+				// Cached resources report encodedDataLength: 0 because
+				// nothing crossed the wire — fall back to the body size
+				// or the Content-Length header so the UI shows something
+				// useful instead of "—".
+				const size = resolveSize(encodedDataLength, bodyBytes, pending);
+
+				emitEntry(pending, endTime, size, responseBody);
 			})
 			.catch(() => {
-				emitEntry(pending, endTime, encodedDataLength, null);
+				const size = resolveSize(encodedDataLength, 0, pending);
+				emitEntry(pending, endTime, size, null);
 			});
 	} else if (method === "Network.loadingFailed") {
 		const pending = pendingRequests.get(requestId);
@@ -111,6 +135,7 @@ function emitEntry(
 		responseHeaders?: Record<string, string>;
 		mimeType?: string;
 		resourceType?: string;
+		cacheSource?: "memory" | "disk" | "prefetch";
 	},
 	endTime: number,
 	encodedDataLength: number,
@@ -129,6 +154,7 @@ function emitEntry(
 			statusText: errorText || (pending.statusText ?? ""),
 			initiatorType: pending.initiatorType,
 			resourceType: pending.resourceType,
+			cacheSource: pending.cacheSource,
 			startTime: pending.timestamp,
 			responseEnd: endTime,
 			duration: endTime - pending.timestamp,
@@ -138,9 +164,30 @@ function emitEntry(
 			responseBody,
 			mimeType: pending.mimeType ?? "",
 			encodedDataLength,
-			cached: false,
+			cached: pending.cacheSource !== undefined,
 		},
 	});
+}
+
+function resolveSize(
+	encodedDataLength: number,
+	bodyBytes: number,
+	pending: PendingRequest,
+): number {
+	if (encodedDataLength > 0) return encodedDataLength;
+	if (bodyBytes > 0) return bodyBytes;
+
+	const headers =
+		(pending as PendingRequest & { responseHeaders?: Record<string, string> })
+			.responseHeaders ?? {};
+	for (const [key, value] of Object.entries(headers)) {
+		if (key.toLowerCase() === "content-length") {
+			const parsed = Number.parseInt(value, 10);
+			if (Number.isFinite(parsed) && parsed > 0) return parsed;
+		}
+	}
+
+	return 0;
 }
 
 export async function startNetworkCapture(
