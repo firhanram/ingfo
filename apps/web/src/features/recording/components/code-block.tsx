@@ -1,5 +1,6 @@
 import { useLayoutEffect, useState } from "react";
-import { detectLanguage, formatJsonSafe } from "../lib/format";
+import { detectLanguage } from "../lib/format";
+import { prettify } from "../lib/prettier";
 
 export function CodeBlock({
 	code,
@@ -9,30 +10,32 @@ export function CodeBlock({
 	mimeType: string;
 }) {
 	const [html, setHtml] = useState<string | null>(null);
-	const formatted = formatJsonSafe(code);
-	const lang = detectLanguage(mimeType, formatted);
+	const lang = detectLanguage(mimeType, code);
 
 	useLayoutEffect(() => {
 		if (lang === "text") return;
 
 		let cancelled = false;
-		import("shiki").then(({ codeToHtml }) =>
-			codeToHtml(formatted, {
+		(async () => {
+			const formatted = await prettify(code, lang);
+			if (cancelled) return;
+			const { codeToHtml } = await import("shiki");
+			const result = await codeToHtml(formatted, {
 				lang,
 				theme: "github-light",
-			}).then((result) => {
-				if (!cancelled) setHtml(result);
-			}),
-		);
+			});
+			if (!cancelled) setHtml(result);
+		})();
+
 		return () => {
 			cancelled = true;
 		};
-	}, [formatted, lang]);
+	}, [code, lang]);
 
 	if (lang === "text") {
 		return (
 			<pre className="whitespace-pre-wrap break-all rounded-md bg-surface-sunken p-3 font-mono text-xs text-neutral-700">
-				{formatted}
+				{code}
 			</pre>
 		);
 	}

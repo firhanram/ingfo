@@ -49,14 +49,6 @@ export function isErrorStatus(status: number): boolean {
 	return status === 0 || status >= 400;
 }
 
-export function formatJsonSafe(str: string): string {
-	try {
-		return JSON.stringify(JSON.parse(str), null, 2);
-	} catch {
-		return str;
-	}
-}
-
 export function detectLanguage(mimeType: string, content: string): string {
 	const mime = mimeType.toLowerCase();
 	if (mime.includes("json")) return "json";
