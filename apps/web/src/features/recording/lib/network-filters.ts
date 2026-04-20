@@ -1,8 +1,36 @@
 import type { FilterCategory, NetworkEvent } from "./types";
 
 export function getResourceType(event: NetworkEvent): string {
-	const { initiatorType, mimeType, url } = event.data;
+	const { initiatorType, resourceType, mimeType, url } = event.data;
 	const mime = mimeType.toLowerCase();
+
+	// Prefer the authoritative CDP ResourceType (what Chrome DevTools
+	// itself displays). Falls through to heuristics for older captures
+	// that predate this field.
+	switch (resourceType) {
+		case "Document":
+			return "document";
+		case "Stylesheet":
+			return "stylesheet";
+		case "Script":
+			return "script";
+		case "Font":
+			return "font";
+		case "XHR":
+			return "xhr";
+		case "Fetch":
+			return "fetch";
+		case "WebSocket":
+			return "websocket";
+		case "Manifest":
+			return "manifest";
+		case "Preflight":
+			return "preflight";
+		case "Ping":
+			return "ping";
+		case "EventSource":
+			return "eventsource";
+	}
 
 	// Preflight requests
 	if (initiatorType === "preflight") return "preflight";
