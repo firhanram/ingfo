@@ -10,6 +10,7 @@ import type {
 	RecordingMetadata,
 } from "@/lib/metadata-types";
 import {
+	isNetworkCaptureActive,
 	startNetworkCapture,
 	stopNetworkCapture,
 } from "@/lib/network-interceptor";
@@ -542,11 +543,16 @@ async function handleRecordingTabReloaded(tabId: number): Promise<void> {
 		console.warn("[ingfo] Failed to re-inject console interceptor:", err);
 	}
 
-	// Re-attach debugger for network capture (debugger detaches on navigation)
-	await stopNetworkCapture();
-	await startNetworkCapture(tabId, (entry) => {
-		metadataEvents.push(entry as MetadataEvent);
-	});
+	// Chrome's debugger session persists across same-tab navigations, so
+	// only re-attach if it was actually detached (e.g. user dismissed the
+	// infobar, or the tab was hard-reloaded). Re-attaching unconditionally
+	// aborts in-flight analytics beacons and floods the log with status 0.
+	if (!isNetworkCaptureActive(tabId)) {
+		await stopNetworkCapture();
+		await startNetworkCapture(tabId, (entry) => {
+			metadataEvents.push(entry as MetadataEvent);
+		});
+	}
 
 	// Update browser info with new URL.
 	// Use `||` (not `??`) so that an empty string from a cross-origin tab

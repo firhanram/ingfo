@@ -21,6 +21,20 @@ let eventCallback:
 	| ((entry: Omit<NetworkLogEntry, "elapsedMs">) => void)
 	| null = null;
 
+function handleDebuggerDetach(
+	source: ChromeDebuggerDebuggee,
+	_reason: string,
+): void {
+	if (source.tabId !== activeTabId) return;
+	activeTabId = null;
+	eventCallback = null;
+	pendingRequests.clear();
+}
+
+export function isNetworkCaptureActive(tabId: number): boolean {
+	return activeTabId === tabId;
+}
+
 function handleDebuggerEvent(
 	source: ChromeDebuggerDebuggee,
 	method: string,
@@ -121,9 +135,17 @@ function handleDebuggerEvent(
 		if (!pending) return;
 
 		pendingRequests.delete(requestId);
-		const endTime = Date.now();
 
-		const errorText = (params.errorText as string) ?? "Failed";
+		// Skip user-/page-canceled requests (e.g. analytics beacons torn down
+		// by navigation, AbortController). DevTools hides these too when
+		// "Preserve log" is off — emitting them floods the UI with status 0.
+		if (params.canceled === true) return;
+
+		const endTime = Date.now();
+		const blockedReason = params.blockedReason as string | undefined;
+		const errorText = blockedReason
+			? `blocked: ${blockedReason}`
+			: ((params.errorText as string) ?? "Failed");
 		emitEntry(pending, endTime, 0, null, errorText);
 	}
 }
@@ -205,6 +227,7 @@ export async function startNetworkCapture(
 			maxTotalBufferSize: 50 * 1024 * 1024,
 		});
 		dbg.onEvent.addListener(handleDebuggerEvent);
+		dbg.onDetach.addListener(handleDebuggerDetach);
 	} catch (err) {
 		console.error("[ingfo] Failed to attach debugger:", err);
 		activeTabId = null;
@@ -214,6 +237,7 @@ export async function startNetworkCapture(
 
 export async function stopNetworkCapture(): Promise<void> {
 	dbg.onEvent.removeListener(handleDebuggerEvent);
+	dbg.onDetach.removeListener(handleDebuggerDetach);
 
 	if (activeTabId !== null) {
 		try {
