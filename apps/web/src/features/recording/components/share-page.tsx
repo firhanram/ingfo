@@ -161,6 +161,7 @@ export function SharePage() {
 					<BrowserInfoPanel
 						browserInfo={data.browserInfo}
 						totalRecordingMs={data.totalRecordingMs}
+						recordingStartTime={data.recordingStartTime}
 					/>
 
 					{/* Tabs */}

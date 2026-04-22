@@ -15,6 +15,7 @@ export interface RecordingViewData {
 	largestEvents: NetworkEvent[];
 	slowestEvents: NetworkEvent[];
 	totalRecordingMs: number;
+	recordingStartTime: number;
 }
 
 export function parseRecordingData(
@@ -58,5 +59,6 @@ export function parseRecordingData(
 		largestEvents,
 		slowestEvents,
 		totalRecordingMs,
+		recordingStartTime: metadata.recordingStartTime,
 	};
 }
