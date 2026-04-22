@@ -32,7 +32,12 @@ let currentPauseStart: number | null = null;
 let durationLimitSent = false;
 
 export default defineBackground(() => {
-	// Re-inject control bar and metadata capture when the recording tab reloads
+	// Re-attach metadata capture (console interceptor + network debugger) when
+	// the recording tab navigates. The control bar itself is NOT re-mounted
+	// here — the content script re-initializes on real document loads and
+	// queries `IS_SENDER_TAB_RECORDING` to mount the bar itself. SPA URL
+	// changes (pushState) don't re-run the content script, so the existing
+	// bar and its timer persist without flicker.
 	browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
 		if (
 			tabId === recordingTabId &&
@@ -62,6 +67,12 @@ export default defineBackground(() => {
 					isRecording: recordingTabId !== null,
 					recordingTabId,
 					recordingTabTitle,
+				});
+			} else if (message.type === "IS_SENDER_TAB_RECORDING") {
+				const senderTabId = _sender.tab?.id ?? null;
+				sendResponse({
+					isRecording: senderTabId !== null && senderTabId === recordingTabId,
+					micEnabled: recordingMicEnabled,
 				});
 			}
 
@@ -615,11 +626,11 @@ async function handleRecordingTabReloaded(tabId: number): Promise<void> {
 		browserInfo.title = tab.title || browserInfo.title;
 	}
 
-	// Re-mount the control bar (skip countdown — recording is already in progress)
-	await sendToContentScript(tabId, {
-		type: "RECORDING_STARTED",
-		micEnabled: recordingMicEnabled,
-	});
+	// Note: the control bar is re-mounted by the content script itself on
+	// real document loads via IS_SENDER_TAB_RECORDING. We intentionally do
+	// not re-send RECORDING_STARTED here, because `tabs.onUpdated` with
+	// status "complete" also fires on some SPA navigations, which would
+	// cause the existing control bar to tear down and re-enter.
 }
 
 async function handleCountdownDone(): Promise<void> {

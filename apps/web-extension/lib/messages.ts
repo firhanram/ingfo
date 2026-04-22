@@ -49,6 +49,9 @@ export type Message =
 	// Recording: Popup → Background (query)
 	| { type: "GET_RECORDING_STATE" }
 
+	// Recording: Content → Background (query on content-script init)
+	| { type: "IS_SENDER_TAB_RECORDING" }
+
 	// Recording: Content → Background
 	| { type: "COUNTDOWN_DONE" }
 	| { type: "COUNTDOWN_CANCELLED" }

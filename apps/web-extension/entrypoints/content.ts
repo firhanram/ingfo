@@ -179,6 +179,16 @@ export default defineContentScript({
 		}
 
 		async function mountControlBar() {
+			// SPA URL changes on the recording tab can trigger a
+			// `tabs.onUpdated` "complete" event in the background, which
+			// re-sends RECORDING_STARTED. The content script itself is not
+			// re-injected, so the existing shadow host is still live — in
+			// that case, skip re-mount to avoid replaying the slide-up
+			// animation and wiping the elapsed-time store back to 00:00.
+			if (controlBarUi && document.contains(controlBarUi.shadowHost)) {
+				return;
+			}
+
 			controlBarUi?.remove();
 			recordingStore.reset();
 
@@ -293,6 +303,32 @@ export default defineContentScript({
 
 			document.documentElement.appendChild(container);
 		}
+
+		// On content-script init, check whether this tab is already being
+		// recorded (e.g. the user navigated or reloaded mid-recording). If
+		// so, mount the control bar immediately so the state is restored
+		// without depending on background pushing RECORDING_STARTED again.
+		(async () => {
+			try {
+				const response = (await browser.runtime.sendMessage({
+					type: "IS_SENDER_TAB_RECORDING",
+				} satisfies Message)) as
+					| { isRecording: boolean; micEnabled: boolean }
+					| undefined;
+				if (response?.isRecording) {
+					micEnabled = response.micEnabled;
+					// Re-install the console listener that pipes logs to the
+					// background. On fresh document loads this is a new
+					// window, so we need a fresh listener.
+					removeConsoleListener = setupConsoleListener((msg) => {
+						browser.runtime.sendMessage(msg satisfies Message);
+					});
+					await mountControlBar();
+				}
+			} catch {
+				// Background may not be ready yet; nothing to restore.
+			}
+		})();
 
 		// --- Message listener ---
 
