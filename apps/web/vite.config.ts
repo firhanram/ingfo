@@ -12,6 +12,12 @@ const config = defineConfig({
 	server: {
 		port: 5433,
 	},
+	optimizeDeps: {
+		exclude: ["@resvg/resvg-js"],
+	},
+	ssr: {
+		external: ["@resvg/resvg-js"],
+	},
 });
 
 export default config;
