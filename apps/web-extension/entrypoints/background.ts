@@ -403,6 +403,56 @@ function parseBrowserInfo(ua: string): {
 	return { name: "Unknown", version: "" };
 }
 
+interface HighEntropyHints {
+	osName?: string;
+	osVersion?: string;
+	architecture?: string;
+	bitness?: string;
+	browserFullVersion?: string;
+}
+
+async function getHighEntropyClientHints(): Promise<HighEntropyHints> {
+	const uaData = (
+		navigator as Navigator & {
+			userAgentData?: {
+				getHighEntropyValues: (hints: string[]) => Promise<{
+					platform?: string;
+					platformVersion?: string;
+					architecture?: string;
+					bitness?: string;
+					fullVersionList?: { brand: string; version: string }[];
+					uaFullVersion?: string;
+				}>;
+			};
+		}
+	).userAgentData;
+	if (!uaData?.getHighEntropyValues) return {};
+	try {
+		const values = await uaData.getHighEntropyValues([
+			"platform",
+			"platformVersion",
+			"architecture",
+			"bitness",
+			"fullVersionList",
+			"uaFullVersion",
+		]);
+		const primaryBrand = values.fullVersionList?.find(
+			(b) =>
+				!/not[.\s()]*a[.\s()]*brand/i.test(b.brand) &&
+				!/chromium/i.test(b.brand),
+		);
+		return {
+			osName: values.platform,
+			osVersion: values.platformVersion,
+			architecture: values.architecture,
+			bitness: values.bitness,
+			browserFullVersion: primaryBrand?.version ?? values.uaFullVersion,
+		};
+	} catch {
+		return {};
+	}
+}
+
 function resetMetadataState(): void {
 	metadataEvents = [];
 	recordingStartTimeMs = 0;
@@ -440,6 +490,7 @@ async function handleStartRecording(
 	const ua = navigator.userAgent;
 	const { name: browserName, version: browserVersion } = parseBrowserInfo(ua);
 	const tab = await browser.tabs.get(tabId);
+	const highEntropy = await getHighEntropyClientHints();
 	browserInfo = {
 		url: tab.url ?? "",
 		title: tab.title ?? "",
@@ -451,6 +502,7 @@ async function handleStartRecording(
 		windowHeight: height,
 		devicePixelRatio: 1, // best effort from background
 		language: navigator.language,
+		...highEntropy,
 	};
 
 	// Attach debugger early so the infobar is already visible when we

@@ -45,6 +45,11 @@ export interface BrowserInfo {
 	windowHeight: number;
 	devicePixelRatio: number;
 	language: string;
+	osName?: string;
+	osVersion?: string;
+	architecture?: string;
+	bitness?: string;
+	browserFullVersion?: string;
 }
 
 export type MetadataEvent = NetworkLogEntry | ConsoleLogEntry;
