@@ -11,6 +11,8 @@ const config = defineConfig({
 	plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact()],
 	server: {
 		port: 5433,
+		host: true,
+		allowedHosts: ["ingfo.local"],
 	},
 	optimizeDeps: {
 		exclude: ["@resvg/resvg-js"],
