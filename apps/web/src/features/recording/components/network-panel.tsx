@@ -1,6 +1,6 @@
 import Fuse from "fuse.js";
 import { Search, X } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "#/lib/utils";
 import { COL_HEADERS } from "../lib/columns";
 import { getDisplayName, getDomain } from "../lib/format";
@@ -34,6 +34,9 @@ export function NetworkPanel({
 	activeRowRef: React.RefObject<HTMLTableRowElement | null>;
 }) {
 	const [filter, setFilter] = useState<FilterCategory>("All");
+	const [errorsOnly, setErrorsOnly] = useState(false);
+	const deferredErrorsOnly = useDeferredValue(errorsOnly);
+	const deferredFilter = useDeferredValue(filter);
 	const [selectedEvent, setSelectedEvent] = useState<NetworkEvent | null>(null);
 	const [query, setQuery] = useState("");
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -72,12 +75,18 @@ export function NetworkPanel({
 		[fuse, indexedEvents, trimmedQuery],
 	);
 
-	const filteredEvents =
-		filter === "All"
+	const categoryFiltered =
+		deferredFilter === "All"
 			? searchedEvents
 			: searchedEvents.filter(
-					({ event }) => categorizeRequest(event) === filter,
+					({ event }) => categorizeRequest(event) === deferredFilter,
 				);
+	const filteredEvents = deferredErrorsOnly
+		? categoryFiltered.filter(({ event }) => {
+				const s = event.data.status;
+				return s === 0 || s >= 400;
+			})
+		: categoryFiltered;
 
 	useEffect(() => {
 		function onKey(e: KeyboardEvent) {
@@ -119,6 +128,38 @@ export function NetworkPanel({
 						</button>
 					))}
 				</div>
+
+				<button
+					type="button"
+					role="switch"
+					aria-checked={errorsOnly}
+					onClick={() => setErrorsOnly((v) => !v)}
+					className={cn(
+						"group inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-medium transition-colors",
+						errorsOnly
+							? "border-red-600 bg-red-600 text-white"
+							: "border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50",
+					)}
+					title="Show only failed requests (status ≥ 400 or network error)"
+				>
+					<span
+						className={cn(
+							"relative inline-block h-3 w-5 rounded-full transition-colors",
+							errorsOnly ? "bg-white/25" : "bg-neutral-200",
+						)}
+						aria-hidden="true"
+					>
+						<span
+							className={cn(
+								"absolute top-0.5 left-0.5 h-2 w-2 rounded-full transition-transform",
+								errorsOnly
+									? "translate-x-2 bg-white"
+									: "translate-x-0 bg-white shadow-sm",
+							)}
+						/>
+					</span>
+					Errors only
+				</button>
 
 				<div className="ml-auto flex min-w-[220px] flex-1 items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-2 py-1 font-mono text-xs text-neutral-700 transition-colors focus-within:border-neutral-900 sm:flex-none sm:min-w-[260px]">
 					<Search
