@@ -57,7 +57,6 @@ export function BrowserInfoPanel({
 					label="Viewport"
 					value={`${browserInfo.windowWidth}x${browserInfo.windowHeight}`}
 				/>
-				<InfoRow icon={Globe} label="Language" value={browserInfo.language} />
 				<InfoRow
 					icon={Clock}
 					label="Duration"
