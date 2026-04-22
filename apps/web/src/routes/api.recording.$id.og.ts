@@ -42,6 +42,15 @@ function truncate(str: string, max: number) {
 	return str.length > max ? `${str.slice(0, max - 1)}…` : str;
 }
 
+function stripQuery(rawUrl: string) {
+	try {
+		const u = new URL(rawUrl);
+		return `${u.origin}${u.pathname}`.replace(/\/$/, "");
+	} catch {
+		return rawUrl.split("?")[0].replace(/\/$/, "");
+	}
+}
+
 export const Route = createFileRoute("/api/recording/$id/og")({
 	server: {
 		handlers: {
@@ -140,7 +149,10 @@ export const Route = createFileRoute("/api/recording/$id/og")({
 													fontSize: "28px",
 													color: "#7A6F64",
 												},
-												children: truncate(browserInfo.url || "", 80),
+												children: truncate(
+													stripQuery(browserInfo.url || ""),
+													80,
+												),
 											},
 										},
 									],
