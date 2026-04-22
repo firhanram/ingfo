@@ -22,6 +22,7 @@ export function BrowserInfoPanel({
 	});
 	const browserVersion =
 		browserInfo.browserFullVersion || browserInfo.browserVersion;
+	const urlWithoutQuery = stripQuery(browserInfo.url);
 
 	return (
 		<div className="shrink-0 border-b border-neutral-200 bg-white px-5 py-4">
@@ -39,7 +40,13 @@ export function BrowserInfoPanel({
 					label="OS"
 					value={os.version ? `${os.name} ${os.version}` : os.name || "Unknown"}
 				/>
-				<InfoRow icon={Globe} label="URL" value={browserInfo.url} mono />
+				<InfoRow
+					icon={Globe}
+					label="URL"
+					value={urlWithoutQuery}
+					href={urlWithoutQuery}
+					mono
+				/>
 				<InfoRow
 					icon={Monitor}
 					label="Browser"
@@ -47,7 +54,7 @@ export function BrowserInfoPanel({
 				/>
 				<InfoRow
 					icon={Monitor}
-					label="Window size"
+					label="Viewport"
 					value={`${browserInfo.windowWidth}x${browserInfo.windowHeight}`}
 				/>
 				<InfoRow icon={Globe} label="Language" value={browserInfo.language} />
@@ -66,27 +73,56 @@ function InfoRow({
 	label,
 	value,
 	mono,
+	href,
 }: {
 	icon: IconComponent;
 	label: string;
 	value: string;
 	mono?: boolean;
+	href?: string;
 }) {
+	const valueClass = cn(
+		"truncate text-neutral-800",
+		mono && "font-mono text-xs",
+		href &&
+			"text-primary-600 underline decoration-neutral-300 underline-offset-2 hover:decoration-primary-600",
+	);
 	return (
 		<div className="flex items-start gap-2 text-sm">
 			<Icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-neutral-400" />
 			<div className="flex min-w-0 items-center gap-1.5">
 				<span className="text-neutral-500">{label}: </span>
-				<span
-					className={cn(
-						"truncate text-neutral-800",
-						mono && "font-mono text-xs",
-					)}
-					title={value}
-				>
-					{value}
-				</span>
+				{href ? (
+					<a
+						href={href}
+						target="_blank"
+						rel="noopener noreferrer"
+						className={valueClass}
+						title={value}
+					>
+						{value}
+					</a>
+				) : (
+					<span className={valueClass} title={value}>
+						{value}
+					</span>
+				)}
 			</div>
 		</div>
 	);
+}
+
+function stripQuery(url: string): string {
+	try {
+		const parsed = new URL(url);
+		parsed.search = "";
+		parsed.hash = "";
+		const result = parsed.toString();
+		return result.endsWith("/") && !url.endsWith("/")
+			? result.slice(0, -1)
+			: result;
+	} catch {
+		const qIndex = url.indexOf("?");
+		return qIndex >= 0 ? url.slice(0, qIndex) : url;
+	}
 }
