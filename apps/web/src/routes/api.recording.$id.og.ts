@@ -6,17 +6,26 @@ import { UPLOAD_CONFIG } from "#/features/recording/lib/upload";
 import { env } from "#/lib/env.server";
 
 const FONT_URL =
-	"https://fonts.gstatic.com/s/inter/v19/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff";
+	"https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/files/inter-latin-400-normal.woff";
 const FONT_BOLD_URL =
-	"https://fonts.gstatic.com/s/inter/v19/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff";
+	"https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/files/inter-latin-700-normal.woff";
 
 let fontCache: { regular: ArrayBuffer; bold: ArrayBuffer } | null = null;
 
 async function loadFonts() {
 	if (fontCache) return fontCache;
+	const [regularRes, boldRes] = await Promise.all([
+		fetch(FONT_URL),
+		fetch(FONT_BOLD_URL),
+	]);
+	if (!regularRes.ok || !boldRes.ok) {
+		throw new Error(
+			`Failed to load fonts (${regularRes.status}/${boldRes.status})`,
+		);
+	}
 	const [regular, bold] = await Promise.all([
-		fetch(FONT_URL).then((r) => r.arrayBuffer()),
-		fetch(FONT_BOLD_URL).then((r) => r.arrayBuffer()),
+		regularRes.arrayBuffer(),
+		boldRes.arrayBuffer(),
 	]);
 	fontCache = { regular, bold };
 	return fontCache;
