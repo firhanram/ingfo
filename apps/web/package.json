@@ -13,7 +13,8 @@
 		"lint": "biome check .",
 		"lint:fix": "biome check . --write",
 		"format": "biome format . --write",
-		"check-types": "tsc --noEmit --pretty --incremental --extendedDiagnostics"
+		"check-types": "tsc --noEmit --pretty --incremental --extendedDiagnostics",
+		"deploy:dev": "pnpm run build && wrangler deploy --env development"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.1030.0",
@@ -41,6 +42,7 @@
 		"zod": "^4.3.6"
 	},
 	"devDependencies": {
+		"@cloudflare/vite-plugin": "^1.33.1",
 		"@tanstack/devtools-vite": "latest",
 		"@testing-library/dom": "^10.4.1",
 		"@testing-library/react": "^16.3.0",
@@ -51,7 +53,8 @@
 		"jsdom": "^28.1.0",
 		"typescript": "^5.7.2",
 		"vite": "^8.0.0",
-		"vitest": "^3.0.5"
+		"vitest": "^3.0.5",
+		"wrangler": "^4.84.1"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [

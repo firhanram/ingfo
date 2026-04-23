@@ -1,0 +1,29 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"compatibility_date": "2026-04-23",
+	"compatibility_flags": ["nodejs_compat"],
+	"main": "@tanstack/react-start/server-entry",
+	"observability": {
+		"enabled": true
+	},
+	"env": {
+		"development": {
+			"r2_buckets": [
+				{
+					"binding": "R2_BUCKET_NAME",
+					"bucket_name": "dev"
+				}
+			],
+			"name": "ingfo-dev"
+		},
+		"production": {
+			"r2_buckets": [
+				{
+					"binding": "R2_BUCKET_NAME",
+					"bucket_name": "prod"
+				}
+			],
+			"name": "ingfo"
+		}
+	}
+}
