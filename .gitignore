@@ -58,3 +58,5 @@ web-ext.config.ts
 *.sln
 *.sw?
 tsconfig.tsbuildinfo
+
+.wrangler
