@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShareIdRouteImport } from './routes/share.$id'
 import { Route as ApiUploadRouteImport } from './routes/api.upload'
 import { Route as ApiRecordingIdVideoRouteImport } from './routes/api.recording.$id.video'
-import { Route as ApiRecordingIdOgRouteImport } from './routes/api.recording.$id.og'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -35,24 +34,17 @@ const ApiRecordingIdVideoRoute = ApiRecordingIdVideoRouteImport.update({
   path: '/api/recording/$id/video',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiRecordingIdOgRoute = ApiRecordingIdOgRouteImport.update({
-  id: '/api/recording/$id/og',
-  path: '/api/recording/$id/og',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/upload': typeof ApiUploadRoute
   '/share/$id': typeof ShareIdRoute
-  '/api/recording/$id/og': typeof ApiRecordingIdOgRoute
   '/api/recording/$id/video': typeof ApiRecordingIdVideoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/upload': typeof ApiUploadRoute
   '/share/$id': typeof ShareIdRoute
-  '/api/recording/$id/og': typeof ApiRecordingIdOgRoute
   '/api/recording/$id/video': typeof ApiRecordingIdVideoRoute
 }
 export interface FileRoutesById {
@@ -60,30 +52,18 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/api/upload': typeof ApiUploadRoute
   '/share/$id': typeof ShareIdRoute
-  '/api/recording/$id/og': typeof ApiRecordingIdOgRoute
   '/api/recording/$id/video': typeof ApiRecordingIdVideoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/api/upload'
-    | '/share/$id'
-    | '/api/recording/$id/og'
-    | '/api/recording/$id/video'
+  fullPaths: '/' | '/api/upload' | '/share/$id' | '/api/recording/$id/video'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/api/upload'
-    | '/share/$id'
-    | '/api/recording/$id/og'
-    | '/api/recording/$id/video'
+  to: '/' | '/api/upload' | '/share/$id' | '/api/recording/$id/video'
   id:
     | '__root__'
     | '/'
     | '/api/upload'
     | '/share/$id'
-    | '/api/recording/$id/og'
     | '/api/recording/$id/video'
   fileRoutesById: FileRoutesById
 }
@@ -91,7 +71,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiUploadRoute: typeof ApiUploadRoute
   ShareIdRoute: typeof ShareIdRoute
-  ApiRecordingIdOgRoute: typeof ApiRecordingIdOgRoute
   ApiRecordingIdVideoRoute: typeof ApiRecordingIdVideoRoute
 }
 
@@ -125,13 +104,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRecordingIdVideoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/recording/$id/og': {
-      id: '/api/recording/$id/og'
-      path: '/api/recording/$id/og'
-      fullPath: '/api/recording/$id/og'
-      preLoaderRoute: typeof ApiRecordingIdOgRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -139,7 +111,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiUploadRoute: ApiUploadRoute,
   ShareIdRoute: ShareIdRoute,
-  ApiRecordingIdOgRoute: ApiRecordingIdOgRoute,
   ApiRecordingIdVideoRoute: ApiRecordingIdVideoRoute,
 }
 export const routeTree = rootRouteImport

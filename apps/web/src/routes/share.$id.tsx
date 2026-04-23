@@ -18,14 +18,12 @@ export const Route = createFileRoute("/share/$id")({
 		]);
 		return {
 			...recording,
-			ogImageUrl: `${origin}/api/recording/${params.id}/og`,
 			shareUrl: `${origin}/share/${params.id}`,
 		};
 	},
 	head: ({ loaderData }) => {
 		const { browserInfo, recordingDurationMs, events } =
 			loaderData?.metadata ?? {};
-		const ogImageUrl = loaderData?.ogImageUrl;
 		const shareUrl = loaderData?.shareUrl;
 		const title = browserInfo?.title
 			? `${browserInfo.title} — Shared on ingfo`
@@ -51,15 +49,7 @@ export const Route = createFileRoute("/share/$id")({
 				{ property: "og:description", content: description },
 				{ property: "og:site_name", content: "ingfo" },
 				...(shareUrl ? [{ property: "og:url", content: shareUrl }] : []),
-				...(ogImageUrl
-					? [
-							{ property: "og:image", content: ogImageUrl },
-							{ property: "og:image:width", content: "1200" },
-							{ property: "og:image:height", content: "630" },
-							{ name: "twitter:image", content: ogImageUrl },
-						]
-					: []),
-				{ name: "twitter:card", content: "summary_large_image" },
+				{ name: "twitter:card", content: "summary" },
 				{ name: "twitter:title", content: title },
 				{ name: "twitter:description", content: description },
 			],
