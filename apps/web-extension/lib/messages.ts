@@ -79,8 +79,6 @@ export type Message =
 			type: "SAVE_SHARED_RECORDING";
 			payload: {
 				shareId: string;
-				recordingUrl: string;
-				metadataUrl: string;
 				shareUrl: string;
 				createdAt: number;
 				title: string;

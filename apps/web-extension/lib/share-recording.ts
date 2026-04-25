@@ -3,14 +3,10 @@ import type { RecordingMetadata } from "@/lib/metadata-types";
 
 type UploadResponse = {
 	recordingId: string;
-	recordingUrl: string;
-	metadataUrl: string;
 };
 
 export interface ShareResult {
 	shareId: string;
-	recordingUrl: string;
-	metadataUrl: string;
 	shareUrl: string;
 }
 
@@ -37,8 +33,6 @@ export async function shareRecording(
 	const data = (await res.json()) as UploadResponse;
 	return {
 		shareId: data.recordingId,
-		recordingUrl: data.recordingUrl,
-		metadataUrl: data.metadataUrl,
 		shareUrl: `${API_BASE_URL}/share/${data.recordingId}`,
 	};
 }

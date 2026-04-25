@@ -2,8 +2,6 @@ import Dexie, { type EntityTable } from "dexie";
 
 export interface SharedRecording {
 	shareId: string;
-	recordingUrl: string;
-	metadataUrl: string;
 	shareUrl: string;
 	createdAt: number;
 	title: string;
