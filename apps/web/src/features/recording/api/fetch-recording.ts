@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { RecordingMetadata } from "#/features/recording/lib/types";
 import { UPLOAD_CONFIG } from "#/features/recording/lib/upload";
-import { env } from "#/lib/env.server";
+import { r2 } from "#/lib/r2.server";
 
 export interface RecordingData {
 	recordingUrl: string;
@@ -12,19 +12,17 @@ export const fetchRecording = createServerFn({ method: "GET" })
 	.inputValidator((recordingId: string) => recordingId)
 	.handler(async ({ data: recordingId }): Promise<RecordingData> => {
 		const { keyPrefix, files } = UPLOAD_CONFIG;
-		const base = env.R2_PUBLIC_URL.replace(/\/$/, "");
+		const metadataKey = `${keyPrefix}/${recordingId}/${files.metadata.filename}`;
 
-		const metadataUrl = `${base}/${keyPrefix}/${recordingId}/${files.metadata.filename}`;
-
-		const res = await fetch(metadataUrl);
-		if (!res.ok) {
-			throw new Error(`Recording not found (${res.status})`);
+		const obj = await r2.get(metadataKey);
+		if (!obj) {
+			throw new Error("Recording not found (404)");
 		}
 
-		const metadata = (await res.json()) as RecordingMetadata;
+		const metadata = (await obj.json()) as RecordingMetadata;
 
-		// Proxy the video through the same origin to avoid CORS issues
-		const recordingUrl = `/api/recording/${recordingId}/video`;
-
-		return { recordingUrl, metadata };
+		return {
+			recordingUrl: `/api/recording/${recordingId}/video`,
+			metadata,
+		};
 	});

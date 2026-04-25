@@ -1,5 +1,4 @@
 export const UPLOAD_CONFIG = {
-	presignedUrlExpirySeconds: 300,
 	keyPrefix: "recordings",
 	files: {
 		recording: {

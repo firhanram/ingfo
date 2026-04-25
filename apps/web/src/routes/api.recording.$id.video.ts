@@ -1,31 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { UPLOAD_CONFIG } from "#/features/recording/lib/upload";
-import { env } from "#/lib/env.server";
+import { r2 } from "#/lib/r2.server";
 
 export const Route = createFileRoute("/api/recording/$id/video")({
 	server: {
 		handlers: {
 			GET: async ({ params }) => {
 				const { keyPrefix, files } = UPLOAD_CONFIG;
-				const base = env.R2_PUBLIC_URL.replace(/\/$/, "");
-				const url = `${base}/${keyPrefix}/${params.id}/${files.recording.filename}`;
+				const key = `${keyPrefix}/${params.id}/${files.recording.filename}`;
 
-				const res = await fetch(url);
-				if (!res.ok) {
+				const obj = await r2.get(key);
+				if (!obj) {
 					return new Response("Recording not found", { status: 404 });
 				}
 
-				const headers: Record<string, string> = {
-					"Content-Type":
-						res.headers.get("Content-Type") || files.recording.contentType,
-					"Cache-Control": "public, max-age=31536000, immutable",
-				};
-				const contentLength = res.headers.get("Content-Length");
-				if (contentLength) headers["Content-Length"] = contentLength;
-				const acceptRanges = res.headers.get("Accept-Ranges");
-				if (acceptRanges) headers["Accept-Ranges"] = acceptRanges;
+				const headers = new Headers();
+				headers.set(
+					"Content-Type",
+					obj.httpMetadata?.contentType ?? files.recording.contentType,
+				);
+				headers.set("Content-Length", obj.size.toString());
+				headers.set("Cache-Control", "public, max-age=31536000, immutable");
+				headers.set("Accept-Ranges", "bytes");
 
-				return new Response(res.body, { headers });
+				return new Response(obj.body, { headers });
 			},
 		},
 	},

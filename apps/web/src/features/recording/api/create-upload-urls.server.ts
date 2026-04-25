@@ -1,12 +1,8 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { UPLOAD_CONFIG } from "#/features/recording/lib/upload";
-import { env } from "#/lib/env.server";
-import { R2_BUCKET, r2Client } from "#/lib/r2.server";
+import { r2 } from "#/lib/r2.server";
 
 export type UploadRecordingResponse = {
 	recordingId: string;
-	recordingUrl: string;
-	metadataUrl: string;
 };
 
 export async function uploadRecording(
@@ -26,34 +22,16 @@ export async function uploadRecording(
 	const recordingKey = `${keyPrefix}/${recordingId}/${files.recording.filename}`;
 	const metadataKey = `${keyPrefix}/${recordingId}/${files.metadata.filename}`;
 
-	const recordingBody = new Uint8Array(await recording.arrayBuffer());
-
 	await Promise.all([
-		r2Client.send(
-			new PutObjectCommand({
-				Bucket: R2_BUCKET,
-				Key: recordingKey,
-				Body: recordingBody,
-				ContentType: files.recording.contentType,
-			}),
-		),
-		r2Client.send(
-			new PutObjectCommand({
-				Bucket: R2_BUCKET,
-				Key: metadataKey,
-				Body: metadataJson,
-				ContentType: files.metadata.contentType,
-			}),
-		),
+		r2.put(recordingKey, recording.stream(), {
+			httpMetadata: { contentType: files.recording.contentType },
+		}),
+		r2.put(metadataKey, metadataJson, {
+			httpMetadata: { contentType: files.metadata.contentType },
+		}),
 	]);
 
-	const base = env.R2_PUBLIC_URL.replace(/\/$/, "");
-
-	return {
-		recordingId,
-		recordingUrl: `${base}/${recordingKey}`,
-		metadataUrl: `${base}/${metadataKey}`,
-	};
+	return { recordingId };
 }
 
 export class UploadError extends Error {
