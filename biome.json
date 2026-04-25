@@ -23,7 +23,8 @@
 			"!**/stats.html",
 			"!**/stats-*.json",
 			"!**/routeTree.gen.ts",
-			"!**/.wrangler"
+			"!**/.wrangler",
+			"!**/worker-configuration.d.ts"
 		]
 	},
 	"formatter": {
