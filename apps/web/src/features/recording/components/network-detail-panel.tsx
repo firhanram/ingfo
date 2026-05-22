@@ -1,7 +1,12 @@
 import { ChevronDown, ChevronRight, X } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { cn } from "#/lib/utils";
-import { formatDuration, formatSize, isErrorStatus } from "../lib/format";
+import {
+	formatDuration,
+	formatSize,
+	isErrorStatus,
+	parseQueryParams,
+} from "../lib/format";
 import { getResourceType } from "../lib/network-filters";
 import type { NetworkEvent } from "../lib/types";
 import { CodeBlock } from "./code-block";
@@ -14,6 +19,15 @@ export function NetworkDetailPanel({
 	onClose: () => void;
 }) {
 	const { data } = event;
+	const queryParams = useMemo(() => {
+		const seen = new Map<string, number>();
+		return parseQueryParams(data.url).map((param) => {
+			const occurrence = seen.get(param.key) ?? 0;
+			seen.set(param.key, occurrence + 1);
+			return { ...param, id: `${param.key}#${occurrence}` };
+		});
+	}, [data.url]);
+	const hasPayload = queryParams.length > 0 || Boolean(data.requestBody);
 	const [activeDetailTab, setActiveDetailTab] = useState<
 		"headers" | "payload" | "response"
 	>("headers");
@@ -38,7 +52,7 @@ export function NetworkDetailPanel({
 					label="Headers"
 					onClick={() => setActiveDetailTab("headers")}
 				/>
-				{data.requestBody && (
+				{hasPayload && (
 					<DetailTabButton
 						active={activeDetailTab === "payload"}
 						label="Payload"
@@ -101,12 +115,34 @@ export function NetworkDetailPanel({
 					</div>
 				)}
 
-				{activeDetailTab === "payload" && data.requestBody && (
-					<div>
-						<h4 className="mb-2 font-semibold text-xs text-neutral-700">
-							Request Payload
-						</h4>
-						<CodeBlock code={data.requestBody} mimeType={data.mimeType} />
+				{activeDetailTab === "payload" && (
+					<div className="space-y-4">
+						{queryParams.length > 0 && (
+							<HeaderSection title="Query String Parameters">
+								{queryParams.map((param) => (
+									<div
+										key={param.id}
+										className="flex flex-col gap-1 py-0.5 font-mono text-xs"
+									>
+										<span className="break-all text-neutral-500">
+											{param.key}:
+										</span>
+										<span className="w-fit max-w-full break-all rounded bg-primary-100 px-1.5 py-0.5 text-primary-700">
+											{param.value}
+										</span>
+									</div>
+								))}
+							</HeaderSection>
+						)}
+
+						{data.requestBody && (
+							<div>
+								<h4 className="mb-2 font-semibold text-xs text-neutral-700">
+									Request Payload
+								</h4>
+								<CodeBlock code={data.requestBody} mimeType={data.mimeType} />
+							</div>
+						)}
 					</div>
 				)}
 
@@ -190,7 +226,7 @@ function HeaderRow({
 }) {
 	return (
 		<div className="flex gap-3 py-0.5 font-mono text-xs">
-			<dt className="w-40 shrink-0 text-neutral-500">{label}:</dt>
+			<dt className="w-40 shrink-0 break-words text-neutral-500">{label}:</dt>
 			<dd className={cn("min-w-0 break-all text-neutral-800", valueClass)}>
 				{dot && (
 					<span

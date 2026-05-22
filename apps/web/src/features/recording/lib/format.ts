@@ -47,6 +47,29 @@ export function getDisplayName(url: string): string {
 	}
 }
 
+export interface QueryParam {
+	key: string;
+	value: string;
+}
+
+/**
+ * Parse the query string of a request URL into an ordered list of key/value
+ * pairs, mirroring Chrome DevTools' "Query String Parameters" view. Values are
+ * URL-decoded; repeated keys are preserved as separate rows.
+ */
+export function parseQueryParams(url: string): QueryParam[] {
+	try {
+		const { searchParams } = new URL(url);
+		const params: QueryParam[] = [];
+		for (const [key, value] of searchParams.entries()) {
+			params.push({ key, value });
+		}
+		return params;
+	} catch {
+		return [];
+	}
+}
+
 export function getDomain(url: string): string {
 	try {
 		return new URL(url).hostname;
