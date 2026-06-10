@@ -19,6 +19,7 @@ export default defineConfig({
 		],
 		host_permissions: [
 			"http://localhost:5433/*",
+			import.meta.env.WXT_API_BASE_URL,
 			// TODO: add production web app URL once set
 		],
 		web_accessible_resources: [
