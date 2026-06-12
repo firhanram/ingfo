@@ -14,8 +14,8 @@
 		"lint:fix": "biome check . --write",
 		"format": "biome format . --write",
 		"check-types": "tsc --noEmit --pretty --incremental --extendedDiagnostics",
-		"deploy:dev": "pnpm run build && wrangler deploy --env development",
-		"deploy:prod": "pnpm run build && wrangler deploy --env production"
+		"deploy:dev": "CLOUDFLARE_ENV=development pnpm run build && wrangler deploy --env development",
+		"deploy:prod": "CLOUDFLARE_ENV=production pnpm run build && wrangler deploy --env production"
 	},
 	"dependencies": {
 		"@tailwindcss/vite": "^4.1.18",
