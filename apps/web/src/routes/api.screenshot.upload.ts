@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { uploadRecording } from "#/features/recording/api/create-upload-urls.server";
+import { uploadScreenshot } from "#/features/screenshot/api/upload-screenshot.server";
 import { UploadError } from "#/lib/upload-error";
 
 const corsHeaders = {
@@ -16,7 +16,7 @@ function jsonWithCors(data: unknown, init?: { status?: number }): Response {
 	return res;
 }
 
-export const Route = createFileRoute("/api/upload")({
+export const Route = createFileRoute("/api/screenshot/upload")({
 	server: {
 		handlers: {
 			OPTIONS: () => {
@@ -27,12 +27,12 @@ export const Route = createFileRoute("/api/upload")({
 			},
 			POST: async ({ request }) => {
 				const form = await request.formData();
-				const recording = form.get("recording");
+				const screenshot = form.get("screenshot");
 				const metadata = form.get("metadata");
 
-				if (!(recording instanceof File)) {
+				if (!(screenshot instanceof File)) {
 					return jsonWithCors(
-						{ error: "Missing 'recording' file field" },
+						{ error: "Missing 'screenshot' file field" },
 						{ status: 400 },
 					);
 				}
@@ -53,7 +53,7 @@ export const Route = createFileRoute("/api/upload")({
 				}
 
 				try {
-					const result = await uploadRecording(recording, metadata);
+					const result = await uploadScreenshot(screenshot, metadata);
 					return jsonWithCors(result);
 				} catch (err) {
 					if (err instanceof UploadError) {

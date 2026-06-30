@@ -10,13 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShotIdRouteImport } from './routes/shot.$id'
 import { Route as ShareIdRouteImport } from './routes/share.$id'
 import { Route as ApiUploadRouteImport } from './routes/api.upload'
+import { Route as ApiScreenshotUploadRouteImport } from './routes/api.screenshot.upload'
+import { Route as ApiScreenshotIdImageRouteImport } from './routes/api.screenshot.$id.image'
 import { Route as ApiRecordingIdVideoRouteImport } from './routes/api.recording.$id.video'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShotIdRoute = ShotIdRouteImport.update({
+  id: '/shot/$id',
+  path: '/shot/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShareIdRoute = ShareIdRouteImport.update({
@@ -29,6 +37,16 @@ const ApiUploadRoute = ApiUploadRouteImport.update({
   path: '/api/upload',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiScreenshotUploadRoute = ApiScreenshotUploadRouteImport.update({
+  id: '/api/screenshot/upload',
+  path: '/api/screenshot/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiScreenshotIdImageRoute = ApiScreenshotIdImageRouteImport.update({
+  id: '/api/screenshot/$id/image',
+  path: '/api/screenshot/$id/image',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiRecordingIdVideoRoute = ApiRecordingIdVideoRouteImport.update({
   id: '/api/recording/$id/video',
   path: '/api/recording/$id/video',
@@ -39,39 +57,68 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/upload': typeof ApiUploadRoute
   '/share/$id': typeof ShareIdRoute
+  '/shot/$id': typeof ShotIdRoute
+  '/api/screenshot/upload': typeof ApiScreenshotUploadRoute
   '/api/recording/$id/video': typeof ApiRecordingIdVideoRoute
+  '/api/screenshot/$id/image': typeof ApiScreenshotIdImageRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/upload': typeof ApiUploadRoute
   '/share/$id': typeof ShareIdRoute
+  '/shot/$id': typeof ShotIdRoute
+  '/api/screenshot/upload': typeof ApiScreenshotUploadRoute
   '/api/recording/$id/video': typeof ApiRecordingIdVideoRoute
+  '/api/screenshot/$id/image': typeof ApiScreenshotIdImageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/upload': typeof ApiUploadRoute
   '/share/$id': typeof ShareIdRoute
+  '/shot/$id': typeof ShotIdRoute
+  '/api/screenshot/upload': typeof ApiScreenshotUploadRoute
   '/api/recording/$id/video': typeof ApiRecordingIdVideoRoute
+  '/api/screenshot/$id/image': typeof ApiScreenshotIdImageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/upload' | '/share/$id' | '/api/recording/$id/video'
+  fullPaths:
+    | '/'
+    | '/api/upload'
+    | '/share/$id'
+    | '/shot/$id'
+    | '/api/screenshot/upload'
+    | '/api/recording/$id/video'
+    | '/api/screenshot/$id/image'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/upload' | '/share/$id' | '/api/recording/$id/video'
+  to:
+    | '/'
+    | '/api/upload'
+    | '/share/$id'
+    | '/shot/$id'
+    | '/api/screenshot/upload'
+    | '/api/recording/$id/video'
+    | '/api/screenshot/$id/image'
   id:
     | '__root__'
     | '/'
     | '/api/upload'
     | '/share/$id'
+    | '/shot/$id'
+    | '/api/screenshot/upload'
     | '/api/recording/$id/video'
+    | '/api/screenshot/$id/image'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiUploadRoute: typeof ApiUploadRoute
   ShareIdRoute: typeof ShareIdRoute
+  ShotIdRoute: typeof ShotIdRoute
+  ApiScreenshotUploadRoute: typeof ApiScreenshotUploadRoute
   ApiRecordingIdVideoRoute: typeof ApiRecordingIdVideoRoute
+  ApiScreenshotIdImageRoute: typeof ApiScreenshotIdImageRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -81,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shot/$id': {
+      id: '/shot/$id'
+      path: '/shot/$id'
+      fullPath: '/shot/$id'
+      preLoaderRoute: typeof ShotIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/share/$id': {
@@ -97,6 +151,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiUploadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/screenshot/upload': {
+      id: '/api/screenshot/upload'
+      path: '/api/screenshot/upload'
+      fullPath: '/api/screenshot/upload'
+      preLoaderRoute: typeof ApiScreenshotUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/screenshot/$id/image': {
+      id: '/api/screenshot/$id/image'
+      path: '/api/screenshot/$id/image'
+      fullPath: '/api/screenshot/$id/image'
+      preLoaderRoute: typeof ApiScreenshotIdImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/recording/$id/video': {
       id: '/api/recording/$id/video'
       path: '/api/recording/$id/video'
@@ -111,7 +179,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiUploadRoute: ApiUploadRoute,
   ShareIdRoute: ShareIdRoute,
+  ShotIdRoute: ShotIdRoute,
+  ApiScreenshotUploadRoute: ApiScreenshotUploadRoute,
   ApiRecordingIdVideoRoute: ApiRecordingIdVideoRoute,
+  ApiScreenshotIdImageRoute: ApiScreenshotIdImageRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

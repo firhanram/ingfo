@@ -1,5 +1,6 @@
 import { UPLOAD_CONFIG } from "#/features/recording/lib/upload";
 import { r2 } from "#/lib/r2.server";
+import { UploadError } from "#/lib/upload-error";
 
 export type UploadRecordingResponse = {
 	recordingId: string;
@@ -32,13 +33,4 @@ export async function uploadRecording(
 	]);
 
 	return { recordingId };
-}
-
-export class UploadError extends Error {
-	constructor(
-		message: string,
-		public status: number,
-	) {
-		super(message);
-	}
 }
