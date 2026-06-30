@@ -85,6 +85,18 @@ export type Message =
 				durationMs: number;
 				thumbnailDataUrl: string;
 			};
+	  }
+
+	// Shared screenshot persistence: Content → Background
+	| {
+			type: "SAVE_SHARED_SCREENSHOT";
+			payload: {
+				shareId: string;
+				shareUrl: string;
+				createdAt: number;
+				title: string;
+				thumbnailDataUrl: string;
+			};
 	  };
 
 // --- Offscreen messages (background ↔ offscreen document) ---

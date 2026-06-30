@@ -60,3 +60,10 @@ export interface RecordingMetadata {
 	recordingStartTime: number;
 	recordingDurationMs: number;
 }
+
+export interface ScreenshotMetadata {
+	browserInfo: BrowserInfo;
+	capturedAt: number;
+	width: number;
+	height: number;
+}
