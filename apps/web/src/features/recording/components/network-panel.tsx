@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import { Search, X } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "#/lib/utils";
 import { COL_HEADERS } from "../lib/columns";
@@ -39,6 +39,7 @@ export function NetworkPanel({
 	const deferredFilter = useDeferredValue(filter);
 	const [selectedEvent, setSelectedEvent] = useState<NetworkEvent | null>(null);
 	const [query, setQuery] = useState("");
+	const [selectedDomain, setSelectedDomain] = useState("");
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const indexedEvents = useMemo<IndexedEvent[]>(
@@ -51,6 +52,14 @@ export function NetworkPanel({
 			})),
 		[networkEvents],
 	);
+
+	const recordedDomains = useMemo(
+		() => [...new Set(indexedEvents.map(({ domain }) => domain))].sort(),
+		[indexedEvents],
+	);
+	const activeDomain = recordedDomains.includes(selectedDomain)
+		? selectedDomain
+		: "";
 
 	const fuse = useMemo(
 		() =>
@@ -75,10 +84,13 @@ export function NetworkPanel({
 		[fuse, indexedEvents, trimmedQuery],
 	);
 
+	const domainFiltered = activeDomain
+		? searchedEvents.filter(({ domain }) => domain === activeDomain)
+		: searchedEvents;
 	const categoryFiltered =
 		deferredFilter === "All"
-			? searchedEvents
-			: searchedEvents.filter(
+			? domainFiltered
+			: domainFiltered.filter(
 					({ event }) => categorizeRequest(event) === deferredFilter,
 				);
 	const filteredEvents = deferredErrorsOnly
@@ -160,6 +172,27 @@ export function NetworkPanel({
 					</span>
 					Errors only
 				</button>
+
+				<div className="relative min-w-0 max-w-full basis-full sm:basis-auto">
+					<select
+						value={activeDomain}
+						onChange={(e) => setSelectedDomain(e.target.value)}
+						aria-label="Filter by recorded domain"
+						title={activeDomain || "Filter by recorded domain"}
+						className="w-full appearance-none truncate rounded-md border border-neutral-200 bg-white py-1 pr-7 pl-2 font-mono text-xs text-neutral-700 transition-colors hover:border-neutral-300 focus-visible:border-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/20 sm:w-64"
+					>
+						<option value="">All domains ({recordedDomains.length})</option>
+						{recordedDomains.map((domain) => (
+							<option key={domain} value={domain}>
+								{domain}
+							</option>
+						))}
+					</select>
+					<ChevronDown
+						className="pointer-events-none absolute top-1/2 right-2 size-3.5 -translate-y-1/2 text-neutral-400"
+						aria-hidden="true"
+					/>
+				</div>
 
 				<div className="ml-auto flex min-w-[220px] flex-1 items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-2 py-1 font-mono text-xs text-neutral-700 transition-colors focus-within:border-neutral-900 sm:flex-none sm:min-w-[260px]">
 					<Search
