@@ -17,8 +17,13 @@ export default defineConfig({
 			"audioCapture",
 			"debugger",
 		],
+		// Broad host access is required so chrome.debugger can attach to any
+		// recorded tab for network capture. The `debugger` API is not covered
+		// by `activeTab`, so without real host_permissions the attach is
+		// rejected in production (WXT only auto-injects <all_urls> in dev).
 		host_permissions: [
-			"http://localhost:5433/*",
+			"http://*/*",
+			"https://*/*",
 			...(import.meta.env.WXT_API_BASE_URL
 				? [`${import.meta.env.WXT_API_BASE_URL}/*`]
 				: []),

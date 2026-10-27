@@ -229,7 +229,19 @@ export async function startNetworkCapture(
 		dbg.onEvent.addListener(handleDebuggerEvent);
 		dbg.onDetach.addListener(handleDebuggerDetach);
 	} catch (err) {
-		console.error("[ingfo] Failed to attach debugger:", err);
+		// Surface the precise reason instead of swallowing it — when attach
+		// fails the network panel ends up empty with no banner. The two common
+		// causes are: (1) DevTools (or another debugger client) is already
+		// attached to the tab — Chrome allows only one per tab; close DevTools
+		// and re-record. (2) Missing/ungranted host permission for the page
+		// (activeTab is NOT sufficient for the debugger API) — set Site access
+		// to "On all sites" in chrome://extensions → Ingfo → Details.
+		const message = err instanceof Error ? err.message : String(err);
+		console.error(
+			`[ingfo] Failed to attach debugger (network capture disabled): ${message}. ` +
+				"Likely causes: DevTools is open on this tab (close it and re-record), " +
+				'or Site access is not "On all sites".',
+		);
 		activeTabId = null;
 		eventCallback = null;
 	}
