@@ -27,7 +27,22 @@ export async function shareRecording(
 	});
 	if (!res.ok) {
 		const text = await res.text().catch(() => "");
-		throw new Error(`Upload failed (${res.status}): ${text || res.statusText}`);
+		let message = text || res.statusText;
+		try {
+			const body: unknown = JSON.parse(text);
+			if (
+				typeof body === "object" &&
+				body !== null &&
+				"error" in body &&
+				typeof body.error === "string" &&
+				body.error.trim()
+			) {
+				message = body.error;
+			}
+		} catch {
+			// Proxies may return plain text instead of the API's JSON error.
+		}
+		throw new Error(`Upload failed (${res.status}): ${message}`);
 	}
 
 	const data = (await res.json()) as UploadResponse;

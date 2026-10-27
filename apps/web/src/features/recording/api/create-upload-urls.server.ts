@@ -15,8 +15,15 @@ export async function uploadRecording(
 	if (recording.size > files.recording.maxSizeBytes) {
 		throw new UploadError("Recording file exceeds maximum size", 413);
 	}
-	if (new Blob([metadataJson]).size > files.metadata.maxSizeBytes) {
-		throw new UploadError("Metadata exceeds maximum size", 413);
+	const metadataSizeBytes = new Blob([metadataJson]).size;
+	const metadataLimitBytes = files.metadata.maxSizeBytes;
+	if (metadataSizeBytes > metadataLimitBytes) {
+		const sizeMiB = (metadataSizeBytes / (1024 * 1024)).toFixed(2);
+		const limitMiB = (metadataLimitBytes / (1024 * 1024)).toFixed(2);
+		throw new UploadError(
+			`Recording metadata is too large: ${sizeMiB} MiB (${metadataSizeBytes} bytes). Maximum allowed: ${limitMiB} MiB (${metadataLimitBytes} bytes). Metadata includes captured network requests and console logs.`,
+			413,
+		);
 	}
 
 	const recordingId = crypto.randomUUID();

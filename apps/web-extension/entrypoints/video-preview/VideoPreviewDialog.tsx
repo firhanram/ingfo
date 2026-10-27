@@ -1,4 +1,4 @@
-import { Pause, Play, Share2, X } from "lucide-react";
+import { CircleAlert, Pause, Play, Share2, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
 import type { Message } from "@/lib/messages";
@@ -250,7 +250,7 @@ export function VideoPreviewDialog({
 				</div>
 
 				{/* Timeline & controls */}
-				<div className="border-t border-neutral-200 bg-surface px-6 py-4">
+				<div className="shrink-0 border-t border-neutral-200 bg-surface px-6 py-4">
 					{/* Current timestamp */}
 					<div className="mb-3 flex items-center justify-center">
 						<span className="tabular-nums text-sm tracking-wide text-neutral-500">
@@ -348,23 +348,35 @@ export function VideoPreviewDialog({
 						</div>
 					</div>
 
+					{shareError && (
+						<div
+							role="alert"
+							className="mt-3 flex items-start gap-2 rounded-md border border-error-500/20 bg-error-50 p-3 text-error-700"
+						>
+							<CircleAlert
+								size={16}
+								className="mt-0.5 shrink-0"
+								aria-hidden="true"
+							/>
+							<p className="m-0 max-h-24 min-w-0 overflow-y-auto text-xs leading-relaxed [overflow-wrap:anywhere]">
+								{shareError}
+							</p>
+						</div>
+					)}
+
 					{/* Trim info + share */}
-					<div className="mt-3 flex items-center justify-between">
-						{shareError ? (
-							<span className="text-xs text-red-600">{shareError}</span>
-						) : (
-							<span className="text-xs tabular-nums text-neutral-500">
-								{isTrimmed
-									? `Trimmed to ${formatTime(trimmedDuration * 1000)}`
-									: ""}
-							</span>
-						)}
+					<div className="mt-3 flex items-center justify-between gap-3">
+						<span className="min-w-0 text-xs tabular-nums text-neutral-500">
+							{isTrimmed
+								? `Trimmed to ${formatTime(trimmedDuration * 1000)}`
+								: ""}
+						</span>
 
 						<button
 							type="button"
 							onClick={handleShareReplay}
 							disabled={isSharing}
-							className="flex cursor-pointer items-center gap-1.5 rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500 disabled:cursor-not-allowed disabled:opacity-50"
+							className="flex shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-md border-none bg-accent-400 px-4 py-2 text-sm font-medium text-white hover:bg-accent-500 disabled:cursor-not-allowed disabled:opacity-50"
 						>
 							<Share2 size={16} />
 							{isSharing ? "Sharing..." : "Share Replay"}
