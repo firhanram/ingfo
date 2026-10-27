@@ -5,6 +5,10 @@ requests, console logs, and browser/session info, then uploads everything to the
 returns a shareable link — so anyone can replay the issue with full context instead of a vague
 "it's broken" report.
 
+Network capture keeps JavaScript and CSS request metadata (URL, headers, status, size, and
+timing) but omits their request and response bodies to reduce upload size. Fetch/XHR API
+bodies remain captured, subject to the existing 32,768-character per-body limit.
+
 ## Monorepo layout
 
 [Turborepo](https://turborepo.dev) + pnpm workspaces.

@@ -12,7 +12,26 @@ interface PendingRequest {
 	timestamp: number;
 	initiatorType: string;
 	resourceType?: string;
+	mimeType?: string;
 	cacheSource?: "memory" | "disk" | "prefetch";
+}
+
+function shouldSkipBody(request: {
+	resourceType?: string;
+	mimeType?: string;
+}): boolean {
+	// API calls remain inspectable even when they return JavaScript or CSS.
+	if (request.resourceType === "Fetch" || request.resourceType === "XHR") {
+		return false;
+	}
+	if (
+		request.resourceType === "Script" ||
+		request.resourceType === "Stylesheet"
+	) {
+		return true;
+	}
+	const mime = request.mimeType?.split(";")[0].trim().toLowerCase() ?? "";
+	return mime === "text/css" || /(?:java|ecma)script/.test(mime);
 }
 
 const pendingRequests = new Map<string, PendingRequest>();
@@ -48,12 +67,17 @@ function handleDebuggerEvent(
 		const request = params.request as Record<string, unknown>;
 		const headers = (request.headers as Record<string, string>) ?? {};
 		const postData = (request.postData as string) ?? null;
+		const resourceType = params.type as string | undefined;
 
 		pendingRequests.set(requestId, {
 			url: request.url as string,
 			method: (request.method as string) ?? "GET",
 			requestHeaders: headers,
-			requestBody: postData ? postData.slice(0, MAX_BODY_SIZE) : null,
+			requestBody:
+				postData && !shouldSkipBody({ resourceType })
+					? postData.slice(0, MAX_BODY_SIZE)
+					: null,
+			resourceType,
 			timestamp: Date.now(),
 			initiatorType:
 				((params.initiator as Record<string, unknown>)?.type as string) ??
@@ -74,7 +98,7 @@ function handleDebuggerEvent(
 			statusText: (response.statusText as string) ?? "",
 			responseHeaders: headers,
 			mimeType: (response.mimeType as string) ?? "",
-			resourceType: (params.type as string) ?? undefined,
+			resourceType: (params.type as string) ?? pending.resourceType,
 			cacheSource: fromPrefetchCache
 				? "prefetch"
 				: fromDiskCache
@@ -96,6 +120,12 @@ function handleDebuggerEvent(
 
 		const tabId = activeTabId;
 		if (tabId === null) return;
+
+		if (shouldSkipBody(pending)) {
+			const size = resolveSize(encodedDataLength, 0, pending);
+			emitEntry(pending, endTime, size, null);
+			return;
+		}
 
 		dbg
 			.sendCommand({ tabId }, "Network.getResponseBody", {
@@ -165,6 +195,7 @@ function emitEntry(
 	errorText: string | false = false,
 ): void {
 	if (!eventCallback) return;
+	const skipBody = shouldSkipBody(pending);
 
 	eventCallback({
 		type: "network",
@@ -182,8 +213,8 @@ function emitEntry(
 			duration: endTime - pending.timestamp,
 			requestHeaders: pending.requestHeaders,
 			responseHeaders: pending.responseHeaders ?? {},
-			requestBody: pending.requestBody,
-			responseBody,
+			requestBody: skipBody ? null : pending.requestBody,
+			responseBody: skipBody ? null : responseBody,
 			mimeType: pending.mimeType ?? "",
 			encodedDataLength,
 			cached: pending.cacheSource !== undefined,
